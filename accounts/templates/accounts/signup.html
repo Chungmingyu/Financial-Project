@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+  {% load static %}
+  <h1>회원가입</h1>
+  <form action="{% url 'accounts:signup' %}" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-light">Signup</button>
+  </form>
+  <div style="justify-self: center;">
+    <a href="https://nid.naver.com/nidlogin.login?mode=form&url=https://www.naver.com/"><img src="{% static 'accounts/test.png' %}" width="70%" alt="" /></a>
+  </div>
+{% endblock %}
