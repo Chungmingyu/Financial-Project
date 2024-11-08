@@ -1,10 +1,48 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>로그인</h1>
-<form action="" method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-light">Login</button>
-</form>
-{% endblock content %}
+  {% load static %}
+  <div class="container-fluid d-flex align-items-center justify-content-center vh-100">
+    <div class="row login-container shadow-lg">
+      <!-- 왼쪽 섹션 -->
+      <div class="col-lg-6 d-flex flex-column align-items-center justify-content-center left-section text-light">
+        <div class="text-center">
+          <div style="justify-self: center;">
+            <a href="https://nid.naver.com/nidlogin.login?mode=form&url=https://www.naver.com/"><img src="{% static 'accounts/test.png' %}" width="70%" alt="@@@@@" /></a>
+          </div>
+          <p>이야 멋지다~</p>
+        </div>
+      </div>
+
+      <!-- 오른쪽 섹션 -->
+      <div class="col-lg-6 d-flex flex-column justify-content-center right-section">
+        <ul class="nav nav-tabs justify-content-end">
+          <li class="nav-item">
+            <a class="nav-link active" href="#">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Sign Up</a>
+          </li>
+        </ul>
+
+        <form action="{% url 'accounts:login' %}" method="post" class="p-4">
+          {% csrf_token %}
+          <div class="mb-4">
+            <label for="username" class="form-label">Email or Username</label>
+            <input type="text" class="form-control" id="username" name="username" required />
+          </div>
+          <div class="mb-4">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required />
+          </div>
+          <div class="form-check mb-4">
+            <input type="checkbox" class="form-check-input" id="remember" />
+            <label class="form-check-label" for="remember">Remember me</label>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Login</button>
+          <a href="#" class="text-decoration-none d-block text-end mt-3">Forgot your password?</a>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -22,6 +22,10 @@
             {% csrf_token %}
             <button type="submit" class="btn btn-light">Logout</button>
           </form>
+          <form class="ms-2" action="{% url "accounts:update" request.user.id%}" method='POST'>
+            {% csrf_token %}
+            <button type="submit" class="btn btn-light">Update</button>
+          </form>
         {% else %}
           <a href="{% url 'accounts:login' %}"><button class="btn btn-light">Login</button></a>
           <a class="ms-2" href="{% url 'accounts:signup' %}"><button class="btn btn-light">Signup</button></a>

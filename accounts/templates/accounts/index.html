@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% load static %}
+  <div class="container-fluid py-5">
+    <!-- 카테고리 필터 -->
+    <div class="d-flex flex-wrap justify-content-center mb-4">
+      <button class="btn filter-btn mx-2 active" data-filter="*">All</button>
+      <button class="btn filter-btn mx-2" data-filter=".fashion">Fashion + Beauty</button>
+      <button class="btn filter-btn mx-2" data-filter=".tech">Technology</button>
+      <button class="btn filter-btn mx-2" data-filter=".consumer">Consumer Goods</button>
+      <button class="btn filter-btn mx-2" data-filter=".corporate">Corporate + Industrial</button>
+      <button class="btn filter-btn mx-2" data-filter=".finance">Finance</button>
+    </div>
+
+    <!-- 그리드 레이아웃 -->
+    <div class="row portfolio-grid">
+      <div class="col-md-4 col-sm-6 portfolio-item fashion">
+        <div class="portfolio-box">
+          <img src="{% static 'accounts/test.png' %}" alt="Sample 1" />
+          <div class="overlay">
+            <h3>Fashion Project</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6 portfolio-item tech">
+        <div class="portfolio-box">
+          <img src="{% static 'accounts/test.png' %}" alt="Sample 2" />
+          <div class="overlay">
+            <h3>Technology Project</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6 portfolio-item finance">
+        <div class="portfolio-box">
+          <img src="{% static 'accounts/test.png' %}" alt="Sample 3" />
+          <div class="overlay">
+            <h3>Finance Project</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const containerEl = document.querySelector('.portfolio-grid')
+      const mixer = mixitup(containerEl)
+    
+      const filterButtons = document.querySelectorAll('.filter-btn')
+      filterButtons.forEach((btn) => {
+        btn.addEventListener('click', function () {
+          filterButtons.forEach((button) => button.classList.remove('active'))
+          this.classList.add('active')
+        })
+      })
+    })
+  </script>
+{% endblock %}

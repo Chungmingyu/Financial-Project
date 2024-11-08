@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
 # from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.contrib.auth.forms import AuthenticationForm
-from .forms import CustomUserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from .forms import CustomUserCreationForm, CustomUserChangeForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
@@ -67,6 +67,35 @@ def signup(request):
     }
     return render(request, 'accounts/signup.html', context)
 
+@require_http_methods(["POST"])
+def update(request, user_pk):
+    user = User.objects.get(pk=user_pk)
+    if request.method =='POST':
+        form = CustomUserChangeForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('accounts:login')
+        
+    form = CustomUserChangeForm(instance=user)
+    context={
+        'form':form,
+    }
+    return render(request, 'accounts/update.html',context)
+
+@require_http_methods(["POST","GET"])
+def change_password(request, user_pk):
+    if request.method =="POST":
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('accounts:login')
+    
+    form = PasswordChangeForm(request.user)
+    context={
+        'form':form
+    }
+    return render(request, 'accounts/change_password.html', context)
+
 
 @require_http_methods(["POST"])
 def follow(request, user_pk):
@@ -80,3 +109,7 @@ def follow(request, user_pk):
         else:
             person.followers.add(request.user)
     return redirect('accounts:profile', person.pk)
+
+
+def index(request):
+    return render(request, 'accounts/index.html')
