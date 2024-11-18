@@ -2,8 +2,12 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import LogInView from "@/views/LogInView.vue";
 import SignUpView from "@/views/SignUpView.vue";
-import HomeView2 from "@/views/HomeView2.vue";
-import HomeView3 from "@/views/HomeView3.vue";
+import ChartView from "@/components/ChartView.vue";
+import ComparisonView from "@/components/ComparisonView.vue";
+import ProductSuggestionView from "@/components/ProductSuggestionView.vue";
+import CurrencyCalculatorView from "@/components/CurrencyCalculatorView.vue";
+import BankView from "@/components/BankView.vue";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,15 +28,30 @@ const router = createRouter({
       component: SignUpView,
     },
     {
-      path: "/test",
-      name: "home2",
-      component: HomeView2,
+      path: "/chart",
+      name: "ChartView",
+      component: ChartView,
     },
     {
-      path: "/test/test",
-      name: "home3",
-      component: HomeView3,
+      path: "/comparison",
+      name: "ComparisonView",
+      component:ComparisonView
     },
+    {
+      path: "/suggestion",
+      name: "ProductSuggestionView",
+      component: ProductSuggestionView
+    },
+    {
+      path: "/currency",
+      name: "CurrencyCalculatorView",
+      component:CurrencyCalculatorView
+    },
+    {
+      path: "/bank",
+      name: "BankView",
+      component: BankView
+    }
   ],
 });
 
