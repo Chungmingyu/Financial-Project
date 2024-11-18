@@ -20,11 +20,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # API KEY 숨기기
 
-# env = environ.Env(DEBUG=(bool, True))
-# environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
-# DEPOSIT_API_KEY = env('DEPOSIT_API_KEY')
-# EXCHANGE_API_KEY = env('EXCHANGE_API_KEY')
-# MAP_API_KEY = env('MAP_API_KEY')
+env = environ.Env(DEBUG=(bool, True))
+environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
+DEPOSIT_API_KEY = env('DEPOSIT_API_KEY')
+EXCHANGE_API_KEY = env('EXCHANGE_API_KEY')
+MAP_API_KEY = env('MAP_API_KEY')
 
 
 # Quick-start development settings - unsuitable for production
