@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>환율 계산기</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+      input,
+      select,
+      button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+      }
+      button {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      #result {
+        margin-top: 20px;
+        font-size: 1.2em;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>환율 계산기</h1>
+      {% if error %}
+        <p>{{ error }}</p>
+      {% else %}
+        <form id="exchange-form">
+          <div class="form-group">
+            <label for="krw-amount">원화 금액:</label>
+            <input type="number" id="krw-amount" name="krw-amount" oninput="convertToForeign()" />
+          </div>
+          <div class="form-group">
+            <label for="currency">통화:</label>
+            <select id="currency" name="currency" onchange="convertToForeign(); convertToKrw();">
+              {% for rate in rates %}
+                <option value="{{ rate.cur_unit }}">{{ rate.cur_nm }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="foreign-amount">타국 통화 금액:</label>
+            <input type="number" id="foreign-amount" name="foreign-amount" oninput="convertToKrw()" />
+          </div>
+        </form>
+        <p id="result"></p>
+      {% endif %}
+    </div>
+
+    <script>
+        function convertToForeign() {
+            const krwAmount = document.getElementById('krw-amount').value;
+            const currency = document.getElementById('currency').value;
+            const rates = {{ rates|safe }};
+            const rate = rates.find(rate => rate.cur_unit === currency).deal_bas_r;
+            const foreignAmount = krwAmount / parseFloat(rate.replace(',', ''));
+            document.getElementById('foreign-amount').value = foreignAmount.toFixed(2);
+        }
+
+        function convertToKrw() {
+            const foreignAmount = document.getElementById('foreign-amount').value;
+            const currency = document.getElementById('currency').value;
+            const rates = {{ rates|safe }};
+            const rate = rates.find(rate => rate.cur_unit === currency).deal_bas_r;
+            const krwAmount = foreignAmount * parseFloat(rate.replace(',', ''));
+            document.getElementById('krw-amount').value = krwAmount.toFixed(2);
+        }
+    </script>
+  </body>
+</html>
