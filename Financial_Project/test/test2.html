@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+
+    <title>ScrollMagic Demo</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      .scrollContent {
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      section {
+        padding: 50px 0;
+        border-bottom: 2px solid #ccc;
+        margin-bottom: 30px;
+      }
+
+      h1,
+      h2,
+      p {
+        text-align: center;
+      }
+
+      .box1,
+      .box2 {
+        width: 100%;
+        height: 200px;
+        margin: 20px auto;
+        background-color: #ccc;
+        text-align: center;
+        line-height: 200px;
+        font-size: 24px;
+        opacity: 0;
+        transition: all 1s ease-in-out;
+      }
+
+      /* Add visible class styles for box1 and box2 */
+      .box1.visible,
+      .box2.visible {
+        opacity: 1;
+      }
+
+      .blue {
+        background-color: #4e90ff;
+      }
+      .green {
+        background-color: #00d084;
+      }
+      .red {
+        background-color: #ff5c8d;
+      }
+
+      .digit {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        margin: 10px;
+        background-color: #ffcc00;
+        text-align: center;
+        line-height: 50px;
+        font-size: 24px;
+        opacity: 0;
+        transform: translateX(-40px);
+        transition: all 0.6s ease-out;
+      }
+
+      .digit.visible {
+        opacity: 1;
+        transform: none;
+      }
+
+      .spacer {
+        height: 150px;
+      }
+      /* 영상 배경*/
+      .video-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* 동영상이 화면을 덮도록 설정 */
+        z-index: -1; /* 동영상이 다른 콘텐츠 뒤에 오도록 설정 */
+      }
+
+      .carousel-item {
+        position: relative;
+        height: 100vh; /* 슬라이드의 높이를 화면 크기만큼 설정 */
+      }
+
+      .carousel-caption {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+      }
+
+      /* 배경 영상 설정 */
+      .video-background {
+        position: absolute; /* 동영상을 고정 */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* 화면을 덮도록 설정 */
+        z-index: -1; /* 다른 콘텐츠들이 영상 위로 올 수 있게 설정 */
+      }
+
+      /* navbar 스타일 */
+      .navbar {
+        position: absolute; /* navbar는 상대 위치로 설정하여 배경 영상과 겹치지 않도록 */
+        z-index: 100; /* navbar가 영상 위에 올 수 있도록 z-index 설정 */
+      }
+
+      /* 실험용 */
+      .test1 {
+        display: flex;
+        position: relative;
+        z-index: 1;
+      }
+
+      .test2 {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: -10;
+        width: 100px;
+        height: 100px;
+      }
+      /* 슬라이드 버튼 크기 확장 실험용 */
+      .carousel-control-prev {
+        left: 100px;  /* 왼쪽 여백을 10px로 설정 */
+        top: 80%;    /* 수직 중앙 정렬 */
+        transform: translateY(-50%);  /* 정확한 수직 중앙 정렬을 위해 */
+      }
+
+      .carousel-control-next {
+        right: 650px; /* 오른쪽 여백을 10px로 설정 */
+        top: 80%;    /* 수직 중앙 정렬 */
+        transform: translateY(-50%);  /* 정확한 수직 중앙 정렬을 위해 */
+      }
+
+
+      /* 이전, 다음 아이콘 크기 줄이기 */
+      .carousel-control-prev-icon,
+      .carousel-control-next-icon {
+        width: 20px; /* 아이콘 너비 */
+        height: 20px; /* 아이콘 높이 */
+      }
+      #titlechart {
+        top: 0;
+        bottom: 0;
+        left:0;
+        right: 0;
+        background-image: url('1.jpg');  /* 배경 이미지 경로 */
+        background-size: cover;  /* 배경 이미지가 요소 크기에 맞게 확장 */
+        background-position: center;  /* 배경 이미지가 중앙에 오도록 설정 */
+        background-repeat: no-repeat;  /* 배경 이미지 반복 안 함 */
+        padding: 0px;  /* 내용과 배경 이미지 간의 여백 설정 */
+        color: white;  /* 텍스트 색상 설정 (배경과 대비를 위해 흰색으로 설정) */
+      }
+
+    </style>
+  </head>
+  <body>
+    <!-- navbar 설정 -->
+    <header>
+      <div class="test1">
+        <h1 class="test2">
+          <img src="2.jpg" style="width: 100%; height: 100%; object-fit: contain" />
+          <a class="navbar-brand" href="#">Offcanvas dark navbar</a>
+        </h1>
+      </div>
+    </header>
+    <!-- slide 설정 -->
+    <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <!-- 첫 번째 슬라이드 -->
+        <div class="carousel-item active">
+          <video autoplay muted loop class="video-background">
+            <source src="large.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <div class="carousel-caption d-none d-md-block">
+            <h5>First Slide Title</h5>
+            <p>Description for the first video.</p>
+          </div>
+        </div>
+
+        <!-- 두 번째 슬라이드 -->
+        <div class="carousel-item">
+          <video autoplay muted loop class="video-background">
+            <source src="space.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <div class="carousel-caption d-none d-md-block">
+            <h5>Second Slide Title</h5>
+            <p>Description for the second video.</p>
+          </div>
+        </div>
+
+        <!-- 세 번째 슬라이드 -->
+        <div class="carousel-item">
+          <video autoplay muted loop class="video-background">
+            <source src="large.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <div class="carousel-caption d-none d-md-block">
+            <h5>Third Slide Title</h5>
+            <p>Description for the third video.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 이전 버튼 -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+
+      <!-- 다음 버튼 -->
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+    <!-- scroll magic -->
+    <div>
+      <div class="scrollContent">
+        <section id="titlechart">
+          <h1>ScrollMagic Animations</h1>
+          <h2>Scroll to reveal animations as you pass through different sections!</h2>
+          <p>
+            This demo uses
+            <strong>ScrollMagic</strong>
+            to reveal and animate elements as they enter and leave the viewport.
+          </p>
+        </section>
+
+        <!-- First Reveal Section -->
+        <section id="titlechart">
+          <div id="trigger1" class="spacer"></div>
+          <div id="reveal1" class="box2 blue">
+            <p>I will be revealed when scrolled into view and hidden when scrolled past.</p>
+          </div>
+        </section>
+
+        <!-- Second Reveal Section -->
+        <section id="titlechart">
+          <div id="trigger2" class="spacer"></div>
+          <div id="reveal2" class="box2 green">
+            <p>I will stay visible once revealed.</p>
+          </div>
+        </section>
+
+        <!-- Multiple Elements Reveal -->
+        <!-- <section>
+          <div id="reveal-elements">
+            <div class="digit blue">1</div>
+            <div class="digit green">2</div>
+            <div class="digit red">3</div>
+            <div class="digit blue">4</div>
+            <div class="digit green">5</div>
+          </div>
+        </section> -->
+
+        <!-- GSAP Animation Section -->
+        <!-- <section>
+          <div id="gsap-trigger" class="spacer"></div>
+          <div id="gsap-anim" class="box1 red">
+            <p>This box animates with GSAP when you scroll to it.</p>
+          </div>
+        </section> -->
+      </div>
+    </div>
+    <!-- Scripts - Updated order and versions -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- GSAP must be loaded before ScrollMagic -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.7/ScrollMagic.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.7/plugins/animation.gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.7/plugins/debug.addIndicators.min.js"></script>
+
+    <script>
+      // Initialize ScrollMagic Controller
+      var controller = new ScrollMagic.Controller();
+
+      // First animation: Reveal on Scroll
+      var scene1 = new ScrollMagic.Scene({
+        triggerElement: "#trigger1",
+        triggerHook: 0.9,
+        duration: "80%",
+        offset: 50,
+      })
+        .setClassToggle("#reveal1", "visible")
+        .addIndicators()
+        .addTo(controller);
+
+      // Second animation: Reveal once and stay visible
+      var scene2 = new ScrollMagic.Scene({
+        triggerElement: "#trigger2",
+        triggerHook: 0.9,
+        offset: 50,
+        reverse: false,
+      })
+        .setClassToggle("#reveal2", "visible")
+        .addIndicators()
+        .addTo(controller);
+
+      // Multiple elements reveal on scroll
+      var revealElements = document.getElementsByClassName("digit");
+      for (var i = 0; i < revealElements.length; i++) {
+        new ScrollMagic.Scene({
+          triggerElement: revealElements[i],
+          offset: 50,
+          triggerHook: 0.9,
+        })
+          .setClassToggle(revealElements[i], "visible")
+          .addIndicators({ name: "digit " + (i + 1) })
+          .addTo(controller);
+      }
+
+      // GSAP animation
+      gsap.set("#gsap-anim", { opacity: 0 }); // Set initial state
+      var tween = gsap.to("#gsap-anim", {
+        rotationY: 180,
+        scale: 1.5,
+        opacity: 1,
+        duration: 2,
+      });
+
+      var gsapScene = new ScrollMagic.Scene({
+        triggerElement: "#gsap-trigger",
+        triggerHook: "onEnter",
+        duration: "100%",
+        offset: 50,
+      })
+        .setTween(tween)
+        .addIndicators()
+        .addTo(controller);
+    </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

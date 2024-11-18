@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+
+    <title>ScrollMagic Demo</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      .scrollContent {
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      section {
+        padding: 50px 0;
+        border-bottom: 2px solid #ccc;
+        margin-bottom: 30px;
+      }
+
+      h1,
+      h2,
+      p {
+        text-align: center;
+      }
+
+      .box1,
+      .box2 {
+        width: 100%;
+        height: 200px;
+        margin: 20px auto;
+        background-color: #ccc;
+        text-align: center;
+        line-height: 200px;
+        font-size: 24px;
+        opacity: 0;
+        transition: all 1s ease-in-out;
+      }
+
+      /* Add visible class styles for box1 and box2 */
+      .box1.visible,
+      .box2.visible {
+        opacity: 1;
+      }
+
+      .blue {
+        background-color: #4e90ff;
+      }
+      .green {
+        background-color: #00d084;
+      }
+      .red {
+        background-color: #ff5c8d;
+      }
+
+      .digit {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        margin: 10px;
+        background-color: #ffcc00;
+        text-align: center;
+        line-height: 50px;
+        font-size: 24px;
+        opacity: 0;
+        transform: translateX(-40px);
+        transition: all 0.6s ease-out;
+      }
+
+      .digit.visible {
+        opacity: 1;
+        transform: none;
+      }
+
+      .spacer {
+        height: 150px;
+      }
+      /* navbar 스타일 */
+      .navbar {
+        position: fixed;
+        width: 100%;
+        top: 0;
+        transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+        }
+
+    /* 숨겨졌을 때 navbar 스타일 */
+        .navbar.hidden {
+        transform: translateY(-100%);
+        opacity: 0;
+        }
+
+      /* 실험용 */
+
+      #titlechart {
+        display: flex;                 /* flexbox로 자식 요소 배치 */
+        justify-content: center;       /* 자식 요소를 중앙에 배치 */
+        align-items: center;           /* 자식 요소를 세로 중앙에 배치 */
+        width: 100vw;                  /* 화면 전체 너비 */
+        height: 100vh;                 /* 화면 전체 높이 */
+        background-image: url('berelin.jpg'); /* 배경 이미지 경로 */
+        background-size: cover;        /* 배경 이미지가 요소 크기에 맞게 확장 */
+        background-position: center;   /* 배경 이미지가 중앙에 오도록 설정 */
+        background-repeat: no-repeat;  /* 배경 이미지 반복 안 함 */
+        color: white;                  /* 텍스트 색상 설정 */
+        }
+        #titlechart2 {
+        display: flex;                 /* flexbox로 자식 요소 배치 */
+        justify-content: center;       /* 자식 요소를 중앙에 배치 */
+        align-items: center;           /* 자식 요소를 세로 중앙에 배치 */
+        width: 100vw;                  /* 화면 전체 너비 */
+        height: 100vh;                 /* 화면 전체 높이 */
+        background-color: black;     /* 텍스트 색상 설정 */
+        background:linear-gradient(black,rgb(0, 0, 49))
+        }
+        /* 이미지 그라데이션 */
+        .image-container {
+        position: relative;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-image: url('berelin.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        color: white;
+        }
+
+        .image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+        }
+
+        .gradient-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%);
+        pointer-events: none; /* 오버레이로 인해 이미지 클릭 방지되지 않도록 */
+        z-index: 2;
+        transition: opacity 0.8s ease-in-out;
+        }
+
+        .content {
+        padding-top: 100vh;
+        text-align: center;
+        color: white;
+        }
+
+        
+        .hidden {
+        transform: translateY(-100%);
+        opacity: 0;
+        }
+
+    </style>
+  </head>
+  <body>
+    <!-- navbar 설정 -->
+    <header>
+        <!-- navbar 코드가 여기에 들어갑니다 -->
+        <nav class="navbar bg-body-tertiary fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="">Offcanvas navbar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Offcanvas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Dropdown
+                    </a>
+                    <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </li>
+                </ul>
+                <form class="d-flex mt-3" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+            </div>
+        </div>
+        </nav>
+    </header>
+    <div class="image-container" id="imageSection">
+        <div class="gradient-overlay"></div>
+        <img src="berelin.jpg" alt="Background Image" />
+      </div>
+      
+    <!-- scroll magic -->
+    <div id="titlechart2">
+      <div class="scrollContent">
+          <h1>ScrollMagic Animations</h1>
+          <h2>Scroll to reveal animations as you pass through different sections!</h2>
+          <p>
+            This demo uses
+            <strong>ScrollMagic</strong>
+            to reveal and animate elements as they enter and leave the viewport.
+          </p>
+
+        <!-- First Reveal Section -->
+          <div id="trigger1" class="spacer"></div>
+          <div id="reveal1" class="box2 blue">
+            <p>I will be revealed when scrolled into view and hidden when scrolled past.</p>
+          </div>
+
+        <!-- Second Reveal Section -->
+          <div id="trigger2" class="spacer"></div>
+          <div id="reveal2" class="box2 green">
+            <p>I will stay visible once revealed.</p>
+          </div>
+      </div>
+    </div>
+    <!-- Scripts - Updated order and versions -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- GSAP must be loaded before ScrollMagic -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.7/ScrollMagic.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.7/plugins/animation.gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.7/plugins/debug.addIndicators.min.js"></script>
+
+    <script>
+      // Initialize ScrollMagic Controller
+      var controller = new ScrollMagic.Controller();
+
+      // First animation: Reveal on Scroll
+      var scene1 = new ScrollMagic.Scene({
+        triggerElement: "#trigger1",
+        triggerHook: 0.9,
+        duration: "80%",
+        offset: 50,
+      })
+        .setClassToggle("#reveal1", "visible")
+        .addIndicators()
+        .addTo(controller);
+
+      // Second animation: Reveal once and stay visible
+      var scene2 = new ScrollMagic.Scene({
+        triggerElement: "#trigger2",
+        triggerHook: 0.9,
+        offset: 50,
+        reverse: false,
+      })
+        .setClassToggle("#reveal2", "visible")
+        .addIndicators()
+        .addTo(controller);
+
+      // Multiple elements reveal on scroll
+      var revealElements = document.getElementsByClassName("digit");
+      for (var i = 0; i < revealElements.length; i++) {
+        new ScrollMagic.Scene({
+          triggerElement: revealElements[i],
+          offset: 50,
+          triggerHook: 0.9,
+        })
+          .setClassToggle(revealElements[i], "visible")
+          .addIndicators({ name: "digit " + (i + 1) })
+          .addTo(controller);
+      }
+
+      // GSAP animation
+      gsap.set("#gsap-anim", { opacity: 0 }); // Set initial state
+      var tween = gsap.to("#gsap-anim", {
+        rotationY: 180,
+        scale: 1.5,
+        opacity: 1,
+        duration: 2,
+      });
+
+      var gsapScene = new ScrollMagic.Scene({
+        triggerElement: "#gsap-trigger",
+        triggerHook: "onEnter",
+        duration: "100%",
+        offset: 50,
+      })
+        .setTween(tween)
+        .addIndicators()
+        .addTo(controller);
+
+    // navbar 마우스스크롤 이벤트
+    // 페이지가 로드되면 실행될 코드
+    document.addEventListener('DOMContentLoaded', function () {
+    const navbar = document.querySelector('.navbar');
+    const imageSection = document.querySelector('#imageSection'); // 올바른 선택자 사용
+
+    // 해당 섹션이 존재하는지 확인
+    if (navbar && imageSection) {
+        window.addEventListener('scroll', function () {
+        const imageSectionBottom = imageSection.offsetTop + imageSection.offsetHeight;
+        const scrollPosition = window.scrollY;
+
+        // 스크롤 위치가 이미지 영역의 끝을 넘으면 navbar를 숨김
+        if (scrollPosition > imageSectionBottom) {
+            navbar.classList.add('hidden');
+        } else {
+            navbar.classList.remove('hidden');
+        }
+        });
+    }
+    });
+    // 이미지 그라데이션
+    window.addEventListener("scroll", () => {
+        const scrollPosition = window.scrollY;
+        const windowHeight = window.innerHeight;
+        const overlay = document.querySelector(".gradient-overlay");
+        
+        // 스크롤 비율에 따라 그라데이션 투명도 변경
+        const opacity = Math.min(scrollPosition / windowHeight, 1);
+        overlay.style.opacity = opacity;
+        });
+
+
+    </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

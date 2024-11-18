@@ -23,4 +23,5 @@ urlpatterns = [
     path('exchanges/', include('exchanges.urls')),
     path('accounts/', include('dj_rest_auth.urls')),
     path('accounts/signup/', include('dj_rest_auth.registration.urls')),
+    path('bankmap/', include('bankmap.urls'))
 ]
