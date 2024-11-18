@@ -17,7 +17,7 @@ def save_products(request):
     pageNo = '1' # 조회하고자 하는 페이지 번호 Ex) 1, 2, 3
     financeCd = '' # 금융회사 코드 또는 명 Ex) 0010587, 0010588, 0010722, 국민, 상호, 하나
 
-    deposit_url = f'http://finlife.fss.or.kr/finlifeapi/depositProductsSearch.json?auth={api_key}&topFinGrpNo=020000&pageNo=2'
+    deposit_url = f'http://finlife.fss.or.kr/finlifeapi/depositProductsSearch.json?auth={api_key}&topFinGrpNo=020000&pageNo=1'
     saving_url = f'http://finlife.fss.or.kr/finlifeapi/savingProductsSearch.json?auth={api_key}&topFinGrpNo=020000&pageNo=1'
     deposit_response = requests.get(deposit_url).json()
     saving_response = requests.get(saving_url).json()
