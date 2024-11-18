@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Kakao 지도 주변 은행 찾기</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+      input, select, button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+      }
+      button {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      #map {
+        width: 100%;
+        height: 400px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>내 주변 은행 찾기</h1>
+      <div class="form-group">
+        <label for="location">위치:</label>
+        <input type="text" id="location" placeholder="예: 서울특별시 강남구" />
+      </div>
+      <div class="form-group">
+        <label for="bank">은행:</label>
+        <select id="bank">
+          <option value="은행">모든 은행</option>
+          <option value="국민은행">국민은행</option>
+          <option value="신한은행">신한은행</option>
+          <option value="우리은행">우리은행</option>
+          <option value="하나은행">하나은행</option>
+        </select>
+      </div>
+      <button onclick="searchLocation()">검색</button>
+      <div id="map"></div>
+    </div>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6a0a0d298f27f9b20a51c3d49812db15&libraries=services"></script>
+    <script>
+      const mapContainer = document.getElementById('map')
+      const mapOptions = {
+        center: new kakao.maps.LatLng(33.450701, 126.570667), // 기본 위치 설정
+        level: 3
+      }
+      const map = new kakao.maps.Map(mapContainer, mapOptions)
+      const geocoder = new kakao.maps.services.Geocoder()
+      
+      function searchLocation() {
+        const location = document.getElementById('location').value
+        const bank = document.getElementById('bank').value
+
+        geocoder.addressSearch(location, (result, status) => {
+          if (status === kakao.maps.services.Status.OK) {
+            const latLng = new kakao.maps.LatLng(result[0].y, result[0].x)
+            map.setCenter(latLng)
+            searchNearbyBanks(latLng, bank)
+          } else {
+            alert('위치를 찾을 수 없습니다.')
+          }
+        })
+      }
+
+      function searchNearbyBanks(latLng, bank) {
+        const ps = new kakao.maps.services.Places()
+        const keyword = bank
+
+        ps.keywordSearch(keyword, (data, status) => {
+          if (status === kakao.maps.services.Status.OK) {
+            data.forEach((place) => {
+              const marker = new kakao.maps.Marker({
+                map: map,
+                position: new kakao.maps.LatLng(place.y, place.x),
+                title: place.place_name
+              })
+            })
+          } else {
+            alert('주변에 해당 은행이 없습니다.')
+          }
+        }, {
+          location: latLng,
+          radius: 500 // 검색 반경 설정 (단위: 미터)
+        })
+      }
+    </script>
+  </body>
+</html>
