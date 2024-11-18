@@ -3,7 +3,7 @@
 SSAFY Penetrating Project
 
 ## 팀원 정보 및 업무 분담 내역
----
+
 
 ### 정민규
 
