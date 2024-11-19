@@ -1,50 +1,24 @@
 <template>
   <div>
     <header>
-      <nav class="navbar bg-body-tertiary fixed-top" style="padding:0;" :class="{ hidden: isNavbarHidden }">
-        <div class="container-fluid" style="padding:0;">
-          <a class="navbar-brand" style="padding:0;"><img src="@/assets/Logo.jpg" style="padding:0; height: 100px;"></a>
-          <div style="display: flex; width: 600px; justify-content: space-between;">
-            <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({name: 'ChartView'})">
-              차트
-            </button>
-            <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({name: 'CurrencyCalculatorView'})">
-              환율 계산기
-            </button>
-            <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({name: 'ComparisonView'})">
-              금리 비교
-            </button>
-            <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({name: 'BankView'})">
-              근처 은행
-            </button>
-            <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({name: 'ProductSuggestionView'})">
-              상품 추천
-            </button>
-        </div>
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasNavbar"
-            aria-controls="offcanvasNavbar"
-            aria-label="Toggle navigation"
-          >
+      <nav class="navbar bg-body-tertiary fixed-top" style="padding: 0" :class="{ hidden: isNavbarHidden }">
+        <div class="container-fluid" style="padding: 0">
+          <a class="navbar-brand" style="padding: 0"><img src="@/assets/Logo.jpg" style="padding: 0; height: 100px" /></a>
+          <div style="display: flex; width: 600px; justify-content: space-between">
+            <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({ name: 'ChartView' })">차트</button>
+            <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({ name: 'CurrencyCalculatorView' })">환율 계산기</button>
+            <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({ name: 'ComparisonView' })">금리 비교</button>
+            <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({ name: 'BankView' })">근처 은행</button>
+            <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({ name: 'ProductSuggestionView' })">상품 추천</button>
+            <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({ name: 'BankMapView' })">지도</button>
+          </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
-          <div
-            class="offcanvas offcanvas-end"
-            tabindex="-1"
-            id="offcanvasNavbar"
-            aria-labelledby="offcanvasNavbarLabel"
-          >
+          <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
             <div class="offcanvas-header">
               <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Offcanvas</h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="offcanvas"
-                aria-label="Close"
-              ></button>
+              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
               <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
@@ -55,15 +29,7 @@
                   <a class="nav-link" href="#"></a>
                 </li>
                 <li class="nav-item dropdown">
-                  <a
-                    class="nav-link dropdown-toggle"
-                    href="#"
-                    role="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    Dropdown
-                  </a>
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
                   <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="#">Action</a></li>
                     <li><a class="dropdown-item" href="#">Another action</a></li>
@@ -73,12 +39,7 @@
                 </li>
               </ul>
               <form class="d-flex mt-3" role="search">
-                <input
-                  class="form-control me-2"
-                  type="search"
-                  placeholder="Search"
-                  aria-label="Search"
-                />
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
                 <button class="btn btn-outline-success" type="submit">Search</button>
               </form>
             </div>
@@ -87,15 +48,14 @@
       </nav>
     </header>
     <!-- 제이쿼리 -->
- <!-- 배경 이미지와 그라디언트 오버레이 포함 -->
- <div class="image-container" id="imageSection" ref="imageSection">
+    <!-- 배경 이미지와 그라디언트 오버레이 포함 -->
+    <div class="image-container" id="imageSection" ref="imageSection">
       <div class="gradient-overlay" :style="{ opacity: gradientOpacity }"></div>
       <img src="@/assets/berelin.jpg" alt="Background Image" />
       <p class="texts">
         <span>MONEY</span>
         <span>INDUSTRY</span>
-    </p>
-
+      </p>
     </div>
 
     <!-- 타이틀과 애니메이션 적용 -->
@@ -124,86 +84,92 @@
 </template>
 
 <script>
-import { ref, onMounted, onUnmounted } from 'vue'
-import ScrollMagic from 'scrollmagic'
-import { gsap } from 'gsap'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap'
+import { ref, onMounted, onUnmounted } from "vue";
+import ScrollMagic from "scrollmagic";
+import { gsap } from "gsap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap";
 
 export default {
-  name: 'App',
+  name: "App",
   setup() {
-    const isNavbarHidden = ref(false)
-    const gradientOpacity = ref(0)
-    const isReveal1Visible = ref(false)
-    const isReveal2Visible = ref(false)
-    
+    const isNavbarHidden = ref(false);
+    const gradientOpacity = ref(0);
+    const isReveal1Visible = ref(false);
+    const isReveal2Visible = ref(false);
+
     // ScrollMagic 설정
     const initScrollMagic = () => {
-      const controller = new ScrollMagic.Controller()
+      const controller = new ScrollMagic.Controller();
 
       // Scene 1: #trigger1을 트리거로 설정하여 스크롤 시 첫 번째 요소 보이게
       new ScrollMagic.Scene({
         triggerElement: "#trigger1",
         triggerHook: 0.9,
         duration: "80%",
-        offset: 50
+        offset: 50,
       })
-        .on('enter', () => { isReveal1Visible.value = true })
-        .on('leave', () => { isReveal1Visible.value = false })
-        .addTo(controller)
+        .on("enter", () => {
+          isReveal1Visible.value = true;
+        })
+        .on("leave", () => {
+          isReveal1Visible.value = false;
+        })
+        .addTo(controller);
 
       // Scene 2: #trigger2를 트리거로 설정하여 두 번째 요소 보이게
       new ScrollMagic.Scene({
         triggerElement: "#trigger2",
         triggerHook: 0.9,
         offset: 50,
-        reverse: false
+        reverse: false,
       })
-        .on('enter', () => { isReveal2Visible.value = true })
-        .addTo(controller)
-    }
+        .on("enter", () => {
+          isReveal2Visible.value = true;
+        })
+        .addTo(controller);
+    };
 
     // 스크롤 이벤트 핸들러
     const handleScroll = () => {
-      const imageSection = document.querySelector('.image-container')
-      if (!imageSection) return
+      const imageSection = document.querySelector(".image-container");
+      if (!imageSection) return;
 
-      const imageSectionBottom = imageSection.offsetTop + imageSection.offsetHeight
-      const scrollPosition = window.scrollY
-      const windowHeight = window.innerHeight
+      const imageSectionBottom = imageSection.offsetTop + imageSection.offsetHeight;
+      const scrollPosition = window.scrollY;
+      const windowHeight = window.innerHeight;
 
       // Navbar 숨김/표시 처리
-      isNavbarHidden.value = scrollPosition > imageSectionBottom
+      isNavbarHidden.value = scrollPosition > imageSectionBottom;
 
       // 그라데이션 opacity 계산
-      gradientOpacity.value = Math.min(scrollPosition / windowHeight, 1)
-    }
+      gradientOpacity.value = Math.min(scrollPosition / windowHeight, 1);
+    };
 
     onMounted(() => {
-      initScrollMagic()
-      window.addEventListener('scroll', handleScroll)
-    })
+      initScrollMagic();
+      window.addEventListener("scroll", handleScroll);
+    });
 
     onUnmounted(() => {
-      window.removeEventListener('scroll', handleScroll)
-    })
+      window.removeEventListener("scroll", handleScroll);
+    });
 
     // text효과
     onMounted(() => {
-  // 페이지가 로드되면 active 클래스 추가
-    document.querySelectorAll('.texts').forEach((item) => {
-      item.classList.add('active');
+      // 페이지가 로드되면 active 클래스 추가
+      document.querySelectorAll(".texts").forEach((item) => {
+        item.classList.add("active");
+      });
     });
-  });
     return {
       isNavbarHidden,
       gradientOpacity,
       isReveal1Visible,
       isReveal2Visible,
-    }
-  }
-}
+    };
+  },
+};
 </script>
 
 <style>
@@ -355,5 +321,4 @@ body {
   font-weight: 1000;
   font-style: normal;
 }
-
 </style>

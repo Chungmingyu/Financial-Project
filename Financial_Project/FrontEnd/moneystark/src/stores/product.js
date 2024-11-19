@@ -13,9 +13,7 @@ export const useProductStore = defineStore(
         url: `${BASE_URL}/save-products/`,
         method: "GET",
       })
-        .then((response) => {
-          console.log(response);
-        })
+        .then((response) => {})
         .catch((error) => {
           console.log(error);
         });
@@ -27,7 +25,6 @@ export const useProductStore = defineStore(
         method: "GET",
       })
         .then((response) => {
-          console.log(response.data);
           depositProduct.value = response.data;
         })
         .catch((error) => {
@@ -41,7 +38,6 @@ export const useProductStore = defineStore(
         method: "GET",
       })
         .then((response) => {
-          console.log(response);
           savingProduct.value = response.data;
         })
         .catch((error) => {

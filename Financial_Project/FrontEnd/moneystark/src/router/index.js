@@ -7,7 +7,8 @@ import ComparisonView from "@/components/ComparisonView.vue";
 import ProductSuggestionView from "@/components/ProductSuggestionView.vue";
 import CurrencyCalculatorView from "@/components/CurrencyCalculatorView.vue";
 import BankView from "@/components/BankView.vue";
-
+import BankMapView from "@/views/BankMapView.vue";
+import NavbarView from "@/views/NavbarView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,23 +36,33 @@ const router = createRouter({
     {
       path: "/comparison",
       name: "ComparisonView",
-      component:ComparisonView
+      component: ComparisonView,
     },
     {
       path: "/suggestion",
       name: "ProductSuggestionView",
-      component: ProductSuggestionView
+      component: ProductSuggestionView,
     },
     {
       path: "/currency",
       name: "CurrencyCalculatorView",
-      component:CurrencyCalculatorView
+      component: CurrencyCalculatorView,
     },
     {
       path: "/bank",
       name: "BankView",
-      component: BankView
-    }
+      component: BankView,
+    },
+    {
+      path: "/bankmap",
+      name: "BankMapView",
+      component: BankMapView,
+    },
+    {
+      path: "/navbar",
+      name: "NavbarView",
+      component: NavbarView,
+    },
   ],
 });
 

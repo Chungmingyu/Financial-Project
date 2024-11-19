@@ -74,7 +74,7 @@
         function convertToForeign() {
             const krwAmount = document.getElementById('krw-amount').value;
             const currency = document.getElementById('currency').value;
-            const rates = {{ rates|safe }};
+            const rates = JSON.parse('{{ rates|safe|escapejs }}');
             const rate = rates.find(rate => rate.cur_unit === currency).deal_bas_r;
             const foreignAmount = krwAmount / parseFloat(rate.replace(',', ''));
             document.getElementById('foreign-amount').value = foreignAmount.toFixed(2);
