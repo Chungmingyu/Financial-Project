@@ -1,9 +1,16 @@
 <template>
   <div>
     <div v-if="showLoader" class="loading-container">
-      <div class="spinner"></div>
+      <div class="loading-content">
+        <div class="logo-container">
+          <img src="@/assets/logo_black.png" alt="Logo" class="logo" />
+        </div>
+        <div class="loading-bar-container">
+          <div class="loading-bar"></div>
+        </div>
+        <div class="loading-text geist-mono">Loading...</div>
+      </div>
     </div>
-    <video v-else class="video-container" src="@/assets/나의 비디오-2.mp4" autoplay muted controls></video>
   </div>
 </template>
 
@@ -15,43 +22,89 @@ const showLoader = ref(true);
 onMounted(() => {
   setTimeout(() => {
     showLoader.value = false;
-  }, 3000); // 3초 후 로더 숨기기
+  }, 3000);
 });
 </script>
 
 <style scoped>
-/* 로더 스타일 */
 .loading-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: white;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background-color: #000;
+  z-index: 9999;
 }
 
-.spinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid rgba(255, 255, 255, 0.3);
-  border-top: 5px solid #fff;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
 }
 
-/* 비디오 스타일 */
-.video-container {
-  width: 100%;
+.logo-container {
+  animation: pulse 2s infinite;
+}
+
+.logo {
+  width: 200px;
   height: auto;
-  background-color: #000;
 }
 
-/* 애니메이션 */
-@keyframes spin {
+.loading-bar-container {
+  width: 200px;
+  height: 3px;
+  background: #f0f0f0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.loading-bar {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #7700ff, #4e90ff);
+  animation: loading 2s infinite;
+}
+
+.loading-text {
+  font-size: 1.2rem;
+  color: #333;
+  letter-spacing: 3px;
+  animation: fadeInOut 2s infinite;
+}
+
+@keyframes loading {
   0% {
-    transform: rotate(0deg);
+    transform: translateX(-100%);
   }
   100% {
-    transform: rotate(360deg);
+    transform: translateX(100%);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
   }
 }
 </style>

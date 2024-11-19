@@ -8,7 +8,6 @@ import ProductSuggestionView from "@/views/ProductSuggestionView.vue";
 import CurrencyCalculatorView from "@/views/CurrencyCalculatorView.vue";
 import BankView from "@/views/BankView.vue";
 import BankMapView from "@/views/BankMapView.vue";
-import NavbarView from "@/views/NavbarView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,11 +56,6 @@ const router = createRouter({
       path: "/bankmap",
       name: "BankMapView",
       component: BankMapView,
-    },
-    {
-      path: "/navbar",
-      name: "NavbarView",
-      component: NavbarView,
     },
   ],
 });

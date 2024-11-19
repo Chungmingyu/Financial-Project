@@ -2,14 +2,14 @@
   <header>
     <nav class="navbar bg-body-tertiary fixed-top" style="padding: 0" :class="{ hidden: isNavbarHidden }">
       <div class="container-fluid" style="padding: 0">
-        <a class="navbar-brand" style="padding: 0" @click.prevent="$router.push({ name: 'home' })"><img src="@/assets/Logo.jpg" style="padding: 0; height: 100px" /></a>
+        <a class="navbar-brand" style="padding: 0" @click.prevent="$router.push({ name: 'home' })"><img src="@/assets/logo_black.png" style="padding: 0; height: 100px" /></a>
         <div style="display: flex; width: 600px; justify-content: space-between">
-          <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({ name: 'ChartView' })">차트</button>
-          <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({ name: 'CurrencyCalculatorView' })">환율 계산기</button>
-          <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({ name: 'ComparisonView' })">금리 비교</button>
-          <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({ name: 'BankView' })">근처 은행</button>
-          <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({ name: 'ProductSuggestionView' })">상품 추천</button>
-          <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({ name: 'BankMapView' })">지도</button>
+          <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'ChartView' }" @click.prevent="$router.push({ name: 'ChartView' })">차트</button>
+          <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'CurrencyCalculatorView' }" @click.prevent="$router.push({ name: 'CurrencyCalculatorView' })">환율 계산기</button>
+          <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'ComparisonView' }" @click.prevent="$router.push({ name: 'ComparisonView' })">금리 비교</button>
+          <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'BankView' }" @click.prevent="$router.push({ name: 'BankView' })">근처 은행</button>
+          <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'ProductSuggestionView' }" @click.prevent="$router.push({ name: 'ProductSuggestionView' })">상품 추천</button>
+          <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'BankMapView' }" @click.prevent="$router.push({ name: 'BankMapView' })">지도</button>
         </div>
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -56,7 +56,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
 
 export default {
-  name: "App",
+  name: "NavVarComponent",
+  props: {
+    isNavbarHidden: {
+      type: Boolean,
+      required: true,
+    },
+  },
   setup() {
     const isNavbarHidden = ref(false);
     const gradientOpacity = ref(0);
@@ -285,5 +291,151 @@ body {
   font-optical-sizing: auto;
   font-weight: 1000;
   font-style: normal;
+}
+.btn {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.btn:focus {
+  box-shadow: none !important;
+}
+
+.active-menu {
+  color: #7700ff; /* 선택된 메뉴 색상 */
+  font-weight: bold;
+}
+
+/* bootstrap의 기본 버튼 스타일 override */
+.btn:active,
+.btn:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+/*------------------------------------------------------------- */
+.navbar {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out, background-color 0.3s ease;
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+/* 네비게이션 버튼 스타일 */
+.geist-mono {
+  font-family: "Oswald", sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 8px 16px;
+  transition: all 0.3s ease;
+  position: relative;
+  color: #333;
+}
+
+.geist-mono::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background-color: #7700ff;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.geist-mono:hover {
+  color: #7700ff;
+}
+
+.geist-mono:hover::after {
+  width: 80%;
+}
+
+.active-menu {
+  color: #7700ff;
+}
+
+.active-menu::after {
+  width: 80%;
+}
+
+/* 로고 컨테이너 */
+.navbar-brand {
+  transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover {
+  transform: scale(1.02);
+}
+
+/* 햄버거 메뉴 스타일링 */
+.navbar-toggler {
+  border: none;
+  padding: 0.5rem;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+/* 
+오프캔버스 스타일링 */
+.offcanvas {
+  width: 300px !important; /* 너비 고정 */
+  height: 100vh !important; /* 높이 고정 */
+  z-index: 1045 !important; /* 최상위로 보이도록 */
+  position: fixed !important;
+  visibility: visible;
+  background-color: rgba(255, 255, 255, 0.98);
+  transform: none;
+}
+
+.offcanvas.offcanvas-end {
+  top: 0;
+  right: 0;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.offcanvas.show {
+  transform: translateX(0) !important;
+}
+
+.offcanvas-header {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.offcanvas-body {
+  padding: 1rem;
+  overflow-y: auto;
+}
+.navbar-brand {
+  width: 160px; /* 로고의 고정 너비 */
+  display: flex;
+  justify-content: flex-start;
+  transition: transform 0.3s ease;
+}
+
+/* 햄버거 버튼 컨테이너 스타일 추가 */
+.navbar-toggler {
+  width: 160px; /* 로고와 동일한 너비 */
+  display: flex;
+  justify-content: center;
+  border: none;
+  padding: 0.5rem;
+}
+
+/* 기존 스타일 유지 */
+.navbar-toggler:focus {
+  box-shadow: none;
 }
 </style>

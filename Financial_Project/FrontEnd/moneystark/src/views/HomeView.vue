@@ -1,5 +1,45 @@
 <template>
   <div>
+    <div class="home-container">
+      <!-- 히어로 섹션 -->
+      <section class="hero-section">
+        <div class="image-container" id="imageSection" ref="imageSection">
+          <div class="gradient-overlay" :style="{ opacity: gradientOpacity }"></div>
+          <img src="@/assets/berelin.jpg" alt="Background Image" />
+          <div class="hero-content">
+            <p class="texts animate__animated animate__fadeIn">
+              <span class="main-title">MONEY INDUSTRY</span>
+              <span class="sub-title">Your Financial Future Starts Here</span>
+            </p>
+            <div class="cta-buttons">
+              <button class="primary-btn">시작하기</button>
+              <button class="secondary-btn">더 알아보기</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 특징 섹션 -->
+      <section class="features-section">
+        <div class="feature-grid">
+          <div class="feature-card" v-for="(feature, index) in features" :key="index" :class="{ visible: isReveal1Visible }">
+            <i :class="feature.icon"></i>
+            <h3>{{ feature.title }}</h3>
+            <p>{{ feature.description }}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 통계 섹션 -->
+      <section class="stats-section">
+        <div class="stats-container">
+          <div class="stat-item" v-for="(stat, index) in stats" :key="index">
+            <h2>{{ stat.value }}</h2>
+            <p>{{ stat.label }}</p>
+          </div>
+        </div>
+      </section>
+    </div>
     <!-- 제이쿼리 -->
     <!-- 배경 이미지와 그라디언트 오버레이 포함 -->
     <div class="image-container" id="imageSection" ref="imageSection">
@@ -42,9 +82,13 @@ import ScrollMagic from "scrollmagic";
 import { gsap } from "gsap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
+import NavVarComponent from "@/components/NavVar/NavVarComponent.vue";
 
 export default {
   name: "App",
+  components: {
+    NavVarComponent,
+  },
   setup() {
     const isNavbarHidden = ref(false);
     const gradientOpacity = ref(0);
@@ -115,7 +159,32 @@ export default {
         item.classList.add("active");
       });
     });
+    const features = [
+      {
+        icon: "fas fa-chart-line",
+        title: "실시간 차트",
+        description: "최신 금융 데이터를 실시간으로 분석하세요",
+      },
+      {
+        icon: "fas fa-exchange-alt",
+        title: "환율 계산",
+        description: "정확한 환율 정보와 계산 도구를 제공합니다",
+      },
+      {
+        icon: "fas fa-percentage",
+        title: "금리 비교",
+        description: "다양한 금융 상품의 금리를 한눈에 비교해보세요",
+      },
+    ];
+
+    const stats = [
+      { value: "100K+", label: "사용자" },
+      { value: "50+", label: "은행 제휴" },
+      { value: "24/7", label: "고객 지원" },
+    ];
     return {
+      features,
+      stats,
       isNavbarHidden,
       gradientOpacity,
       isReveal1Visible,
@@ -124,154 +193,117 @@ export default {
   },
 };
 </script>
-
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: Arial, sans-serif;
-}
-
-.scrollContent {
-  margin: 0 auto;
+<style scoped>
+.home-container {
   width: 100%;
+  overflow-x: hidden;
 }
 
-#titlechart2 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100vw;
-  min-height: 100vh; /* 화면 크기만큼 영역을 채우도록 설정 */
-  background: linear-gradient(black, rgb(0, 0, 49));
-}
-
-.image-container {
+.hero-section {
+  height: 100vh;
   position: relative;
-  width: 100%;
-  height: 100vh; /* 배경 이미지 영역을 화면 전체 크기만큼 설정 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
   color: white;
 }
 
-.image-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
+.main-title {
+  font-size: 4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.gradient-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%);
-  pointer-events: none;
-  z-index: 2;
-  transition: opacity 0.8s ease-in-out;
+.sub-title {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-.box2 {
-  width: 100%;
-  height: 200px;
-  margin: 20px auto;
-  background-color: #ccc;
-  text-align: center;
-  line-height: 200px;
-  font-size: 24px;
-  opacity: 0;
-  transition: all 1s ease-in-out;
-}
-
-.box2.visible {
-  opacity: 1;
-}
-
-.blue {
-  background-color: #4e90ff;
-}
-
-.green {
-  background-color: #00d084;
-}
-
-.spacer {
-  height: 150px;
-}
-
-.navbar {
-  position: fixed;
-  width: 100%;
-  top: 0;
-  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
-}
-
-.navbar.hidden {
-  transform: translateY(-100%);
-  opacity: 0;
-}
-
-/* text 효과 */
-.texts {
+.cta-buttons {
   display: flex;
+  gap: 1rem;
   justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  color: black;
-  font-size: 50px;
+  margin-top: 2rem;
 }
 
-.texts span {
-  opacity: 0;
-  transform: translateY(20px); /* 화면 아래에서 시작 */
-  animation: fadeUp 3s forwards;
-  animation-delay: 0s; /* 처음부터 시작 */
+.primary-btn,
+.secondary-btn {
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
 
-.texts.active span {
-  animation-play-state: running;
+.primary-btn {
+  background: #2c3e50;
+  color: white;
+  border: none;
 }
 
-@keyframes fadeUp {
-  0% {
-    opacity: 0;
-    transform: translateY(20px); /* 처음에 아래에 위치 */
+.secondary-btn {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.features-section {
+  padding: 5rem 0;
+  background: #f8f9fa;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 0 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.feature-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+}
+
+.stats-section {
+  background: #2c3e50;
+  color: white;
+  padding: 4rem 0;
+}
+
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  text-align: center;
+}
+
+.stat-item h2 {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .main-title {
+    font-size: 2.5rem;
   }
-  100% {
-    opacity: 1;
-    transform: translateY(0); /* 끝날 때는 원래 위치로 */
+
+  .sub-title {
+    font-size: 1.2rem;
   }
-}
-
-.texts:nth-child(1) span {
-  animation-delay: 0s;
-}
-
-.texts:nth-child(2) span {
-  animation-delay: 0s;
-}
-
-.texts:nth-child(3) span {
-  animation-delay: 0s;
-}
-
-.geist-mono {
-  font-family: "Oswald", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 1000;
-  font-style: normal;
 }
 </style>
