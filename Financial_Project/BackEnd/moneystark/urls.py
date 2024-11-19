@@ -22,6 +22,9 @@ urlpatterns = [
     path('moneys/', include('moneys.urls')),
     path('exchanges/', include('exchanges.urls')),
     path('accounts/', include('dj_rest_auth.urls')),
-    path('accounts/signup/', include('dj_rest_auth.registration.urls')),
-    path('bankmap/', include('bankmap.urls'))
+    path('accounts/signup/', include('dj_rest_auth.registration.urls')),  # 회원가입 관련 URL
+    path('accounts/logout/', include('dj_rest_auth.urls')),  # 로그아웃 및 기본 인증 URL
+    # 사용자 정보 조회 및 업데이트 (프로필 등)
+    path('accounts/user/', include('dj_rest_auth.urls')),
+    path('bankmap/', include('bankmap.urls')),
 ]
