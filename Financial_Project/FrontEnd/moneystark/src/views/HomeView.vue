@@ -20,6 +20,9 @@
             <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({name: 'ProductSuggestionView'})">
               상품 추천
             </button>
+            <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({name: 'BankMapView'})">
+              지도
+            </button>
         </div>
           <button
             class="navbar-toggler"

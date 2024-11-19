@@ -7,6 +7,8 @@ import ComparisonView from "@/components/ComparisonView.vue";
 import ProductSuggestionView from "@/components/ProductSuggestionView.vue";
 import CurrencyCalculatorView from "@/components/CurrencyCalculatorView.vue";
 import BankView from "@/components/BankView.vue";
+import BankMapView from "@/views/BankMapView.vue";
+import NavbarView from "@/views/NavbarView.vue";
 
 
 const router = createRouter({
@@ -51,6 +53,16 @@ const router = createRouter({
       path: "/bank",
       name: "BankView",
       component: BankView
+    },
+    {
+      path: "/bankmap",
+      name: "BankMapView",
+      component:BankMapView
+    },
+    {
+      path: "/navbar",
+      name: "NavbarView",
+      component:NavbarView
     }
   ],
 });
