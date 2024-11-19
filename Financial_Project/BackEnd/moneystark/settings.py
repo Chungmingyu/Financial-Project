@@ -42,6 +42,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'boards',
     'bankmap',
     'accounts',
     'exchanges',
@@ -188,6 +189,7 @@ REST_AUTH = {
 
 
 # 집가서 추가로 넣은 코드
+# 이메일은 비어도 된다고 넣어놨음 일단은
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_EMAIL_REQUIRED = False
 

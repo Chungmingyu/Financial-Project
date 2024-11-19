@@ -17,7 +17,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-# moneystark/urls.py에서 중복된 회원가입 경로를 정리:
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('moneys/', include('moneys.urls')),
@@ -27,4 +26,6 @@ urlpatterns = [
     path('accounts/logout/', include('dj_rest_auth.urls')),  # 로그아웃 관련 URL
     path('accounts/user/', include('dj_rest_auth.urls')),  # 사용자 정보 조회 및 업데이트
     path('bankmap/', include('bankmap.urls')),
+    path('surveys/', include('surveys.urls')),  # 설문지 관련 URL
+    path('boards/', include('boards.urls')),  # boards 앱 연결
 ]
