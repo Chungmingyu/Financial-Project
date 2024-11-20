@@ -136,7 +136,7 @@ label {
 
 .currency-select:focus,
 .amount-input:focus {
-  border-color: #7700ff;
+  border-color: #FFBF00;
   outline: none;
   box-shadow: 0 0 0 3px rgba(119, 0, 255, 0.1);
 }
@@ -144,7 +144,7 @@ label {
 .currency-symbol {
   position: absolute;
   right: 12px;
-  color: #7700ff;
+  color: #FFBF00;
   font-weight: 600;
 }
 
@@ -178,7 +178,7 @@ label {
 /* 호버 효과 */
 .currency-select:hover,
 .amount-input:hover {
-  border-color: #7700ff;
+  border-color: #FFBF00;
 }
 
 /* 애니메이션 */
