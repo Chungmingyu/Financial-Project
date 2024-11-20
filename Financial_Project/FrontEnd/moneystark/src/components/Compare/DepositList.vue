@@ -369,3 +369,225 @@ h2 {
   border-radius: 12px;
 }
 </style>
+<!-- 
+<style scoped>
+/* 메인 컨테이너 스타일링 */
+.container {
+  display: flex;
+  min-height: 100vh;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  gap: 2rem;
+}
+
+/* 헤더 스타일링 */
+h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  text-align: center;
+  margin: 2rem 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* 검색 섹션 스타일링 */
+.search-container {
+  flex: 0.7;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.search-container h3 {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #7700ff;
+  padding-bottom: 0.5rem;
+}
+
+/* 검색 옵션 스타일링 */
+.search-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.search-options label {
+  color: #34495e;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}
+
+.search-options select {
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.search-options select:focus {
+  border-color: #7700ff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(119, 0, 255, 0.1);
+}
+
+.search-options button {
+  margin-top: 1rem;
+  padding: 12px;
+  background: #7700ff;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.search-options button:hover {
+  background: #6600cc;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(119, 0, 255, 0.2);
+}
+
+/* 테이블 스타일링 */
+.table {
+  width: 100%;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+  border: none;
+}
+
+.table th {
+  background: #7700ff;
+  color: white;
+  padding: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+
+.table td {
+  padding: 1rem;
+  color: #2c3e50;
+  font-size: 0.9rem;
+  border: 1px solid #f0f0f0;
+}
+
+.table tbody tr {
+  transition: all 0.3s ease;
+}
+
+.table tbody tr:hover {
+  background: rgba(119, 0, 255, 0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* 정렬 화살표 스타일링 */
+.sort-arrows {
+  margin-left: 0.5rem;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sort-arrows span {
+  font-size: 0.8rem;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.sort-arrows span.active {
+  color: white;
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* 페이지네이션 스타일링 */
+.pagination {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination button {
+  padding: 0.8rem 1.5rem;
+  background: #7700ff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: #6600cc;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(119, 0, 255, 0.2);
+}
+
+.pagination button:disabled {
+  background: #e0e0e0;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+/* 상세 정보 모달 스타일링 */
+.full-screen {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2rem;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1200px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .search-container {
+    flex: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .table {
+    font-size: 0.8rem;
+  }
+
+  .search-container {
+    padding: 1rem;
+  }
+}
+</style> -->

@@ -1,40 +1,39 @@
 <template>
-  <div class="container mt-5">
-    <h1 class="text-center mb-4">환율 계산기</h1>
-    <form id="exchange-form">
-      <div class="form-group row mb-3 align-items-center">
-        <label for="currency" class="col-sm-2 col-form-label">통화:</label>
-        <div class="col-sm-3">
-          <select id="currency" v-model="selectedCurrency" @change="convertToForeign" class="form-control">
-            <option v-for="rate in rates" :key="rate.cur_unit" :value="rate.cur_unit">
-              {{ rate.cur_nm }}
-            </option>
-          </select>
+  <div class="calculator-container">
+    <div class="glass-card">
+      <h1 class="title">환율 계산기</h1>
+      <form id="exchange-form">
+        <div class="form-group">
+          <label for="currency">통화 선택</label>
+          <div class="input-wrapper">
+            <select id="currency" v-model="selectedCurrency" @change="convertToForeign" class="currency-select">
+              <option v-for="rate in rates" :key="rate.cur_unit" :value="rate.cur_unit">
+                {{ rate.cur_nm }}
+              </option>
+            </select>
+          </div>
         </div>
-        <div class="col-sm-5">
-          <input type="number" id="foreign-amount" v-model="foreignAmount" @input="convertToKrw" class="form-control" />
+
+        <div class="form-group">
+          <label>외화 금액</label>
+          <div class="input-wrapper">
+            <input type="number" v-model="foreignAmount" @input="convertToKrw" class="amount-input" />
+            <span class="currency-symbol">{{ selectedCurrencySymbol }}</span>
+          </div>
         </div>
-        <div class="col-sm-2">
-          <span class="input-group-text">{{ selectedCurrencySymbol }}</span>
+
+        <div class="form-group">
+          <label>원화 금액</label>
+          <div class="input-wrapper">
+            <input type="number" v-model="krwAmount" @input="convertToForeign" class="amount-input" />
+            <span class="currency-symbol">₩</span>
+          </div>
         </div>
-      </div>
-      <div class="form-group row mb-3 align-items-center">
-        <label for="krw-amount" class="col-sm-2 col-form-label">원화 금액:</label>
-        <div class="col-sm-8">
-          <input type="number" id="krw-amount" v-model="krwAmount" @input="convertToForeign" class="form-control" />
-        </div>
-        <div class="col-sm-2">
-          <span class="input-group-text">₩</span>
-        </div>
-      </div>
-      <div class="form-group row">
-        <div class="col-sm-12">
-          <small class="form-text text-muted">* 엔화, 인도네시아 루피아는 100단위, 나머지는 모두 1 단위</small>
-        </div>
-      </div>
-    </form>
-    <p id="result" class="mt-4"></p>
-    <p v-if="error" class="text-danger mt-4">{{ error }}</p>
+
+        <div class="info-text">* 엔화, 인도네시아 루피아는 100단위, 나머지는 모두 1 단위</div>
+      </form>
+      <p v-if="error" class="error-message">{{ error }}</p>
+    </div>
   </div>
 </template>
 
@@ -78,29 +77,123 @@ const selectedCurrencySymbol = computed(() => {
 
 onMounted(fetchRates);
 </script>
-
 <style scoped>
-.container {
-  max-width: 800px;
-  margin: 0 auto;
+.calculator-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   padding: 20px;
-  background-color: #f9f9f9;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  width: 100%;
+  max-width: 500px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.title {
+  color: #2c3e50;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+label {
+  display: block;
+  color: #34495e;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.currency-select,
+.amount-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
 }
 
-h1 {
-  color: #333;
+.currency-select:focus,
+.amount-input:focus {
+  border-color: #7700ff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(119, 0, 255, 0.1);
 }
 
-.input-group-text {
-  background-color: #e9ecef;
-  border: 1px solid #ced4da;
-  border-radius: 0.25rem;
-  padding: 0.375rem 0.75rem;
+.currency-symbol {
+  position: absolute;
+  right: 12px;
+  color: #7700ff;
+  font-weight: 600;
 }
 
-.text-danger {
-  color: red;
+.info-text {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.error-message {
+  color: #e74c3c;
+  text-align: center;
+  margin-top: 1rem;
+  padding: 10px;
+  background: rgba(231, 76, 60, 0.1);
+  border-radius: 8px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 600px) {
+  .glass-card {
+    padding: 20px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+}
+
+/* 호버 효과 */
+.currency-select:hover,
+.amount-input:hover {
+  border-color: #7700ff;
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.glass-card {
+  animation: fadeIn 0.6s ease-out;
 }
 </style>

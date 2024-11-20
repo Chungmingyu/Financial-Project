@@ -2,23 +2,18 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import LogInView from "@/views/LogInView.vue";
 import SignUpView from "@/views/SignUpView.vue";
-import ChartView from "@/components/ChartView.vue";
-import ComparisonView from "@/components/ComparisonView.vue";
-import ProductSuggestionView from "@/components/ProductSuggestionView.vue";
-import CurrencyCalculatorView from "@/components/CurrencyCalculatorView.vue";
-import BankView from "@/components/BankView.vue";
+import ChartView from "@/views/ChartView.vue";
+import ComparisonView from "@/views/ComparisonView.vue";
+import ProductSuggestionView from "@/views/ProductSuggestionView.vue";
+import CurrencyCalculatorView from "@/views/CurrencyCalculatorView.vue";
+import BankView from "@/views/BankView.vue";
 import BankMapView from "@/views/BankMapView.vue";
-import NavbarView from "@/views/NavbarView.vue";
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/Jaeyeol
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: "/",
+      path: "/home",
       name: "home",
       component: HomeView,
     },
@@ -55,31 +50,13 @@ const router = createRouter({
     {
       path: "/bank",
       name: "BankView",
-<<<<<<< HEAD
       component: BankView,
-=======
-      component: BankView
->>>>>>> origin/Jaeyeol
     },
     {
       path: "/bankmap",
       name: "BankMapView",
-<<<<<<< HEAD
       component: BankMapView,
-=======
-      component:BankMapView
->>>>>>> origin/Jaeyeol
     },
-    {
-      path: "/navbar",
-      name: "NavbarView",
-<<<<<<< HEAD
-      component: NavbarView,
-    },
-=======
-      component:NavbarView
-    }
->>>>>>> origin/Jaeyeol
   ],
 });
 
