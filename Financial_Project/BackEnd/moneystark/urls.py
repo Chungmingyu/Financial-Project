@@ -29,4 +29,5 @@ urlpatterns = [
     path('bankmap/', include('bankmap.urls')),
     path('surveys/', include('surveys.urls')),  # 설문지 관련 URL
     path('boards/', include('boards.urls')),  # boards 앱 연결
+    path('recommendations/', include('recommendations.urls')),  # boards 앱 연결
 ]

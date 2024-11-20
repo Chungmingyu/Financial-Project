@@ -14,6 +14,7 @@
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "bootstrap-vue-next": "^0.25.15",
+    "chart.js": "^4.4.6",
     "gsap": "^3.12.5",
     "marked": "^15.0.1",
     "openai": "^4.72.0",

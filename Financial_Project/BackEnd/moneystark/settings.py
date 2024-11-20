@@ -242,6 +242,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = [
+    'recommendations',
     'boards',
     'bankmap',
     'accounts',
