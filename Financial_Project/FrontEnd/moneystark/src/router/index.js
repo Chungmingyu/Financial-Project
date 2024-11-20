@@ -8,8 +8,8 @@ import ProductSuggestionView from "@/views/ProductSuggestionView.vue";
 import CurrencyCalculatorView from "@/views/CurrencyCalculatorView.vue";
 import BankView from "@/views/BankView.vue";
 import BankMapView from "@/views/BankMapView.vue";
-import UserDetailView from "@/views/UserDetailView.vue"
-import UserChangeView from "@/views/UserChangeView.vue"
+import UserDetailView from "@/views/UserDetailView.vue";
+import UserChangeView from "@/views/UserChangeView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -67,8 +67,8 @@ const router = createRouter({
     {
       path: "/userchange",
       name: "UserChangeView",
-      component: UserChangeView
-    }
+      component: UserChangeView,
+    },
   ],
 });
 
