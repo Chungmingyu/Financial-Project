@@ -12,7 +12,7 @@
           <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'BankMapView' }" @click.prevent="$router.push({ name: 'BankMapView' })">지도</button>
         </div>
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
+          <span class="navbar-toggler-icon white"></span>
         </button>
 
 
@@ -191,6 +191,10 @@ export default {
 </script>
 
 <style>
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -350,7 +354,7 @@ body {
 }
 
 .active-menu {
-  color: #7700ff; /* 선택된 메뉴 색상 */
+  color: #ffbf00; /* 선택된 메뉴 색상 */
   font-weight: bold;
 }
 
@@ -367,7 +371,7 @@ body {
   top: 0;
   transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out, background-color 0.3s ease;
   backdrop-filter: blur(10px);
-  background-color: rgba(255, 255, 255, 0.95) !important;
+  background-color: rgb(0, 0, 0) !important;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -384,7 +388,7 @@ body {
   padding: 8px 16px;
   transition: all 0.3s ease;
   position: relative;
-  color: #333;
+  color: #ffffff;
 }
 
 .geist-mono::after {
@@ -394,13 +398,13 @@ body {
   height: 2px;
   bottom: 0;
   left: 50%;
-  background-color: #7700ff;
+  background-color: #ffbf00;
   transition: all 0.3s ease;
   transform: translateX(-50%);
 }
 
 .geist-mono:hover {
-  color: #7700ff;
+  color: #ffbf00;
 }
 
 .geist-mono:hover::after {
@@ -408,7 +412,7 @@ body {
 }
 
 .active-menu {
-  color: #7700ff;
+  color: #ffbf00;
 }
 
 .active-menu::after {
@@ -417,17 +421,77 @@ body {
 
 /* 로고 컨테이너 */
 .navbar-brand {
-  transition: transform 0.3s ease;
+  position: relative; /* 필요 시 사용 */
+  display: inline-block;
+  transition: all 0.3s ease; /* 부드러운 애니메이션 효과 */
+  font-weight: bold; /* 글자 두께 추가 */
+  font-size: 1.5em; /* 글자 크기 조정 */
 }
 
 .navbar-brand:hover {
-  transform: scale(1.02);
+  transform: scale(1.05);
+  color: #ffbf00; /* 기존 호버 색상 유지 */
+  text-shadow: 0 0 10px #ffbf00, 0 0 20px #ffbf00, 0 0 30px #ffbf00; /* 글자 빛 효과 */
 }
 
+.navbar-brand:hover::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 191, 0, 0.5), rgba(255, 191, 0, 0));
+  border-radius: 50%;
+  z-index: -1; /* 로고 뒤에 배치 */
+  filter: blur(20px); /* 부드러운 빛 퍼짐 효과 */
+  animation: glow 6s infinite ease-in-out; /* 빛나는 애니메이션 추가 */
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* 스크롤바 스타일 */
+::-webkit-scrollbar {
+  height: 0; /* 아래쪽 스크롤바 숨기기 */
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1f1f1f; /* 검은색 배경 */
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(145deg, #ffbf00, #ffd700); /* 노란색 그라데이션 */
+  border-radius: 6px;
+  border: 3px solid #1f1f1f; /* 검은색 테두리 */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(145deg, #ffd700, #ffbf00); /* 호버 시 색상 반전 */
+}
+
+/* 마우스 커서 스타일 */
+body,
+button,
+input,
+select,
+textarea {
+  cursor: url("https://example.com/custom-cursor.png"), auto; /* 커스텀 커서 이미지 URL */
+}
 /* 햄버거 메뉴 스타일링 */
 .navbar-toggler {
   border: none;
   padding: 0.5rem;
+  color: white;
 }
 
 .navbar-toggler:focus {

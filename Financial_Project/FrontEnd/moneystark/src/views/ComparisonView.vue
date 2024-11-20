@@ -6,13 +6,13 @@
       <span @click="selectItem('saving')" :class="{ active: selectedItem === 'saving' }">정기적금</span>
     </div>
     <div>
-      <component :is="selectedComponent" />
+      <component :is="selectedComponent" v-if="productStore.isComponentVisible" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useProductStore } from "@/stores/product";
 import DepositList from "@/components/Compare/DepositList.vue";
 import SavingList from "@/components/Compare/SavingList.vue";
@@ -33,6 +33,16 @@ const selectedComponent = computed(() => {
 const selectItem = (item) => {
   selectedItem.value = item;
 };
+
+onMounted(() => {
+  if (!productStore.isDataSaved) {
+    setTimeout(() => {
+      productStore.savedata();
+      productStore.isDataSaved = true;
+    }, 5000); // 3초 지연
+    productStore.isComponentVisible = true;
+  }
+});
 </script>
 
 <style scoped>

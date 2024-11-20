@@ -5,6 +5,8 @@ import axios from "axios";
 export const useProductStore = defineStore(
   "product",
   () => {
+    const isComponentVisible = ref(false);
+    const isDataSaved = ref(false);
     const depositProduct = ref([]);
     const savingProduct = ref([]);
     const BASE_URL = "http://127.0.0.1:8000/moneys";
@@ -45,7 +47,7 @@ export const useProductStore = defineStore(
         });
     };
 
-    return { depositProduct, savingProduct, savedata, getDepositProduct, getSavingProduct };
+    return { isComponentVisible, isDataSaved, depositProduct, savingProduct, savedata, getDepositProduct, getSavingProduct };
   },
   { persist: true }
 );
