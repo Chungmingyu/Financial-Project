@@ -1,6 +1,7 @@
 <template>
   <div>
     <header>
+<<<<<<< HEAD
       <nav class="navbar bg-body-tertiary fixed-top" style="padding: 0" :class="{ hidden: isNavbarHidden }">
         <div class="container-fluid" style="padding: 0">
           <a class="navbar-brand" style="padding: 0"><img src="@/assets/Logo.jpg" style="padding: 0; height: 100px" /></a>
@@ -13,6 +14,39 @@
             <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({ name: 'BankMapView' })">지도</button>
           </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+=======
+      <nav class="navbar bg-body-tertiary fixed-top" style="padding:0;" :class="{ hidden: isNavbarHidden }">
+        <div class="container-fluid" style="padding:0;">
+          <a class="navbar-brand" style="padding:0;"><img src="@/assets/Logo.jpg" style="padding:0; height: 100px;"></a>
+          <div style="display: flex; width: 600px; justify-content: space-between;">
+            <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({name: 'ChartView'})">
+              차트
+            </button>
+            <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({name: 'CurrencyCalculatorView'})">
+              환율 계산기
+            </button>
+            <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({name: 'ComparisonView'})">
+              금리 비교
+            </button>
+            <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({name: 'BankView'})">
+              근처 은행
+            </button>
+            <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({name: 'ProductSuggestionView'})">
+              상품 추천
+            </button>
+            <button class="btn geist-mono" role="button" data-bs-toggle="button" @click.prevent="$router.push({name: 'BankMapView'})">
+              지도
+            </button>
+        </div>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasNavbar"
+            aria-controls="offcanvasNavbar"
+            aria-label="Toggle navigation"
+          >
+>>>>>>> origin/Jaeyeol
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">

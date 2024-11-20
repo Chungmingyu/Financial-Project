@@ -9,6 +9,10 @@ import CurrencyCalculatorView from "@/components/CurrencyCalculatorView.vue";
 import BankView from "@/components/BankView.vue";
 import BankMapView from "@/views/BankMapView.vue";
 import NavbarView from "@/views/NavbarView.vue";
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/Jaeyeol
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,18 +55,31 @@ const router = createRouter({
     {
       path: "/bank",
       name: "BankView",
+<<<<<<< HEAD
       component: BankView,
+=======
+      component: BankView
+>>>>>>> origin/Jaeyeol
     },
     {
       path: "/bankmap",
       name: "BankMapView",
+<<<<<<< HEAD
       component: BankMapView,
+=======
+      component:BankMapView
+>>>>>>> origin/Jaeyeol
     },
     {
       path: "/navbar",
       name: "NavbarView",
+<<<<<<< HEAD
       component: NavbarView,
     },
+=======
+      component:NavbarView
+    }
+>>>>>>> origin/Jaeyeol
   ],
 });
 
