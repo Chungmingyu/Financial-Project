@@ -1,41 +1,59 @@
 <template>
   <div>
     <h1>회원가입</h1>
-    <form @submit.prevent="signUp">
-      <div>
-        <label for="username">ID :</label>
-        <input type="text" id="username" v-model.trim="username" />
-      </div>
-      <div>
-        <label for="password1">Password :</label>
-        <input type="password" id="password1" v-model.trim="password1" />
-      </div>
-      <div>
-        <label for="password2">Password Confirm :</label>
-        <input type="password" id="password2" v-model.trim="password2" />
-      </div>
+    <form @submit.prevent="handleRegister">
+      <input v-model="formData.username" placeholder="이름" required />
+      <input v-model="formData.password1" type="password" placeholder="비밀번호" required />
+      <input v-model="formData.password2" type="password" placeholder="비밀번호 확인" required />
+      <input v-model="formData.email" type="email" placeholder="이메일" required />
+      <input v-model="formData.nickname" placeholder="닉네임" required />
+      <select v-model="formData.gender" required>
+        <option value="M">남성</option>
+        <option value="W">여성</option>
+      </select>
+      <input v-model="formData.age" type="number" placeholder="나이" required />
       <button type="submit">회원가입</button>
     </form>
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
-import { useUserStore } from "@/stores/userStore.js";
+<script>
+import { reactive } from 'vue';  // reactive 함수를 가져옵니다.
+import { useUserStore } from '../stores/user';
 
-const username = ref("");
-const password1 = ref("");
-const password2 = ref("");
-const userStore = useUserStore();
+export default {
+  setup() {
+    const userStore = useUserStore();
 
-const signUp = () => {
-  const payload = {
-    username: username.value,
-    password1: password1.value,
-    password2: password2.value,
-  };
-  userStore.signUp(payload);
+    // formData를 reactive로 관리
+    const formData = reactive({
+      username: '',
+      password1: '',
+      password2: '',
+      email: '',
+      nickname: '',
+      gender: '',
+      age: null,
+    });
+
+    // 회원가입 처리 메서드
+    const handleRegister = async () => {
+      try {
+        // formData를 사용해 회원가입 처리
+        console.log(formData)
+        await userStore.registerUser(formData);
+        console.log('회원가입 완료');
+      } catch (error) {
+        console.error('회원가입 중 오류 발생', error);
+      }
+    };
+
+    // return을 통해 formData와 handleRegister 메서드를 반환하여 템플릿에서 사용
+    return {
+      formData,
+      handleRegister,
+      userStore
+    };
+  },
 };
 </script>
-
-<style scoped></style>

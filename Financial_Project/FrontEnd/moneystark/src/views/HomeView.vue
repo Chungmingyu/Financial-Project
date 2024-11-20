@@ -77,14 +77,18 @@
 </template>
 
 <script>
-import { ref, onMounted, onUnmounted } from 'vue'
-import ScrollMagic from 'scrollmagic'
-import { gsap } from 'gsap'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap'
+import { ref, onMounted, onUnmounted } from "vue";
+import ScrollMagic from "scrollmagic";
+import { gsap } from "gsap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap";
+import NavVarComponent from "@/components/NavVar/NavVarComponent.vue";
 
 export default {
-  name: 'App',
+  name: "App",
+  components: {
+    NavVarComponent,
+  },
   setup() {
     const isNavbarHidden = ref(false);
     const gradientOpacity = ref(0);
@@ -150,11 +154,34 @@ export default {
 
     // text효과
     onMounted(() => {
-  // 페이지가 로드되면 active 클래스 추가
-    document.querySelectorAll('.texts').forEach((item) => {
-      item.classList.add('active');
+      // 페이지가 로드되면 active 클래스 추가
+      document.querySelectorAll(".texts").forEach((item) => {
+        item.classList.add("active");
+      });
     });
-  });
+    const features = [
+      {
+        icon: "fas fa-chart-line",
+        title: "실시간 차트",
+        description: "최신 금융 데이터를 실시간으로 분석하세요",
+      },
+      {
+        icon: "fas fa-exchange-alt",
+        title: "환율 계산",
+        description: "정확한 환율 정보와 계산 도구를 제공합니다",
+      },
+      {
+        icon: "fas fa-percentage",
+        title: "금리 비교",
+        description: "다양한 금융 상품의 금리를 한눈에 비교해보세요",
+      },
+    ];
+
+    const stats = [
+      { value: "100K+", label: "사용자" },
+      { value: "50+", label: "은행 제휴" },
+      { value: "24/7", label: "고객 지원" },
+    ];
     return {
       features,
       stats,
@@ -270,15 +297,13 @@ export default {
   margin-bottom: 0.5rem;
 }
 
-.texts:nth-child(3) span {
-  animation-delay: 0s;
-}
+@media (max-width: 768px) {
+  .main-title {
+    font-size: 2.5rem;
+  }
 
-.geist-mono {
-  font-family: "Oswald", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 1000;
-  font-style: normal;
+  .sub-title {
+    font-size: 1.2rem;
+  }
 }
-
 </style>

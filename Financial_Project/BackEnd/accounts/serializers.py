@@ -1,3 +1,4 @@
+from .models import User
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from dj_rest_auth.serializers import UserDetailsSerializer
@@ -73,3 +74,17 @@ class CustomUserDetailsSerializer(UserDetailsSerializer):
         model = UserModel
         fields = ('pk', *extra_fields)
         read_only_fields = ('email',)
+
+
+class CustomUserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['nickname', 'gender', 'age']  # 수정할 필드들만 포함
+
+    def update(self, instance, validated_data):
+        # 인스턴스에서 각 필드를 업데이트합니다.
+        instance.nickname = validated_data.get('nickname', instance.nickname)
+        instance.gender = validated_data.get('gender', instance.gender)
+        instance.age = validated_data.get('age', instance.age)
+        instance.save()
+        return instance
