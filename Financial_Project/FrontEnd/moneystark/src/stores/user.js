@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import axiosInstance from '../api/userStore'; // axiosInstance를 import
+import axiosInstance from './api/userStore'; // axiosInstance를 import
 import { useRouter } from 'vue-router';
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -79,5 +79,29 @@ export const useUserStore = defineStore('user', {
         throw error; // 에러를 다시 던져서 호출하는 컴포넌트에서 처리할 수 있도록 함
       }
     },
+    async containProduct(productData) {
+      try {
+        // 제품 정보 업데이트를 위한 PATCH 요청을 보냅니다.
+        const response = await axiosInstance.patch('accounts/user/update/', {
+          deposit_fin_prdt_cd: productData.deposit_fin_prdt_cd || null,  // DepositProduct ID
+          saving_fin_prdt_cd: productData.saving_fin_prdt_cd || null,    // SavingProduct ID
+        }, {
+          headers: {
+            Authorization: `Bearer ${this.token}`, // 토큰 인증 헤더 추가
+          }
+        });
+    
+        // 서버에서 응답한 데이터로 사용자 정보를 갱신
+        this.user = response.data;
+        console.log('사용자 제품 정보 업데이트 성공:', response.data);
+    
+      } catch (error) {
+        // 오류 처리
+        console.error('제품 정보 추가 실패:', error.response ? error.response.data : error);
+        throw error; // 호출하는 컴포넌트에서 에러를 처리할 수 있도록 에러를 다시 던짐
+      }
+    }
+    
+    
   },
 });

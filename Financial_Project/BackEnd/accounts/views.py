@@ -11,11 +11,13 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import Http404
 from rest_framework.views import APIView
-from yaml import serialize
+# from yaml import serialize
 from .serializers import CustomUserDetailsSerializer
 from .serializers import CustomUserUpdateSerializer
+# from .serializers import CustomUserDetailsSerializer
 from dj_rest_auth.views import LoginView
 from django.contrib.auth import authenticate
+from .models import DepositProduct, SavingProduct
 
 # views.py
 from dj_rest_auth.registration.views import RegisterView
@@ -63,11 +65,46 @@ class UserUpdateView(APIView):
 
     def patch(self, request, *args, **kwargs):
         user = request.user  # 현재 로그인된 유저 객체를 가져옵니다.
-        serializer = CustomUserUpdateSerializer(
-            user, data=request.data, partial=True)  # 일부 필드만 업데이트
 
-        if serializer.is_valid():
-            serializer.save()  # 유저 정보 저장
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        # 기본적으로 개인정보 수정
+        if 'nickname' in request.data or 'gender' in request.data or 'age' in request.data:
+            serializer = CustomUserUpdateSerializer(
+                user, data=request.data, partial=True)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            if serializer.is_valid():
+                serializer.save()  # 유저 정보 저장
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # 제품 정보 수정 (DepositProduct나 SavingProduct)
+        if 'deposit_fin_prdt_cd' in request.data:
+            product_data = request.data.get('deposit_fin_prdt_cd')
+            try:
+                product = DepositProduct.objects.get(id=product_data)
+                user.deposit_fin_prdt_cd = product  # 사용자에게 DepositProduct 할당
+                user.save()
+                return Response({'detail': 'Deposit product updated successfully.'}, status=status.HTTP_200_OK)
+            except DepositProduct.DoesNotExist:
+                return Response({'detail': 'Deposit product not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        if 'saving_fin_prdt_cd' in request.data:
+            product_data = request.data.get('saving_fin_prdt_cd')
+            try:
+                product = SavingProduct.objects.get(id=product_data)
+                user.saving_fin_prdt_cd = product  # 사용자에게 SavingProduct 할당
+                user.save()
+                return Response({'detail': 'Saving product updated successfully.'}, status=status.HTTP_200_OK)
+            except SavingProduct.DoesNotExist:
+                return Response({'detail': 'Saving product not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # 요청에 어떤 제품도 없으면
+        return Response({'detail': 'No valid data provided to update.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# class UserDetailView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request, *args, **kwargs):
+#         user = request.user  # 현재 로그인된 유저
+#         serializer = CustomUserDetailsSerializer(user)
+#         return Response(serializer.data)

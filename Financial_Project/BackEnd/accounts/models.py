@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 # from numpy import require
 # from setuptools import Require
 from allauth.account.adapter import DefaultAccountAdapter
+from moneys.models import DepositProduct, SavingProduct
 
 
 class CustomAccountAdapter(DefaultAccountAdapter):
@@ -42,6 +43,12 @@ class CustomAccountAdapter(DefaultAccountAdapter):
 
 
 class User(AbstractUser):
+    # deposit_fin_prdt_cd = models.ForeignKey(
+    #     DepositProduct, on_delete=models.CASCADE,
+    #     related_name='deposit', null=True, blank=True)  # 금융상품 코드
+    # saving_fin_prdt_cd = models.ForeignKey(
+    #     SavingProduct, on_delete=models.CASCADE,
+    #     related_name='saving', null=True, blank=True)
     nickname = models.CharField(max_length=10, null=True, unique=True)
     email = models.EmailField(
         max_length=255, null=True, unique=True)  # 일단 null=True
