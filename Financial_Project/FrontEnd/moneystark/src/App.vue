@@ -1,17 +1,19 @@
 <template>
-  <div v-if="loading">
-    <LoadingComponent />
-  </div>
-  <div v-else class="app-container">
-    <NavVarComponent />
-    <main class="main-content">
-      <RouterView />
-    </main>
-    <div v-if="!showChatbot" class="chatbot-button" @click="toggleChatbot">
-      <span>💬</span>
+  <div id="app" class="relative">
+    <div v-if="loading">
+      <LoadingComponent />
     </div>
-    <div :class="['chatbot-popup', { active: showChatbot }]">
-      <ChatBotView @close="toggleChatbot" />
+    <div v-else class="app-container">
+      <NavVarComponent />
+      <main class="main-content">
+        <RouterView />
+      </main>
+      <div v-if="!showChatbot" class="chatbot-button" @click="toggleChatbot">
+        <span>💬</span>
+      </div>
+      <div :class="['chatbot-popup', { active: showChatbot }]">
+        <ChatBotView @close="toggleChatbot" />
+      </div>
     </div>
   </div>
 </template>
@@ -41,6 +43,16 @@ onMounted(() => {
     }, 3000);
   } else {
     loading.value = false;
+  }
+});
+import { useProductStore } from "@/stores/product";
+
+const productStore = useProductStore();
+onMounted(() => {
+  if (!productStore.isDataSaved) {
+    productStore.savedata();
+    productStore.isDataSaved = true;
+    productStore.isComponentVisible = true;
   }
 });
 </script>
@@ -110,5 +122,18 @@ onMounted(() => {
 .chatbot-popup.active {
   transform: scale(1);
   opacity: 1;
+}
+.app-container {
+  position: relative;
+  z-index: 1;
+}
+
+.chatbot-popup {
+  z-index: 1000;
+}
+
+.main-content {
+  position: relative;
+  z-index: 1;
 }
 </style>

@@ -1,13 +1,12 @@
 <template>
     <div>
-        <h1>예금추천</h1>
+      <InvestmentPlanner />
     </div>
-</template>
-
-<script setup>
-
-</script>
-
-<style scoped>
-
-</style>
+  </template>
+  
+  <script setup>
+  import InvestmentPlanner from "../components/InvestmentPlanner/InvestmentPlanner.vue";
+  </script>
+  
+  <style scoped></style>
+  
