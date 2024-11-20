@@ -12,7 +12,7 @@
         <span>최고 금리: {{ highestRate }}% ({{ highestRateTerm }}개월)</span>
       </div>
       <div class="button-group">
-        <button v-if="isLoggedIn" @click="joinProduct(deposit.fin_prdt_cd)" class="join-button">가입하기</button>
+        <button v-if="isLoggedIn" @click="joinProduct(deposit.id, depositAmount)" class="join-button">가입하기</button>
         <button @click="goToOfficialSite" class="official-site-button">공식 홈에서 알아보기</button>
       </div>
     </div>
@@ -94,9 +94,10 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import { useUserStore } from "@/stores/user"
+// import { useUserStore } from "@/stores/user";
+import { useDepositStore } from "@/stores/deposit";
 
-const store = useUserStore()
+const store = useDepositStore();
 const props = defineProps({
   deposit: Object,
 });
@@ -142,10 +143,15 @@ const goToOfficialSite = () => {
   }
 };
 
-const joinProduct = (productData) => {
+const joinProduct = async (productData, depositAmount) => {
   // 가입한 상품 목록에 상품 ID 추가 로직
-  store.containProduct(productData)
-  console.log(`상품 ID ${props.deposit.id}가 가입한 상품 목록에 추가되었습니다.`);
+  await store.addDeposit(productData, depositAmount);
+
+  if (store.error) {
+    alert(store.error);
+  } else {
+    console.log(`상품 ID ${props.deposit.id}가 가입한 상품 목록에 추가되었습니다.`);
+  }
 };
 
 const calculateInterest = () => {
