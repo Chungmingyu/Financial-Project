@@ -20,10 +20,20 @@ const loading = ref(true);
 const router = useRouter();
 
 onMounted(() => {
-  setTimeout(() => {
+  // 로컬 스토리지에서 로딩 여부 확인
+  const hasLoaded = localStorage.getItem("hasLoaded");
+
+  if (!hasLoaded) {
+    // 처음 로딩일 경우
+    setTimeout(() => {
+      loading.value = false;
+      router.push({ name: "home" });
+      localStorage.setItem("hasLoaded", "true"); // 로딩 완료 상태 저장
+    }, 3000);
+  } else {
+    // 이미 로딩이 완료된 경우
     loading.value = false;
-    router.push({ name: "home" });
-  }, 3000);
+  }
 });
 </script>
 
