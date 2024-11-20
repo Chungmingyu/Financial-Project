@@ -300,6 +300,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',  # Vue 개발 서버
     'http://127.0.0.1:5173',  # 대체 로컬 개발 서버 (optional)
+    "http://localhost:8000",
+    'http://127.0.0.1:5173'
 ]
 
 TEMPLATES = [

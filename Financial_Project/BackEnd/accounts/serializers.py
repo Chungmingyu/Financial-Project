@@ -1,7 +1,8 @@
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from dj_rest_auth.serializers import UserDetailsSerializer
-from .models import User, DepositProduct, SavingProduct
+from .models import User, Board
+from moneys.models import DepositProduct, SavingProduct, UserDeposit
 
 
 # accounts/serializers.py
@@ -13,16 +14,34 @@ from django.conf import settings
 Usermodel = settings.AUTH_USER_MODEL
 
 
+class BoardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Board
+        fields = ['id', 'user', 'title', 'content', 'created_at', 'updated_at']
+        read_only_fields = ['user', 'created_at', 'updated_at']
+
+
 class UserDepositProductSerializer(serializers.ModelSerializer):
+    # DepositProduct의 관련 필드들을 UserDeposit 시리얼라이저에 포함
+    deposit_product_kor_co_nm = serializers.CharField(
+        source='deposit_product.kor_co_nm')
+    deposit_product_fin_prdt_nm = serializers.CharField(
+        source='deposit_product.fin_prdt_nm')
+    deposit_product_mtrt_int = serializers.CharField(
+        source='deposit_product.mtrt_int')
+    deposit_product_dcls_strt_day = serializers.CharField(
+        source='deposit_product.dcls_strt_day')
+    deposit_product_dcls_end_day = serializers.CharField(
+        source='deposit_product.dcls_end_day')
+
     class Meta:
-        model = DepositProduct
-        fields = '__all__'
+        model = UserDeposit
+        fields = ['deposit_product_kor_co_nm', 'deposit_product_fin_prdt_nm',
+                  'deposit_product_mtrt_int', 'deposit_product_dcls_strt_day',
+                  'deposit_product_dcls_end_day', 'amount', 'date_created']
 
 
-class UserSavingProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SavingProduct
-        fields = '__all__'
+# 유저관련된 시리얼라이저
 
 
 class CustomRegisterSerializer(RegisterSerializer):
@@ -32,6 +51,12 @@ class CustomRegisterSerializer(RegisterSerializer):
     age = serializers.IntegerField(required=True, min_value=0)
     email = serializers.EmailField(required=True, allow_blank=False)
 
+    # 예금 관련 필드 추가
+    deposit_name = serializers.CharField(
+        source='userdeposit.deposit_product.name', read_only=True)
+    deposit_interest_rate = serializers.FloatField(
+        source='userdeposit.deposit_product.interest_rate', read_only=True)
+
     def get_cleaned_data(self):
         return {
             'username': self.validated_data.get('username', ''),
@@ -39,7 +64,9 @@ class CustomRegisterSerializer(RegisterSerializer):
             'nickname': self.validated_data.get('nickname', ''),
             'gender': self.validated_data.get('gender', ''),
             'age': self.validated_data.get('age', -1),
-            'email': self.validated_data.get('email', '')
+            'email': self.validated_data.get('email', ''),
+            'deposit_name': self.validated_data.get('deposit_name', ''),
+            'deposit_interest_rate': self.validated_data.get('deposit_interest_rate', '')
         }
 
     def save(self, request):
@@ -52,6 +79,7 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.age = self.validated_data.get('age', -1)
         user.email = self.validated_data.get('email', '')
         user.save()
+
         return user
 
 
@@ -68,24 +96,19 @@ class CustomUserDetailsSerializer(UserDetailsSerializer):
     def to_representation(self, instance):
         """
         This method ensures that the representation of the `User` instance
-        includes the related `DepositProduct` and `SavingProduct` objects.
+        includes the related `DepositProduct` objects.
         """
-        # from .serializers import DepositProductSerializer, SavingProductSerializer  # Lazy import
-
         data = super().to_representation(instance)
 
-        # deposit_fin_prdt_cd와 saving_fin_prdt_cd가 실제로 존재할 때만 해당 정보를 포함시킴
-        if instance.deposit_fin_prdt_cd:
-            data['deposit_fin_prdt_cd'] = UserDepositProductSerializer(
-                instance.deposit_fin_prdt_cd).data
-        else:
-            data['deposit_fin_prdt_cd'] = None
+        # User 인스턴스에서 관련된 UserDeposit 객체들을 가져오기
+        user_deposits = instance.deposits.all()  # User 모델에서 deposits 역참조
 
-        if instance.saving_fin_prdt_cd:
-            data['saving_fin_prdt_cd'] = UserSavingProductSerializer(
-                instance.saving_fin_prdt_cd).data
+        # UserDeposit이 존재하면 시리얼라이즈하여 데이터에 추가
+        if user_deposits.exists():
+            data['deposits'] = UserDepositProductSerializer(
+                user_deposits, many=True).data
         else:
-            data['saving_fin_prdt_cd'] = None
+            data['deposits'] = None
 
         return data
 

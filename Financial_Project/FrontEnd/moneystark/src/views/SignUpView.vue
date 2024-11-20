@@ -18,21 +18,23 @@
 </template>
 
 <script>
-import { reactive } from 'vue';  // reactive 함수를 가져옵니다.
-import { useUserStore } from '../stores/user';
+import { reactive } from "vue"; // reactive 함수 가져오기
+import { useUserStore } from "../stores/user"; // Pinia Store import
+import { useRouter } from "vue-router"; // vue-router에서 useRouter 임포트
 
 export default {
   setup() {
     const userStore = useUserStore();
+    const router = useRouter(); // useRouter 호출하여 router 객체 받기
 
     // formData를 reactive로 관리
     const formData = reactive({
-      username: '',
-      password1: '',
-      password2: '',
-      email: '',
-      nickname: '',
-      gender: '',
+      username: "",
+      password1: "",
+      password2: "",
+      email: "",
+      nickname: "",
+      gender: "",
       age: null,
     });
 
@@ -40,11 +42,11 @@ export default {
     const handleRegister = async () => {
       try {
         // formData를 사용해 회원가입 처리
-        console.log(formData)
-        await userStore.registerUser(formData);
-        console.log('회원가입 완료');
+        console.log(formData);
+        await userStore.registerUser(formData,router);
+        console.log("회원가입 완료");
       } catch (error) {
-        console.error('회원가입 중 오류 발생', error);
+        console.error("회원가입 중 오류 발생", error);
       }
     };
 
@@ -52,7 +54,7 @@ export default {
     return {
       formData,
       handleRegister,
-      userStore
+      userStore,
     };
   },
 };

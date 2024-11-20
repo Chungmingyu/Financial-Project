@@ -6,6 +6,16 @@
       <p>성별: {{ user.gender }}</p>
       <p>나이: {{ user.age }}</p>
       <p>이메일: {{ user.email }}</p>
+      <div v-if="user.deposits">
+        <h4>가입한 예금 목록</h4>
+      <p v-for="deposit in user.deposits">
+        <div>은행 이름 : {{ deposit.deposit_product_kor_co_nm }}</div>
+        <div>예금 이름 : {{deposit.deposit_product_fin_prdt_nm}}</div>
+        <div>넣은 금액 : {{ deposit.amount }}</div>
+        <div>시작일 : {{ deposit.deposit_product_dcls_strt_day }}</div>
+        <div>금리 : {{ deposit.deposit_product_mtrt_int }}</div>
+      </p>
+    </div>
       <button @click="goToEditProfile">회원 정보 수정</button>
     </div>
     <div v-else>

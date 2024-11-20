@@ -25,6 +25,7 @@ urlpatterns = [
     path('accounts/signup/', include('dj_rest_auth.registration.urls')),  # 회원가입 관련 URL
     path('accounts/logout/', include('dj_rest_auth.urls')),  # 로그아웃 관련 URL
     path('accounts/user/', include('dj_rest_auth.urls')),  # 사용자 정보 조회 및 업데이트
+    # path('accounts/')
     path('bankmap/', include('bankmap.urls')),
     path('surveys/', include('surveys.urls')),  # 설문지 관련 URL
     path('boards/', include('boards.urls')),  # boards 앱 연결

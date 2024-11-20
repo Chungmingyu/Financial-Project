@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 # from numpy import require
 # from setuptools import Require
 from allauth.account.adapter import DefaultAccountAdapter
-from moneys.models import DepositProduct, SavingProduct
+from django.conf import settings
 
 
 class CustomAccountAdapter(DefaultAccountAdapter):
@@ -49,15 +49,33 @@ class User(AbstractUser):
     # saving_fin_prdt_cd = models.ForeignKey(
     #     SavingProduct, on_delete=models.CASCADE,
     #     related_name='saving', null=True, blank=True)
-    nickname = models.CharField(max_length=10, null=True, unique=True)
+    nickname = models.CharField(max_length=10, null=False, unique=True)
     email = models.EmailField(
         max_length=255, null=True, unique=True)  # 일단 null=True
     GENDERS = (('M', '남성(Man)'), ('W', '여성(Woman)'))
     gender = models.CharField(
-        verbose_name='성별', max_length=1, choices=GENDERS, null=True)  # null=True
+        verbose_name='성별', max_length=1, choices=GENDERS, null=False)  # null=True
     age = models.IntegerField(null=True, default=-1)  # null=True
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
+
+# 유저와 게시판의 1:M관계를 가지고 있는 모델
+
+
+class Board(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="boards"
+    )
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
