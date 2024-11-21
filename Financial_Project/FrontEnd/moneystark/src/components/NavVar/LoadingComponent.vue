@@ -67,7 +67,7 @@ onMounted(() => {
 .loading-bar {
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, #7700ff, #4e90ff);
+  background: linear-gradient(90deg, #ffbf00, #ffd700);
   animation: loading 2s infinite;
 }
 
@@ -100,7 +100,8 @@ onMounted(() => {
 }
 
 @keyframes fadeInOut {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.3;
   }
   50% {
