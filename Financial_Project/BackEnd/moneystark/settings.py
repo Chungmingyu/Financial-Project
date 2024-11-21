@@ -228,6 +228,8 @@ environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
 DEPOSIT_API_KEY = env('DEPOSIT_API_KEY')
 EXCHANGE_API_KEY = env('EXCHANGE_API_KEY')
 MAP_API_KEY = env('MAP_API_KEY')
+GOOGLE_API_KEY = env('GOOGLE_API_KEY')
+GOOGLE_CSE_ID = env('GOOGLE_CSE_ID')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/

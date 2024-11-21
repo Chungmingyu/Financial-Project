@@ -117,7 +117,7 @@ export default {
 }
 
 .search-button {
-  background: #7700ff;
+  background: #ffbf00;
   color: white;
   border: none;
   padding: 0.8rem 1.5rem;
@@ -127,7 +127,7 @@ export default {
 }
 
 .search-button:hover {
-  background: #6600cc;
+  background: #e6ac00;
 }
 
 .search-example {
@@ -167,7 +167,7 @@ export default {
 }
 
 .highlight {
-  color: #7700ff;
+  color: #ffbf00;
   font-weight: bold;
 }
 
