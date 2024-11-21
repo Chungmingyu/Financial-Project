@@ -1,7 +1,7 @@
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from dj_rest_auth.serializers import UserDetailsSerializer
-from .models import User, Board
+from .models import User
 from moneys.models import DepositProduct, SavingProduct, UserDeposit
 
 
@@ -14,11 +14,11 @@ from django.conf import settings
 Usermodel = settings.AUTH_USER_MODEL
 
 
-class BoardSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Board
-        fields = ['id', 'user', 'title', 'content', 'created_at', 'updated_at']
-        read_only_fields = ['user', 'created_at', 'updated_at']
+# class BoardSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Board
+#         fields = ['id', 'user', 'title', 'content', 'created_at', 'updated_at']
+#         read_only_fields = ['user', 'created_at', 'updated_at']
 
 
 class UserDepositProductSerializer(serializers.ModelSerializer):

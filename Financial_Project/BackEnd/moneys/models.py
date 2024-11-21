@@ -86,3 +86,10 @@ class UserDeposit(models.Model):
     def __str__(self):
         # 상품명 출력
         return f'{self.user.username} - {self.deposit_product.fin_prdt_nm}'
+
+
+class UserSaving(models.Model):
+    user = models.ForeignKey(
+        Usermodel, on_delete=models.CASCADE, related_name="savings")
+    saving_product = models.ForeignKey(SavingProduct, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
