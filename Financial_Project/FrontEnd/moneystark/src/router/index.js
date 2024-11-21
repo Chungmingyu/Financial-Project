@@ -13,6 +13,9 @@ import UserChangeView from "@/views/UserChangeView.vue";
 import NewsView from "@/views/NewsView.vue";
 import StockComponent from "../components/stock/stockComponent.vue";
 import CoinComponent from "../components/stock/coinComponent.vue";
+import BoardView from "../views/BoardView.vue";
+import BoardsCreate from "../components/boards/BoardsCreate.vue";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -73,6 +76,7 @@ const router = createRouter({
       component: UserChangeView,
     },
     {
+
       path: "/news",
       name: "news",
       component: NewsView,
@@ -86,6 +90,16 @@ const router = createRouter({
       path: "/coin",
       name: "CoinComponent",
       component: CoinComponent,
+
+      path: "/boards",
+      name: "BoardView",
+      component: BoardView,
+    },
+    {
+      path: "/boards/create",
+      name: "BoardsCreate",
+      component: BoardsCreate,
+
     },
   ],
 });

@@ -12,6 +12,8 @@
           <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'BankMapView' }" @click.prevent="$router.push({ name: 'BankMapView' })">지도</button>
           <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'StockComponent' }" @click.prevent="$router.push({ name: 'StockComponent' })">주식 정보</button>
           <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'CoinComponent' }" @click.prevent="$router.push({ name: 'CoinComponent' })">코인 정보</button>
+          <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'BoardView' }" @click.prevent="$router.push({ name: 'BoardView' })">자유 게시판</button>
+
         </div>
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon white"></span>
