@@ -65,17 +65,16 @@ class User(AbstractUser):
 # 유저와 게시판의 1:M관계를 가지고 있는 모델
 
 
-class Board(models.Model):
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="boards"
-    )
-    title = models.CharField(max_length=255)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+# class Board(models.Model):
+#     user = models.ForeignKey(
+#         settings.AUTH_USER_MODEL,
+#         on_delete=models.CASCADE,
+#         related_name="boards"
+#     )
+#     title = models.CharField(max_length=255)
+#     content = models.TextField()
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.title
-
+#     def __str__(self):
+#         return self.title

@@ -10,6 +10,8 @@ import BankView from "@/views/BankView.vue";
 import BankMapView from "@/views/BankMapView.vue";
 import UserDetailView from "@/views/UserDetailView.vue";
 import UserChangeView from "@/views/UserChangeView.vue";
+import BoardView from "../views/BoardView.vue";
+import BoardsCreate from "../components/boards/BoardsCreate.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -68,6 +70,16 @@ const router = createRouter({
       path: "/userchange",
       name: "UserChangeView",
       component: UserChangeView,
+    },
+    {
+      path: "/boards",
+      name: "BoardView",
+      component: BoardView,
+    },
+    {
+      path: "/boards/create",
+      name: "BoardsCreate",
+      component: BoardsCreate,
     },
   ],
 });
