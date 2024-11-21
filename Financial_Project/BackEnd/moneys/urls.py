@@ -24,4 +24,5 @@ urlpatterns = [
     # 예금 한건지 확인하는거
     path('check_subscription/<int:deposit_id>/',
          views.check_user_subscription, name='check_user_subscription'),
+     path('stock_data/<str:symbol>/', views.stock_data, name='stock_data'),
 ]

@@ -18,6 +18,32 @@ from .models import UserDeposit, DepositProduct
 from .serializers import UserDepositSerializer
 from django.conf import settings
 from rest_framework.exceptions import ValidationError
+from django.http import JsonResponse
+
+
+
+
+def stock_data(request, symbol):
+    api_key=settings.FINNHUB_API_KEY
+    search_url = f'https://finnhub.io/api/v1/quote?symbol={symbol}&token={api_key}'
+    print(search_url)
+    search_response = requests.get(search_url)
+    print(search_response)
+    # 응답 상태 코드 확인
+    if search_response.status_code != 200:
+        return JsonResponse({'error': f"API 요청 실패: {search_response.status_code}"}, status=400)
+    
+    quote_data = search_response.json()
+
+    if 'error' in quote_data:
+        return JsonResponse({'error': 'Finnhub API 응답 오류'}, status=400)
+
+    stock_data = {
+        'symbol': symbol,
+        'quote': quote_data,
+    }
+    return JsonResponse(stock_data)
+
 
 
 # 예금 추가 한건지 확인하는거
