@@ -11,11 +11,13 @@ import BankMapView from "@/views/BankMapView.vue";
 import UserDetailView from "@/views/UserDetailView.vue";
 import UserChangeView from "@/views/UserChangeView.vue";
 import NewsView from "@/views/NewsView.vue";
-import StockComponent from "../components/stock/stockComponent.vue";
+// import StockComponent from "../components/stock/stockComponent.vue";
 import CoinComponent from "../components/stock/coinComponent.vue";
 import BoardView from "../views/BoardView.vue";
 import BoardsCreate from "../components/boards/BoardsCreate.vue";
+import StockView from "../views/StockView.vue";
 import Surveys from "../components/Surveys/Surveys.vue";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -82,8 +84,8 @@ const router = createRouter({
     },
     {
       path: "/stock",
-      name: "StockComponent",
-      component: StockComponent,
+      name: "StockView",
+      component: StockView,
     },
     {
       path: "/coin",
@@ -98,6 +100,7 @@ const router = createRouter({
       path: "/boards/create",
       name: "BoardsCreate",
       component: BoardsCreate,
+
     },
     {
       path: "/surveys",
