@@ -45,6 +45,7 @@ export default {
         console.log(formData);
         await userStore.registerUser(formData,router);
         console.log("회원가입 완료");
+        
       } catch (error) {
         console.error("회원가입 중 오류 발생", error);
       }

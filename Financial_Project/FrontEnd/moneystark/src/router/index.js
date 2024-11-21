@@ -16,6 +16,8 @@ import CoinComponent from "../components/stock/coinComponent.vue";
 import BoardView from "../views/BoardView.vue";
 import BoardsCreate from "../components/boards/BoardsCreate.vue";
 import StockView from "../views/StockView.vue";
+import Surveys from "../components/Surveys/Surveys.vue";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -98,6 +100,12 @@ const router = createRouter({
       path: "/boards/create",
       name: "BoardsCreate",
       component: BoardsCreate,
+
+    },
+    {
+      path: "/surveys",
+      name: "Surveys.vue",
+      component: Surveys,
     },
   ],
 });
