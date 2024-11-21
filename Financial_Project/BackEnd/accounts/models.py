@@ -56,6 +56,8 @@ class User(AbstractUser):
     gender = models.CharField(
         verbose_name='성별', max_length=1, choices=GENDERS, null=False)  # null=True
     age = models.IntegerField(null=True, default=-1)  # null=True
+    style = models.CharField(max_length=255, null=True, blank=True)
+    login_count = models.IntegerField(null=True, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
