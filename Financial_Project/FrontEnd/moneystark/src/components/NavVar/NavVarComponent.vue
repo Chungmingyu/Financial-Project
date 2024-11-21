@@ -10,11 +10,12 @@
           <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'BankView' }" @click.prevent="$router.push({ name: 'BankView' })">근처 은행</button>
           <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'ProductSuggestionView' }" @click.prevent="$router.push({ name: 'ProductSuggestionView' })">상품 추천</button>
           <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'BankMapView' }" @click.prevent="$router.push({ name: 'BankMapView' })">지도</button>
+          <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'StockComponent' }" @click.prevent="$router.push({ name: 'StockComponent' })">주식 정보</button>
+          <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'CoinComponent' }" @click.prevent="$router.push({ name: 'CoinComponent' })">코인 정보</button>
         </div>
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon white"></span>
         </button>
-
 
         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
           <div class="offcanvas-header">
@@ -25,26 +26,12 @@
             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
               <li class="nav-item">
                 <!-- 로그인 상태에 따라 버튼 토글 -->
-                <button 
-                  v-if="!isLoggedIn" 
-                  class="nav-link active" 
-                  aria-current="page" 
-                  @click.prevent="navigateToLogin">
-                  로그인
-                </button>
+                <button v-if="!isLoggedIn" class="nav-link active" aria-current="page" @click.prevent="navigateToLogin">로그인</button>
                 <div v-else>
-                  <button 
-                    class="nav-link active" 
-                    @click.prevent="handlerLogout">
-                    로그아웃
-                  </button>
-                  <br>
-                  <button 
-                  class="nav-link active"
-                  @click.prevent="handlerUser">
-                    회원정보
-                  </button>
-              </div>
+                  <button class="nav-link active" @click.prevent="handlerLogout">로그아웃</button>
+                  <br />
+                  <button class="nav-link active" @click.prevent="handlerUser">회원정보</button>
+                </div>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#"></a>
@@ -65,9 +52,6 @@
             </form>
           </div>
         </div>
-
-
-
       </div>
     </nav>
   </header>
@@ -79,8 +63,8 @@ import ScrollMagic from "scrollmagic";
 import { gsap } from "gsap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
-import {useUserStore} from '@/stores/user'
-import { useRouter } from 'vue-router'
+import { useUserStore } from "@/stores/user";
+import { useRouter } from "vue-router";
 
 export default {
   name: "NavVarComponent",
@@ -95,22 +79,22 @@ export default {
     const gradientOpacity = ref(0);
     const isReveal1Visible = ref(false);
     const isReveal2Visible = ref(false);
-    const store = useUserStore()
-    const router = useRouter()
+    const store = useUserStore();
+    const router = useRouter();
 
     const navigateToLogin = () => {
-      router.push({name : 'LogInView'})
-    }
+      router.push({ name: "LogInView" });
+    };
 
     const handlerLogout = () => {
       store.logout();
-      window.location.href = '/home'
-      console.log('홈으로 이동')
-    }
+      window.location.href = "/home";
+      console.log("홈으로 이동");
+    };
 
     const handlerUser = () => {
-      window.location.href = '/user'
-    }
+      window.location.href = "/user";
+    };
     // ScrollMagic 설정
     const initScrollMagic = () => {
       const controller = new ScrollMagic.Controller();
@@ -180,11 +164,11 @@ export default {
       gradientOpacity,
       isReveal1Visible,
       isReveal2Visible,
-      isLoggedIn : store.isLoggedIn,
-      logout:store.logout,
+      isLoggedIn: store.isLoggedIn,
+      logout: store.logout,
       navigateToLogin,
       handlerLogout,
-      handlerUser
+      handlerUser,
     };
   },
 };

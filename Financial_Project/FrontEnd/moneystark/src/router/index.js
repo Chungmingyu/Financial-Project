@@ -10,6 +10,9 @@ import BankView from "@/views/BankView.vue";
 import BankMapView from "@/views/BankMapView.vue";
 import UserDetailView from "@/views/UserDetailView.vue";
 import UserChangeView from "@/views/UserChangeView.vue";
+import NewsView from "@/views/NewsView.vue";
+import StockComponent from "../components/stock/stockComponent.vue";
+import CoinComponent from "../components/stock/coinComponent.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -68,6 +71,21 @@ const router = createRouter({
       path: "/userchange",
       name: "UserChangeView",
       component: UserChangeView,
+    },
+    {
+      path: "/news",
+      name: "news",
+      component: NewsView,
+    },
+    {
+      path: "/stock",
+      name: "StockComponent",
+      component: StockComponent,
+    },
+    {
+      path: "/coin",
+      name: "CoinComponent",
+      component: CoinComponent,
     },
   ],
 });

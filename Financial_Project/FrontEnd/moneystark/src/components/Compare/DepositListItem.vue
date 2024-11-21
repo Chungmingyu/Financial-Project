@@ -14,6 +14,7 @@
       <div class="button-group">
         <button v-if="isLoggedIn" @click="joinProduct(deposit.id, depositAmount)" class="join-button">가입하기</button>
         <button @click="goToOfficialSite" class="official-site-button">공식 홈에서 알아보기</button>
+        <button @click="showNewsPopup" class="news-button">관련 뉴스 보기</button>
       </div>
     </div>
 
@@ -45,6 +46,10 @@
         <div class="info-item">
           <span class="label">최고한도</span>
           <span class="value">{{ deposit.max_limit }}</span>
+        </div>
+        <div v-if="isNewsPopupVisible" class="news-popup">
+          <NewsView :query="newsQuery" @update:query="updateNewsQuery" />
+          <button @click="closeNewsPopup" class="close-popup-button">닫기</button>
         </div>
       </div>
 
@@ -94,8 +99,8 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-// import { useUserStore } from "@/stores/user";
 import { useDepositStore } from "@/stores/deposit";
+import NewsView from "@/views/NewsView.vue"; // NewsView 컴포넌트 import
 
 const store = useDepositStore();
 const props = defineProps({
@@ -106,6 +111,8 @@ const isLoggedIn = ref(true); // 로그인 상태를 나타내는 변수 (예시
 const depositAmount = ref(10000000); // 기본값 1000만원
 const calculatedInterest = ref(null);
 const selectedRate = ref(null);
+const isNewsPopupVisible = ref(false); // 뉴스 팝업 상태 변수
+const newsQuery = ref(""); // 뉴스 검색어
 
 const banks = ref([
   { name: "우리은행", url: "https://www.wooribank.com", logo: "https://simg.wooribank.com/img/intro/header/h1_01.png" },
@@ -144,7 +151,6 @@ const goToOfficialSite = () => {
 };
 
 const joinProduct = async (productData, depositAmount) => {
-  // 가입한 상품 목록에 상품 ID 추가 로직
   await store.addDeposit(productData, depositAmount);
 
   if (store.error) {
@@ -164,12 +170,57 @@ const selectRate = (rate) => {
   calculateInterest();
 };
 
+const showNewsPopup = () => {
+  newsQuery.value = `${props.deposit.kor_co_nm} - ${props.deposit.fin_prdt_nm} 뉴스`;
+  isNewsPopupVisible.value = true;
+};
+
+const closeNewsPopup = () => {
+  isNewsPopupVisible.value = false;
+};
+
+const updateNewsQuery = (newQuery) => {
+  newsQuery.value = newQuery;
+};
+
 onMounted(() => {
   selectedRate.value = highestRate;
   calculateInterest();
 });
 </script>
+
 <style scoped>
+.news-popup {
+  position: fixed;
+  top: 60%; /* 팝업을 살짝 아래로 내림 */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 900px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  z-index: 1000;
+}
+
+.close-popup-button {
+  display: block;
+  margin: 20px auto 0;
+  padding: 10px 20px;
+  background-color: #000;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.close-popup-button:hover {
+  background-color: #333;
+}
+
 /* 전체 컨테이너 */
 .container {
   width: 90%;
@@ -202,7 +253,7 @@ onMounted(() => {
 
 .back-button {
   background-color: #000; /* 검은색 배경 */
-  color: white;
+  color: #ffbf00;
   border: none;
   border-radius: 8px;
   padding: 10px 20px;
@@ -238,13 +289,27 @@ h2 {
   gap: 10px;
 }
 
+.news-button {
+  width: 220px;
+  display: inline-block;
+  margin: 20px;
+  padding: 12px 24px;
+  background-color: #ffbf00; /* 파란색 배경 */
+  color: black;
+  font-weight: bolder;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
 .join-button {
   width: 220px;
   display: inline-block;
   margin: 20px;
   padding: 12px 24px;
   background-color: #000; /* 파란색 배경 */
-  color: white;
+  color: #ffbf00;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -262,7 +327,7 @@ h2 {
   margin: 20px;
   padding: 12px 24px;
   background-color: #000; /* 검은색 배경 */
-  color: white;
+  color: #ffbf00;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -306,7 +371,74 @@ h2 {
   flex: 1; /* value가 남은 공간을 차지하도록 설정 */
   text-align: right; /* value를 오른쪽 정렬 */
 }
+/* 금리 안내 섹션 */
+.rate-info {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
+.rate-info h3 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+  font-weight: bolder;
+}
+
+.rate-info p {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.rate-info label {
+  font-size: 16px;
+  color: #333;
+  margin-right: 10px;
+}
+
+.rate-info input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.rate-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.rate-buttons button {
+  flex: 1;
+  padding: 12px 24px;
+  background-color: #000;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+  margin-right: 10px;
+}
+
+.rate-buttons button.selected {
+  background-color: #ffbf00;
+  color: black;
+}
+
+.rate-buttons button:hover {
+  background-color: #333;
+}
+
+.rate-buttons button:last-child {
+  margin-right: 0;
+}
+
+/* 금리 정보 테이블 */
 .table {
   width: 100%;
   border-collapse: separate;
@@ -315,6 +447,7 @@ h2 {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
   overflow: hidden;
+  margin-top: 40px; /* 테이블과 위 요소 사이에 여백 추가 */
 }
 
 .table th,
@@ -348,80 +481,5 @@ h2 {
 
 .table tr:last-child td:last-child {
   border-bottom-right-radius: 12px;
-}
-
-/* 금리 안내 섹션 */
-.rate-info {
-  margin-top: 40px;
-  margin-bottom: 40px;
-  padding: 20px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.rate-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.rate-buttons button {
-  padding: 10px 20px;
-  background: linear-gradient(145deg, #ffbf00, #ffd700);
-  color: black;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 6px 8px rgba(0, 0, 0, 0.1);
-  transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
-  position: relative;
-  overflow: hidden;
-}
-
-.rate-buttons button.selected {
-  background: linear-gradient(145deg, #ffd700, #ffbf00);
-  color: black;
-  box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.2), inset 0 6px 8px rgba(0, 0, 0, 0.2);
-}
-
-.rate-buttons button:hover {
-  background: linear-gradient(145deg, #ffd700, #ffbf00);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2), 0 8px 10px rgba(0, 0, 0, 0.2);
-}
-
-.rate-buttons button::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 300%;
-  height: 300%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent);
-  transition: all 0.3s;
-  transform: translate(-50%, -50%) scale(0);
-  z-index: 0;
-}
-
-.rate-buttons button:hover::before {
-  transform: translate(-50%, -50%) scale(1);
-}
-
-.rate-buttons button span {
-  position: relative;
-  z-index: 1;
-}
-
-input[type="number"] {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
 }
 </style>
