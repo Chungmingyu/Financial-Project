@@ -21,18 +21,17 @@ from rest_framework.exceptions import ValidationError
 from django.http import JsonResponse
 
 
-
-
 def stock_data(request, symbol):
-    api_key=settings.FINNHUB_API_KEY
-    search_url = f'https://finnhub.io/api/v1/quote?symbol={symbol}&token={api_key}'
+    api_key = settings.FINNHUB_API_KEY
+    search_url = f'https://finnhub.io/api/v1/quote?symbol={
+        symbol}&token={api_key}'
     print(search_url)
     search_response = requests.get(search_url)
     print(search_response)
     # 응답 상태 코드 확인
     if search_response.status_code != 200:
         return JsonResponse({'error': f"API 요청 실패: {search_response.status_code}"}, status=400)
-    
+
     quote_data = search_response.json()
 
     if 'error' in quote_data:
@@ -44,6 +43,48 @@ def stock_data(request, symbol):
     }
     return JsonResponse(stock_data)
 
+
+def coin_data(request):
+    api_key = settings.UPBIT_API_KEY
+    secret_key = settings.UPBIT_SECRET_KEY
+    # 마켓 정보 가져오기
+    market_url = 'https://api.upbit.com/v1/market/all'
+    market_response = requests.get(market_url)
+
+    if market_response.status_code != 200:
+        return JsonResponse({'error': f"마켓 정보 API 요청 실패: {market_response.status_code}"}, status=400)
+
+    market_data = market_response.json()
+    market_info = {item['market']: item['korean_name'] for item in market_data}
+
+    # 가격 정보 가져오기
+    ticker_url = 'https://api.upbit.com/v1/ticker/all'
+    params = {
+        'quote_currencies': "KRW"  # 예: KRW-BTC
+    }
+    price_response = requests.get(ticker_url, params=params)
+
+    if price_response.status_code != 200:
+        return JsonResponse({'error': f"가격 정보 API 요청 실패: {price_response.status_code}"}, status=400)
+
+    price_data = price_response.json()
+
+    # 응답 데이터 구성
+    response_data = []
+    for ticker in price_data:
+        market = ticker['market']
+        response_data.append({
+            'market': market,
+            'korean_name': market_info.get(market, ''),
+            'current_price': ticker['trade_price'],
+            'change_rate': ticker['signed_change_rate'] * 100,  # 백분율로 변환
+            'change_price': ticker['signed_change_price'],
+            'high_price': ticker['high_price'],
+            'low_price': ticker['low_price'],
+            'acc_trade_volume_24h': ticker['acc_trade_volume_24h']
+        })
+
+    return JsonResponse({'data': response_data})
 
 
 # 예금 추가 한건지 확인하는거
@@ -127,8 +168,10 @@ def save_products(request):
     pageNo = '1'  # 조회하고자 하는 페이지 번호 Ex) 1, 2, 3
     financeCd = ''  # 금융회사 코드 또는 명 Ex) 0010587, 0010588, 0010722, 국민, 상호, 하나
 
-    deposit_url = f'http://finlife.fss.or.kr/finlifeapi/depositProductsSearch.json?auth={api_key}&topFinGrpNo=020000&pageNo=1'
-    saving_url = f'http://finlife.fss.or.kr/finlifeapi/savingProductsSearch.json?auth={api_key}&topFinGrpNo=020000&pageNo=1'
+    deposit_url = f'http://finlife.fss.or.kr/finlifeapi/depositProductsSearch.json?auth={
+        api_key}&topFinGrpNo=020000&pageNo=1'
+    saving_url = f'http://finlife.fss.or.kr/finlifeapi/savingProductsSearch.json?auth={
+        api_key}&topFinGrpNo=020000&pageNo=1'
     deposit_response = requests.get(deposit_url).json()
     saving_response = requests.get(saving_url).json()
     # pprint(response['result']['optionList'])

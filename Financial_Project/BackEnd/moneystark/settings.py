@@ -231,6 +231,9 @@ MAP_API_KEY = env('MAP_API_KEY')
 GOOGLE_API_KEY = env('GOOGLE_API_KEY')
 GOOGLE_CSE_ID = env('GOOGLE_CSE_ID')
 FINNHUB_API_KEY = env('FINNHUB_API_KEY')
+UPBIT_API_KEY = env('UPBIT_API_KEY')
+UPBIT_SECRET_KEY = env('UPBIT_SECRET_KEY')
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
