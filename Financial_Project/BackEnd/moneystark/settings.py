@@ -233,6 +233,7 @@ GOOGLE_CSE_ID = env('GOOGLE_CSE_ID')
 FINNHUB_API_KEY = env('FINNHUB_API_KEY')
 UPBIT_API_KEY = env('UPBIT_API_KEY')
 UPBIT_SECRET_KEY = env('UPBIT_SECRET_KEY')
+HOME_API_KEY = env('HOME_API_KEY')
 
 
 # Quick-start development settings - unsuitable for production

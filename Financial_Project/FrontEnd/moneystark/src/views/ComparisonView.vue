@@ -36,10 +36,8 @@ const selectItem = (item) => {
 
 onMounted(() => {
   if (!productStore.isDataSaved) {
-    setTimeout(() => {
-      productStore.savedata();
-      productStore.isDataSaved = true;
-    }, 5000); // 3초 지연
+    productStore.savedata();
+    productStore.isDataSaved = true;
     productStore.isComponentVisible = true;
   }
 });

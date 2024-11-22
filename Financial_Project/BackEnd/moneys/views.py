@@ -14,17 +14,34 @@ from rest_framework import status, permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import UserDeposit, DepositProduct
+from .models import UserDeposit, DepositProduct, Apartment
 from .serializers import UserDepositSerializer
 from django.conf import settings
 from rest_framework.exceptions import ValidationError
 from django.http import JsonResponse
 
+def home_date(request):
+    api_key = settings.HOME_API_KEY
+    for page in range(37):
+        url = f'https://www.reb.or.kr/r-one/openapi/SttsApiTblData.do?KEY={api_key}&STATBL_ID=A_2024_00060&DTACYCLE_CD=MM&Type=json&pIndex={page}&pSize=1000'
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            rows = data.get('SttsApiTblData', [])[1].get('row', [])
+            for row in rows:
+                location = row.get('CLS_NM')
+                location_full = row.get('CLS_FULLNM')
+                price = row.get('DTA_VAL')
+                if location and price:
+                    Apartment.objects.create(location=location, price=price)
+        else:
+            return JsonResponse({'error': 'Failed to fetch data from API'}, status=response.status_code)
+    return JsonResponse({'message': 'Data successfully saved to the database'})
+
 
 def stock_data(request, symbol):
     api_key = settings.FINNHUB_API_KEY
-    search_url = f'https://finnhub.io/api/v1/quote?symbol={
-        symbol}&token={api_key}'
+    search_url = f'https://finnhub.io/api/v1/quote?symbol={symbol}&token={api_key}'
     print(search_url)
     search_response = requests.get(search_url)
     print(search_response)
@@ -168,10 +185,8 @@ def save_products(request):
     pageNo = '1'  # 조회하고자 하는 페이지 번호 Ex) 1, 2, 3
     financeCd = ''  # 금융회사 코드 또는 명 Ex) 0010587, 0010588, 0010722, 국민, 상호, 하나
 
-    deposit_url = f'http://finlife.fss.or.kr/finlifeapi/depositProductsSearch.json?auth={
-        api_key}&topFinGrpNo=020000&pageNo=1'
-    saving_url = f'http://finlife.fss.or.kr/finlifeapi/savingProductsSearch.json?auth={
-        api_key}&topFinGrpNo=020000&pageNo=1'
+    deposit_url = f'http://finlife.fss.or.kr/finlifeapi/depositProductsSearch.json?auth={api_key}&topFinGrpNo=020000&pageNo=1'
+    saving_url = f'http://finlife.fss.or.kr/finlifeapi/savingProductsSearch.json?auth={api_key}&topFinGrpNo=020000&pageNo=1'
     deposit_response = requests.get(deposit_url).json()
     saving_response = requests.get(saving_url).json()
     # pprint(response['result']['optionList'])

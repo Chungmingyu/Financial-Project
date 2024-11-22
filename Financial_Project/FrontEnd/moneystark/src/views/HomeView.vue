@@ -20,7 +20,7 @@
       </section>
 
       <!-- 특징 섹션 -->
-      <section class="features-section">
+      <section class="features-section" style="background-color: black">
         <div class="feature-grid">
           <div class="feature-card" v-for="(feature, index) in features" :key="index" :class="{ visible: isReveal1Visible }">
             <i :class="feature.icon"></i>
@@ -194,6 +194,11 @@ export default {
 };
 </script>
 <style scoped>
+template {
+  background: linear-gradient(to bottom, black, blue);
+  height: 200vh; /* 페이지가 길게 스크롤되도록 */
+}
+
 .home-container {
   width: 100%;
   overflow-x: hidden;

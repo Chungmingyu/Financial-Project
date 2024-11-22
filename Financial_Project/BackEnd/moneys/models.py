@@ -93,3 +93,9 @@ class UserSaving(models.Model):
         Usermodel, on_delete=models.CASCADE, related_name="savings")
     saving_product = models.ForeignKey(SavingProduct, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
+
+
+class Apartment(models.Model):
+    location = models.TextField()  # 아파트 위치
+    location_full = models.TextField()  # 아파트 위치 풀네임
+    price = models.DecimalField(max_digits=20, decimal_places=2)  # 아파트 가격
