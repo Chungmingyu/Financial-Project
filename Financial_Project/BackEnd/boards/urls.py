@@ -1,7 +1,7 @@
 # vue 랑 연동할거면하셈
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import PostListAPIView, PostCreateAPIView, PostDeleteAPIView, ToggleLikeAPIView
+from .views import PostListAPIView, PostCreateAPIView, ToggleLikeAPIView
 from . import views
 
 # router = DefaultRouter()

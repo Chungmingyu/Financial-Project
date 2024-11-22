@@ -25,9 +25,10 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from .models import Post, Comment
 import json
-from rest_framework.decorators import api_view,permission_classes
+from rest_framework.decorators import api_view, permission_classes
 
 User = get_user_model()
+
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
@@ -48,6 +49,7 @@ def delete_post(request):
     # 게시글 삭제
     post.delete()
     return Response({'message': 'Post deleted successfully.'}, status=200)
+
 
 @require_http_methods(["DELETE"])
 @csrf_exempt
@@ -140,6 +142,7 @@ class PostListAPIView(APIView):
         posts = Post.objects.all().order_by("-created_at")
         serializer = PostSerializer(
             posts, many=True, context={'request': request})
+        print(serializer.data)
         return Response(serializer.data)
 
 # 게시글 생성
@@ -190,4 +193,3 @@ class ToggleLikeAPIView(APIView):
             post.like_users.add(request.user)
         serializer = PostSerializer(post, context={'request': request})
         return Response(serializer.data)
-

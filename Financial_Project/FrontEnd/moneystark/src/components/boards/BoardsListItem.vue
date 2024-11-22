@@ -8,9 +8,13 @@
 
     <!-- 게시글 상세 내용 -->
     <div v-else-if="post && post.id">
+      <h1>
+        게시글 작성자:
+        <RouterLink :to="{ name: 'UserDetailByNickname', params: { nickname: post.nickname } }">{{ post.nickname }}</RouterLink>
+      </h1>
       <h1>게시글 번호: {{ post.id }}</h1>
-      <h2>{{ post.title }}</h2>
-      <p>{{ post.content }}</p>
+      <h2>게시글 제목: {{ post.title }}</h2>
+      <p>게시글 내용: {{ post.content }}</p>
 
       <!-- 좋아요 수 -->
       <p>좋아요: {{ post.like_count }}</p>
@@ -30,6 +34,7 @@
 import { usePostStore } from "@/stores/boards";
 import { ref, watch, computed, onMounted } from "vue";
 import CommentList from "@/components/boards/CommentList.vue";
+import { RouterLink } from "vue-router";
 
 export default {
   components: {

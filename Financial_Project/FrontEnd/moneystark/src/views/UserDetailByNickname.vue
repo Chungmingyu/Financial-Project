@@ -1,40 +1,42 @@
 <template>
   <div class="detail-page">
     <div v-if="user" class="user-info">
+      <button @click.prevent="$router.push({name:'BoardView'})">뒤로가기</button>
+      <br>
       <button>아니 아래 원래 나오는데 배경색때문에 안나오는거임</button>
       <h1>회원 정보</h1>
-      <p><strong>이름:</strong> {{ user.username }}</p>
+      <!-- <p><strong>이름:</strong> {{ user.username }}</p> -->
       <p><strong>닉네임:</strong> {{ user.nickname }}</p>
-      <p><strong>성별:</strong> {{ user.gender }}</p>
-      <p><strong>나이:</strong> {{ user.age }}</p>
-      <p><strong>이메일:</strong> {{ user.email }}</p>
+      <!-- <p><strong>성별:</strong> {{ user.gender }}</p> -->
+      <!-- <p><strong>나이:</strong> {{ user.age }}</p> -->
+      <!-- <p><strong>이메일:</strong> {{ user.email }}</p> -->
       <p><strong>칭호:</strong> {{ user.style }}</p>
 
       <div v-if="user.deposits" class="deposits-section">
         <hr />
-        <button class="modal-button" @click="openDepositsModal">가입한 예금 목록 보기</button>
+        <button class="modal-button" @click="openDepositsModal">{{ user.nickname}} 이/가 가입한 예금 목록 보기</button>
       </div>
 
       <div v-if="user.post" class="posts-section">
         <hr />
-        <button class="modal-button" @click="openPostsModal">내가 작성한 게시글 보기</button>
+        <button class="modal-button" @click="openPostsModal">{{ user.nickname}} 이/가 작성한 게시글 보기</button>
       </div>
 
-      <button class="secondary-button" @click="goToEditProfile">회원 정보 수정</button>
+      <!-- <button class="secondary-button" @click="goToEditProfile">회원 정보 수정</button> -->
     </div>
 
     <div v-else>
       <p>사용자 정보를 불러오는 중...</p>
     </div>
 
-    <div>
+    <!-- <div>
       <button class="secondary-button" @click="$router.push({ name: 'Surveys' })">칭호 생성하기</button>
-    </div>
+    </div> -->
 
     <!-- 가입한 예금 목록 모달 -->
     <div v-if="showDepositsModal" class="modal-overlay" @click.self="closeDepositsModal">
       <div class="modal-content">
-        <h2>가입한 예금 목록</h2>
+        <h2>{{ user.nickname}} 이/가 가입한 예금 목록</h2>
         <p v-for="deposit in user.deposits" :key="deposit.id">
           <div><strong>은행 이름:</strong> {{ deposit.deposit_product_kor_co_nm }}</div>
           <div><strong>예금 이름:</strong> {{ deposit.deposit_product_fin_prdt_nm }}</div>
@@ -49,7 +51,7 @@
     <!-- 내가 작성한 게시글 모달 -->
     <div v-if="showPostsModal" class="modal-overlay" @click.self="closePostsModal">
       <div class="modal-content">
-        <h2>내가 작성한 게시글</h2>
+        <h2>{{ user.nickname}} 이/가 작성한 게시글</h2>
         <p v-for="post in user.post" :key="post.id">
           <div><strong>게시글 번호:</strong> {{ post.id }}</div>
           <div><strong>게시글 제목:</strong> {{ post.title }}</div>

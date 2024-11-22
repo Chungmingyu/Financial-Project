@@ -19,6 +19,7 @@ import StockView from "../views/StockView.vue";
 import CoinData from "../components/stock/CoinData.vue";
 import Surveys from "../components/Surveys/Surveys.vue";
 import BoardsListItem from "../components/boards/BoardsListItem.vue";
+import UserDetailByNickname from "@/views/UserDetailByNickname.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -113,6 +114,12 @@ const router = createRouter({
       path: "/boards/:id",
       name: "BoardsListItem",
       component: BoardsListItem,
+    },
+    {
+      path: "/user/:nickname",
+      name: "UserDetailByNickname",
+      component: UserDetailByNickname,
+      props: true, // 닉네임을 props로 전달
     },
   ],
 });
