@@ -19,6 +19,7 @@ from dj_rest_auth.views import LoginView
 from django.contrib.auth import authenticate
 from .models import User
 from rest_framework.exceptions import NotFound
+from moneys.models import UserDeposit
 
 from dj_rest_auth.registration.views import RegisterView
 from rest_framework.permissions import AllowAny  # 모든 사용자가 접근 가능하게 설정
@@ -36,26 +37,11 @@ User = get_user_model()
 @api_view(['GET', 'PATCH'])
 def userdetail(request):
     if request.method == "GET":
-        # 현재 로그인한 사용자 정보 반환
-        user = User.objects.get(pk=request.user.pk)
+        user = request.user
+        serializer = CustomUserDetailsSerializer(user)  # UserSerializer 사용
+        print(serializer)
         print(user)
-        # data = request.data
-        # print(data)
-        print(request.user)
-        if not user.is_authenticated:
-            return Response({"error": "Authentication required."}, status=401)
-
-        user_data = {
-            "id": user.id,
-            "username": user.username,
-            "email": user.email,
-            "nickname": getattr(user, "nickname", ""),  # 추가 필드 포함
-            "gender": getattr(user, "gender", ""),
-            "age": getattr(user, "age", 0),
-            "style": getattr(user, "style")
-        }
-        print(user_data)
-        return Response(user_data)
+        return Response(serializer.data)
 
     elif request.method == "PATCH":
         user = User.objects.get(pk=request.user.pk)

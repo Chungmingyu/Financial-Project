@@ -133,6 +133,7 @@ class PostCreateAPIView(APIView):
             # serializer의 data를 request.data로 전달, context는 request를 추가
             serializer = PostSerializer(
                 data=request.data, context={'request': request})
+            print(serializer, '@@@@@@')
             # serializer['nickname'] = request.user.nickname
             if serializer.is_valid(raise_exception=True):
                 # User 객체를 찾고, 그것을 save()에 전달
