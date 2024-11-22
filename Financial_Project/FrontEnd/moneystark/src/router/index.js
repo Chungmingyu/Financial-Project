@@ -12,12 +12,12 @@ import UserDetailView from "@/views/UserDetailView.vue";
 import UserChangeView from "@/views/UserChangeView.vue";
 import NewsView from "@/views/NewsView.vue";
 // import StockComponent from "../components/stock/stockComponent.vue";
-import CoinComponent from "../components/stock/coinComponent.vue";
+// import CoinComponent from "../components/stock/coinComponent.vue";
 import BoardView from "../views/BoardView.vue";
 import BoardsCreate from "../components/boards/BoardsCreate.vue";
 import StockView from "../views/StockView.vue";
+import CoinData from "../components/stock/CoinData.vue";
 import Surveys from "../components/Surveys/Surveys.vue";
-
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -89,9 +89,11 @@ const router = createRouter({
     },
     {
       path: "/coin",
-      name: "CoinComponent",
-      component: CoinComponent,
-
+      name: "CoinData",
+      component: CoinData,
+      meta: { keepAlive: true },
+    },
+    {
       path: "/boards",
       name: "BoardView",
       component: BoardView,
@@ -100,7 +102,6 @@ const router = createRouter({
       path: "/boards/create",
       name: "BoardsCreate",
       component: BoardsCreate,
-
     },
     {
       path: "/surveys",
