@@ -275,21 +275,22 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
-# REST_FRAMEWORK 설정
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',  # 토큰 인증
+        'rest_framework.authentication.BasicAuthentication',  # 기본 인증
+        'rest_framework.authentication.SessionAuthentication',  # 세션 인증 추가
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
 }
 
+
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -300,6 +301,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'moneystark.urls'
 
+# CSRF Trusted Origins에 프론트엔드 주소 추가
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',  # 프론트엔드 개발 환경 도메인
+    'http://127.0.0.1:5173',  # 필요할 경우 추가
+]
+CORS_ALLOW_CREDENTIALS = True
 # 개발 환경에서만 True로 설정 가능 (보안 위험)
 CORS_ALLOW_ALL_ORIGINS = True
 # CORS_ALLOWED_ORIGINS =

@@ -19,7 +19,7 @@
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, RouterView } from "vue-router";
 import NavVarComponent from "./components/NavVar/NavVarComponent.vue";
 import LoadingComponent from "./components/NavVar/LoadingComponent.vue";
 import ChatBotView from "./views/ChatBotView.vue";

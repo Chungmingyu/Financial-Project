@@ -46,7 +46,7 @@ export const useUserStore = defineStore("user", {
       try {
         const response = await axiosInstance.get("accounts/user/");
         this.user = response.data;
-        // console.log(this.user)
+        console.log(this.user);
         // console.log("사용자 정보 가져오기 성공:", response.data);
       } catch (error) {
         console.error("사용자 정보 가져오기 실패:", error.response.data);

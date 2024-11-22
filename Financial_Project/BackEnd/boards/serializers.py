@@ -20,6 +20,21 @@ class PostSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         return obj.like_users.filter(pk=user.pk).exists() if user.is_authenticated else False
 
+
+# class PostDetailSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Post
+#         fields = ['id', 'title', 'content', 'author', 'created_at',
+#                   'updated_at', 'like_count', 'liked_by_user']
+#         read_only_fields = ['author']
+
+#     def get_like_count(self, obj):
+#         return obj.like_users.count()
+
+#     def get_liked_by_user(self, obj):
+#         user = self.context['request'].user
+#         return obj.like_users.filter(pk=user.pk).exists() if user.is_authenticated else False
+
     # def validate_author(self, value):
     #     User = get_user_model()
     #     try:

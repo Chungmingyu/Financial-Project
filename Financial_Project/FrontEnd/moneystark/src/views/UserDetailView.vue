@@ -1,11 +1,12 @@
 <template>
     <div v-if="user">
       <h1>회원 정보</h1>
-      <p>이름: {{ user.first_name }} {{ user.last_name }}</p>
+      <p>이름: {{ user.username}}</p>
       <p>닉네임: {{ user.nickname }}</p>
       <p>성별: {{ user.gender }}</p>
       <p>나이: {{ user.age }}</p>
       <p>이메일: {{ user.email }}</p>
+      <p>칭호: {{ user.style }}</p>
       <div v-if="user.deposits">
         <h4>가입한 예금 목록</h4>
       <p v-for="deposit in user.deposits">
@@ -20,6 +21,9 @@
     </div>
     <div v-else>
       <p>사용자 정보를 불러오는 중...</p>
+    </div>
+    <div>
+      <button @click="$router.push({name:'Surveys'})">칭호생성하기</button>
     </div>
   </template>
   

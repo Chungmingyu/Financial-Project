@@ -23,8 +23,7 @@ from django.http import JsonResponse
 
 def stock_data(request, symbol):
     api_key = settings.FINNHUB_API_KEY
-    search_url = f'https://finnhub.io/api/v1/quote?symbol={
-        symbol}&token={api_key}'
+    search_url = f'https://finnhub.io/api/v1/quote?symbol={symbol}&token={api_key}'
     print(search_url)
     search_response = requests.get(search_url)
     print(search_response)
@@ -168,10 +167,8 @@ def save_products(request):
     pageNo = '1'  # 조회하고자 하는 페이지 번호 Ex) 1, 2, 3
     financeCd = ''  # 금융회사 코드 또는 명 Ex) 0010587, 0010588, 0010722, 국민, 상호, 하나
 
-    deposit_url = f'http://finlife.fss.or.kr/finlifeapi/depositProductsSearch.json?auth={
-        api_key}&topFinGrpNo=020000&pageNo=1'
-    saving_url = f'http://finlife.fss.or.kr/finlifeapi/savingProductsSearch.json?auth={
-        api_key}&topFinGrpNo=020000&pageNo=1'
+    deposit_url = f'http://finlife.fss.or.kr/finlifeapi/depositProductsSearch.json?auth={api_key}&topFinGrpNo=020000&pageNo=1'
+    saving_url = f'http://finlife.fss.or.kr/finlifeapi/savingProductsSearch.json?auth={api_key}&topFinGrpNo=020000&pageNo=1'
     deposit_response = requests.get(deposit_url).json()
     saving_response = requests.get(saving_url).json()
     # pprint(response['result']['optionList'])

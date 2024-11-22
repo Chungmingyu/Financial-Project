@@ -16,16 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from accounts import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('moneys/', include('moneys.urls')),
     path('exchanges/', include('exchanges.urls')),
-    path('accounts/', include('dj_rest_auth.urls')),  # 기본 인증 URL
+    path('accounts/user/', views.userdetail),  # 사용자 정보 조회 및 업데이트
     path('accounts/signup/', include('dj_rest_auth.registration.urls')),  # 회원가입 관련 URL
     path('accounts/logout/', include('dj_rest_auth.urls')),  # 로그아웃 관련 URL
-    path('accounts/user/', include('dj_rest_auth.urls')),  # 사용자 정보 조회 및 업데이트
-    # path('accounts/')
+    path('accounts/', include('dj_rest_auth.urls')),  # 기본 인증 URL
     path('bankmap/', include('bankmap.urls')),
     path('surveys/', include('surveys.urls')),  # 설문지 관련 URL
     path('boards/', include('boards.urls')),  # boards 앱 연결
