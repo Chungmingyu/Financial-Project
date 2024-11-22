@@ -71,8 +71,8 @@ export default {
         return;
       }
       try {
-        // console.log(userstore.user);
-        const user_pk = userstore.user.id;
+        const user_pk = userstore.user.pk;
+        console.log(userstore.user);
         const response = await axiosInstance.post(
           `/boards/posts/${props.postId}/comments/`,
           {
@@ -95,7 +95,7 @@ export default {
 
     // 댓글 삭제하기
     const deleteComment = async (commentId) => {
-      const user_pk = userstore.user.id;
+      const user_pk = userstore.user.pk;
       try {
         const response = await axiosInstance.delete(`/boards/comments/${commentId}/delete/`, {
           data: {
