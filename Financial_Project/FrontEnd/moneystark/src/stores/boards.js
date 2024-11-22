@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import axiosInstance from "./api/userStore"; // axiosInstance import 경로 수정
 import { useUserStore } from "@/stores/user";
+import axios from "axios";
 
 export const usePostStore = defineStore("post", {
   state: () => ({
@@ -78,6 +79,20 @@ export const usePostStore = defineStore("post", {
         this.loading = false;
       }
     },
+    async deletePost(postId) {
+      try {
+        const response = await axiosInstance.delete(`/boards/delete`, {
+          data: { postId },
+        });
+        alert(response.data.message); // 성공 메시지
+        this.posts = this.posts.filter((post) => post.id !== postId);
+        this.post = null; // 현재 게시글 초기화
+      } catch (error) {
+        console.error("게시글 삭제 실패:", error);
+        throw error;
+      }
+    },
+    
 
     // 좋아요 토글
     async toggleLike(postId) {

@@ -21,7 +21,7 @@ urlpatterns = [
     path('<int:post_id>/like/', ToggleLikeAPIView.as_view(),
          name='toggle-like'),  # 좋아요
     path('create/', PostCreateAPIView.as_view(), name='create_post'),
-    path('delete/', PostDeleteAPIView.as_view(), name='delete_post'),
+    path('delete/', views.delete_post, name='delete_post'),
     path('posts/<int:post_id>/comments/',
          views.comment_view, name='comment-view'),
     path('comments/<int:comment_id>/delete/',

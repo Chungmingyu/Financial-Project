@@ -10,12 +10,25 @@
       <div v-if="user.deposits">
         <h4>가입한 예금 목록</h4>
       <p v-for="deposit in user.deposits">
+        <hr>
         <div>은행 이름 : {{ deposit.deposit_product_kor_co_nm }}</div>
         <div>예금 이름 : {{deposit.deposit_product_fin_prdt_nm}}</div>
         <div>넣은 금액 : {{ deposit.amount }}</div>
         <div>시작일 : {{ deposit.deposit_product_dcls_strt_day }}</div>
         <div>금리 : {{ deposit.deposit_product_mtrt_int }}</div>
       </p>
+      <div v-if="user.post">
+        <h4>내가 작성한 게시글</h4>
+        <p v-for="post in user.post">
+          <hr>
+          <!-- <div>{{ post }}</div> -->
+          <div>게시글 번호 : {{ post.id }}</div>
+          <div>게시글 제목 : {{ post.title }}</div>
+          <div>게시글 내용 : {{ post.content }}</div>
+          <div>작성한 날짜 : {{ post.created_at }}</div>
+          <div>받은 좋아요 : {{ post.like_count }}</div>
+        </p>
+      </div>
     </div>
       <button @click="goToEditProfile">회원 정보 수정</button>
     </div>

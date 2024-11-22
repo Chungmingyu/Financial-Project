@@ -38,7 +38,7 @@ User = get_user_model()
 def userdetail(request):
     if request.method == "GET":
         user = request.user
-        serializer = CustomUserDetailsSerializer(user)  # UserSerializer 사용
+        serializer = CustomUserDetailsSerializer(user, context={'request': request})  # UserSerializer 사용
         print(serializer)
         print(user)
         return Response(serializer.data)
