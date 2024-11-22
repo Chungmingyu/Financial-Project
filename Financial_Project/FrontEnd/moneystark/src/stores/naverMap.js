@@ -1,5 +1,9 @@
 import { defineStore } from "pinia";
 
+// import useNaverMapStore from "./naverMap";
+
+
+
 export const useNaverMapStore = defineStore("naverMap", {
   state: () => ({
     searchPlace: "", // 검색어
@@ -26,6 +30,8 @@ export const useNaverMapStore = defineStore("naverMap", {
       this.placesService = new kakao.maps.services.Places();
     },
     // 키워드로 장소 검색하고 목록으로 표출하기
+
+
 
     // 키워드로 장소 검색
     keywordSearch() {
@@ -59,12 +65,14 @@ export const useNaverMapStore = defineStore("naverMap", {
         map: this.map,
         position: new kakao.maps.LatLng(place.y, place.x),
       });
-
+      // console.log("@@@@@@@@@@@@@@@@@@@@@@@@");
+      console.log(place.place_name);
       // 마커 클릭 시 인포윈도우 표시
       kakao.maps.event.addListener(marker, "click", () => {
         console.log(this.infowindow);
         this.infowindow.setContent(`<div style="padding:5px;font-size:12px;">${place.place_name}</div>`);
         this.infowindow.open(this.map, marker);
+        console.log(this.infowindow);
       });
 
       // 마커를 배열에 추가
@@ -93,5 +101,35 @@ export const useNaverMapStore = defineStore("naverMap", {
     clearSearchPlace() {
       this.searchPlace = ""; // 검색어 초기화
     },
+
+
+    // 키워드로 장소 검색
+    keywordSearch() {
+      console.log("키워드서치");
+      if (this.searchPlace.trim() === "") {
+        alert("검색어를 입력해주세요.");
+        return;
+      }
+
+      // 이전에 생성된 마커들을 모두 제거
+      this.clearMarkers();
+
+      this.placesService.keywordSearch(this.searchPlace, (data, status) => {
+        // console.log(data);
+        if (status === kakao.maps.services.Status.OK) {
+          const bounds = new kakao.maps.LatLngBounds();
+          this.searchResults = data; // 검색 결과 저장
+          // console.log(searchResults);
+          for (let i = 0; i < data.length; i++) {
+            this.displayMarker(data[i], bounds);
+          }
+          this.map.setBounds(bounds);
+        } else {
+          alert("검색 결과가 없습니다.");
+        }
+      });
+    },
+
+
   },
 });

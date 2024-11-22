@@ -17,6 +17,7 @@
     </div>
   </div>
 </template>
+
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter, RouterView } from "vue-router";
@@ -58,6 +59,12 @@ onMounted(() => {
 </script>
 
 <style scoped>
+#app {
+  background-color: #1e1e1e; /* 어두운 배경색 추가 */
+  color: #ffffff; /* 텍스트 색상 흰색으로 설정 */
+  min-height: 100vh; /* 전체 화면 높이 설정 */
+}
+
 .app-container {
   min-height: 100vh;
   display: flex;
@@ -123,6 +130,7 @@ onMounted(() => {
   transform: scale(1);
   opacity: 1;
 }
+
 .app-container {
   position: relative;
   z-index: 1;
