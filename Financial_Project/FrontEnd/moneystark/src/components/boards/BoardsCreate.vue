@@ -23,13 +23,15 @@ export default {
     const postContentInput = ref("");
     const userStore = useUserStore();
     const userpk = userStore.fetchUser();
-    console.log(userpk);
-    console.log(userStore.user);
+    // console.log(userpk);
+    // console.log(userStore.user);
     const createPost = async (title, content) => {
       try {
         await postStore.createPost(title, content);
         console.log("Post created successfully");
-        console.log(userStore.value);
+        console.log(title, content);
+        console.log(userpk);
+        // console.log(userStore.value);
       } catch (error) {
         console.error("Create Post Error:", error);
       }
@@ -44,10 +46,10 @@ export default {
       userpk,
     };
   },
-  async mounted() {
-    const postStore = usePostStore();
-    await postStore.fetchPosts(); // 컴포넌트 마운트 시 게시글 불러오기
-  },
+  // async mounted() {
+  //   const postStore = usePostStore();
+  //   await postStore.fetchPosts(); // 컴포넌트 마운트 시 게시글 불러오기
+  // },
 };
 </script>
 

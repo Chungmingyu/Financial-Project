@@ -2,6 +2,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import PostListAPIView, PostCreateAPIView, PostDeleteAPIView, ToggleLikeAPIView
+from . import views
 
 # router = DefaultRouter()
 # router.register(r'posts', PostViewSet)
@@ -20,5 +21,9 @@ urlpatterns = [
     path('<int:post_id>/like/', ToggleLikeAPIView.as_view(),
          name='toggle-like'),  # 좋아요
     path('create/', PostCreateAPIView.as_view(), name='create_post'),
-    path('delete/', PostDeleteAPIView.as_view(), name='delete_post')
+    path('delete/', PostDeleteAPIView.as_view(), name='delete_post'),
+    path('posts/<int:post_id>/comments/',
+         views.comment_view, name='comment-view'),
+    path('comments/<int:comment_id>/delete/',
+         views.delete_comment, name='delete-comment'),
 ]

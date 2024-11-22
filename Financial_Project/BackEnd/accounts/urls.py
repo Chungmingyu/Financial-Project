@@ -12,7 +12,7 @@ urlpatterns = [
     path('signup/', RegisterView.as_view(), name='signup'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('user/', UserProfileView.as_view(), name='user'),
+    # path('user/', UserProfileView.as_view(), name='user'),
     path('user/update/', UserUpdateView.as_view(), name='user-update'),
     # 게시판 관련 뷰
     path('boards/', BoardListCreateView.as_view(), name='board-list-create'),

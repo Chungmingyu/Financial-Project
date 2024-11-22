@@ -21,6 +21,7 @@
 import { ref } from "vue";
 import axios from "axios"; // Axios import
 import { useSurveysStore } from "../../stores/surveys"; // Pinia store import
+import { useRoute, useRouter } from "vue-router";
 
 export default {
   name: "Survey",
@@ -120,7 +121,7 @@ export default {
     ]);
 
     const answers = ref(Array(questions.value.length).fill(null)); // 사용자의 답변 상태
-
+    const router = useRouter();
     const submitSurvey = () => {
       if (answers.value.includes(null)) {
         alert("모든 질문에 답변해 주세요.");
@@ -135,6 +136,7 @@ export default {
         .saveAnswers()
         .then(() => {
           alert("설문이 제출되었습니다!");
+          router.push({ name: "home" });
         })
         .catch((error) => {
           alert("설문 제출에 실패했습니다. 다시 시도해주세요.");

@@ -10,7 +10,10 @@
       <td><input v-model="formData.password" type="password" placeholder="Password" /></td>
     </tr>
     <tr>
-      <td><input type="checkbox" /> 로그인 정보 저장</td>
+      <td>
+        <input type="checkbox" />
+        로그인 정보 저장
+      </td>
     </tr>
     <tr>
       <td><input type="submit" value="Log in" class="btn" @click.prevent="handlerLogin" /></td>
@@ -22,15 +25,15 @@
 </template>
 
 <script>
-import { useUserStore } from '../stores/user';
-import { useRouter } from 'vue-router';
+import { useUserStore } from "../stores/user";
+import { useRouter } from "vue-router";
 
 export default {
   data() {
     return {
       formData: {
-        email: '', // 이메일 필드로 변경
-        password: '', // 비밀번호 필드
+        email: "", // 이메일 필드로 변경
+        password: "", // 비밀번호 필드
       },
     };
   },
@@ -40,7 +43,7 @@ export default {
 
     // 로그인되어 있으면 홈 화면으로 리다이렉트
     if (userStore.isLoggedIn) {
-      router.push({ name: 'home' });
+      router.push({ name: "home" });
     }
 
     return {
@@ -54,20 +57,20 @@ export default {
       try {
         // 로그인 시도
         const credentials = {
-          username: this.formData.email,  // 'email'을 'username' 필드에 담아서 로그인 요청
-          password: this.formData.password  // 비밀번호
+          username: this.formData.email, // 'email'을 'username' 필드에 담아서 로그인 요청
+          password: this.formData.password, // 비밀번호
         };
 
         await this.userStore.loginUser(credentials);
-        console.log('로그인 성공');
+        console.log("로그인 성공");
 
         // 로그인 후 페이지 새로고침 및 이전 페이지로 돌아가기
-        window.history.back();  // 이전 페이지로 돌아가기
+        window.history.back(); // 이전 페이지로 돌아가기
         window.location.reload(); // 페이지 새로고침
       } catch (error) {
-        console.error('로그인 실패:', error.response ? error.response.data : error);
+        console.error("로그인 실패:", error.response ? error.response.data : error);
       }
-    }
+    },
   },
 };
 </script>
@@ -80,8 +83,8 @@ table {
   font-size: 15px;
 }
 
-input[type='email'],
-input[type='password'] {
+input[type="email"],
+input[type="password"] {
   width: 250px;
   height: 32px;
   font-size: 15px;

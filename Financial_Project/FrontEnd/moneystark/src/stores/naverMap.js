@@ -1,5 +1,8 @@
 import { defineStore } from "pinia";
+
 // import useNaverMapStore from "./naverMap";
+
+
 
 export const useNaverMapStore = defineStore("naverMap", {
   state: () => ({
@@ -27,6 +30,35 @@ export const useNaverMapStore = defineStore("naverMap", {
       this.placesService = new kakao.maps.services.Places();
     },
     // 키워드로 장소 검색하고 목록으로 표출하기
+
+
+
+    // 키워드로 장소 검색
+    keywordSearch() {
+      console.log("키워드서치");
+      if (this.searchPlace.trim() === "") {
+        alert("검색어를 입력해주세요.");
+        return;
+      }
+
+      // 이전에 생성된 마커들을 모두 제거
+      this.clearMarkers();
+
+      this.placesService.keywordSearch(this.searchPlace, (data, status) => {
+        console.log(data);
+        if (status === kakao.maps.services.Status.OK) {
+          const bounds = new kakao.maps.LatLngBounds();
+          this.searchResults = data; // 검색 결과 저장
+          for (let i = 0; i < data.length; i++) {
+            this.displayMarker(data[i], bounds);
+          }
+          this.map.setBounds(bounds);
+        } else {
+          alert("검색 결과가 없습니다.");
+        }
+      });
+    },
+
     // 마커 표시
     displayMarker(place, bounds) {
       const marker = new kakao.maps.Marker({
@@ -70,6 +102,7 @@ export const useNaverMapStore = defineStore("naverMap", {
       this.searchPlace = ""; // 검색어 초기화
     },
 
+
     // 키워드로 장소 검색
     keywordSearch() {
       console.log("키워드서치");
@@ -96,5 +129,7 @@ export const useNaverMapStore = defineStore("naverMap", {
         }
       });
     },
+
+
   },
 });
