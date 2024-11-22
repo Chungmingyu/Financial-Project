@@ -20,31 +20,57 @@ from django.conf import settings
 from rest_framework.exceptions import ValidationError
 from django.http import JsonResponse
 
-def home_date(request):
+
+def home_data(request):
     api_key = settings.HOME_API_KEY
-    for page in range(37):
-        url = f'https://www.reb.or.kr/r-one/openapi/SttsApiTblData.do?KEY={api_key}&STATBL_ID=A_2024_00060&DTACYCLE_CD=MM&Type=json&pIndex={page}&pSize=1000'
+    house_types = {
+        'house': {'id': 'A_2024_00025', 'name': '주택종합'},
+        'apartment': {'id': 'A_2024_00060', 'name': '아파트'},
+        'row_house': {'id': 'A_2024_00095', 'name': '연립/다세대'},
+        'single_house': {'id': 'A_2024_00128', 'name': '단독주택'}
+    }
+
+    # URL 파라미터로 주택 유형 받기
+    house_type = request.GET.get('type', 'apartment')  # 기본값은 아파트
+    if house_type not in house_types:
+        return JsonResponse({'error': '잘못된 주택 유형'}, status=400)
+
+    saved_data = []
+    url = f'https://www.reb.or.kr/r-one/openapi/SttsApiTblData.do?KEY={api_key}&STATBL_ID={house_types[house_type]["id"]}&DTACYCLE_CD=MM&Type=json&pIndex=1&pSize=1000&START_WRTTIME=202410'
+
+    try:
         response = requests.get(url)
-        if response.status_code == 200:
-            data = response.json()
-            rows = data.get('SttsApiTblData', [])[1].get('row', [])
-            for row in rows:
-                location = row.get('CLS_NM')
-                location_full = row.get('CLS_FULLNM')
-                price = row.get('DTA_VAL')
-                if location and price:
-                    Apartment.objects.create(location=location, price=price)
-        else:
-            return JsonResponse({'error': 'Failed to fetch data from API'}, status=response.status_code)
-    return JsonResponse({'message': 'Data successfully saved to the database'})
+        response.raise_for_status()
+        data = response.json()
+        rows = data.get('SttsApiTblData', [])[1].get('row', [])
+
+        for row in rows:
+            location = row.get('CLS_NM')
+            location_full = row.get('CLS_FULLNM')
+            price = row.get('DTA_VAL')
+
+            if location and price:
+                saved_data.append({
+                    'type': house_types[house_type]['name'],
+                    'location': location,
+                    'location_full': location_full,
+                    'price': float(price)
+                })
+
+        return JsonResponse({
+            'message': '데이터를 성공적으로 불러왔습니다.',
+            'type': house_types[house_type]['name'],
+            'data': saved_data
+        })
+
+    except requests.RequestException as e:
+        return JsonResponse({'error': f'API 요청 실패: {str(e)}'}, status=500)
 
 
 def stock_data(request, symbol):
     api_key = settings.FINNHUB_API_KEY
     search_url = f'https://finnhub.io/api/v1/quote?symbol={symbol}&token={api_key}'
-    print(search_url)
     search_response = requests.get(search_url)
-    print(search_response)
     # 응답 상태 코드 확인
     if search_response.status_code != 200:
         return JsonResponse({'error': f"API 요청 실패: {search_response.status_code}"}, status=400)

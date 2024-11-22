@@ -19,6 +19,7 @@ import StockView from "../views/StockView.vue";
 import CoinData from "../components/stock/CoinData.vue";
 import Surveys from "../components/Surveys/Surveys.vue";
 import BoardsListItem from "../components/boards/BoardsListItem.vue";
+import HomeData from "../components/stock/HomeData.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -87,6 +88,11 @@ const router = createRouter({
       path: "/stock",
       name: "StockView",
       component: StockView,
+    },
+    {
+      path: "/homedata",
+      name: "HomeData",
+      component: HomeData,
     },
     {
       path: "/coin",
