@@ -1,6 +1,6 @@
 # accounts/urls.py
 from django.urls import path
-from .views import RegisterView, UserProfileView, UserUpdateView, UserUpdateView, BoardListCreateView, BoardDetailView, UserDepositListCreateView, UserDepositDeleteView
+from .views import RegisterView, UserProfileView, UserUpdateView, UserUpdateView, BoardListCreateView, BoardDetailView, UserDetailByNicknameView
 from dj_rest_auth.views import LoginView, LogoutView
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -12,6 +12,8 @@ urlpatterns = [
     path('signup/', RegisterView.as_view(), name='signup'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
+    path('user/<str:nickname>/', UserDetailByNicknameView.as_view(),
+         name='user-detail-by-nickname'),
     # path('user/', UserProfileView.as_view(), name='user'),
     path('user/update/', UserUpdateView.as_view(), name='user-update'),
     # 게시판 관련 뷰

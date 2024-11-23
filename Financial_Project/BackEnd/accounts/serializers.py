@@ -3,6 +3,8 @@ from rest_framework import serializers
 from dj_rest_auth.serializers import UserDetailsSerializer
 from .models import User
 from moneys.models import DepositProduct, SavingProduct, UserDeposit
+from boards.serializers import PostSerializer
+from boards.models import Post
 
 
 # accounts/serializers.py
@@ -87,6 +89,7 @@ class CustomUserDetailsSerializer(UserDetailsSerializer):
     nickname = serializers.CharField()
     gender = serializers.CharField()
     age = serializers.IntegerField()
+    
 
     class Meta:
         model = User
@@ -109,6 +112,12 @@ class CustomUserDetailsSerializer(UserDetailsSerializer):
                 user_deposits, many=True).data
         else:
             data['deposits'] = None
+        
+        user_posts = Post.objects.filter(author=instance)
+        if user_posts.exists():
+            data['post'] = PostSerializer(user_posts, many=True, context=self.context).data
+        
+        return data
 
         return data
 

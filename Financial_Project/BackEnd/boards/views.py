@@ -25,8 +25,30 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from .models import Post, Comment
 import json
+from rest_framework.decorators import api_view, permission_classes
 
 User = get_user_model()
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_post(request):
+    # 클라이언트에서 postId를 요청 본문에 전달한다고 가정
+    post_id = request.data.get('postId')
+
+    if not post_id:
+        return Response({'error': 'postId is required'}, status=400)
+
+    # Post 객체 가져오기
+    post = get_object_or_404(Post, pk=post_id)
+
+    # 권한 체크: 작성자인지 확인
+    if post.author != request.user:
+        return Response({'error': 'You do not have permission to delete this post.'}, status=403)
+
+    # 게시글 삭제
+    post.delete()
+    return Response({'message': 'Post deleted successfully.'}, status=200)
 
 
 @require_http_methods(["DELETE"])
@@ -120,6 +142,7 @@ class PostListAPIView(APIView):
         posts = Post.objects.all().order_by("-created_at")
         serializer = PostSerializer(
             posts, many=True, context={'request': request})
+        print(serializer.data)
         return Response(serializer.data)
 
 # 게시글 생성
@@ -170,31 +193,3 @@ class ToggleLikeAPIView(APIView):
             post.like_users.add(request.user)
         serializer = PostSerializer(post, context={'request': request})
         return Response(serializer.data)
-#         like, created = Like.objects.get_or_create(
-#             user=request.user, post=post)
-
-#         if not created:  # 이미 좋아요를 눌렀으면 삭제
-#             like.delete()
-#             liked = False
-#         else:  # 새로 좋아요 추가
-#             liked = True
-
-#         return Response({
-#             'liked': liked,
-#             'like_count': post.likes.count()
-    # })
-
-# 게시글 삭제
-
-
-class PostDeleteAPIView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def delete(self, request, post_id):
-        try:
-            post = Post.objects.get(
-                id=post_id, author=request.user)  # 본인이 작성한 글만 삭제 가능
-            post.delete()
-            return Response({"message": "Post deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-        except Post.DoesNotExist:
-            return Response({"error": "Post not found or not authorized"}, status=status.HTTP_404_NOT_FOUND)
