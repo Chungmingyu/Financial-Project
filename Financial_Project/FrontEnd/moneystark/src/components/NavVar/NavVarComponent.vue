@@ -2,19 +2,45 @@
   <header>
     <nav class="navbar bg-body-tertiary fixed-top" style="padding: 0" :class="{ hidden: isNavbarHidden }">
       <div class="container-fluid" style="padding: 0">
-        <a class="navbar-brand" style="padding: 0" @click.prevent="$router.push({ name: 'home' })"><img src="@/assets/logo_black.png" style="padding: 0; height: 100px" /></a>
-        <div style="display: flex; width: 600px; justify-content: space-between">
-          <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'ChartView' }" @click.prevent="$router.push({ name: 'ChartView' })">차트</button>
-          <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'CurrencyCalculatorView' }" @click.prevent="$router.push({ name: 'CurrencyCalculatorView' })">환율 계산기</button>
-          <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'ComparisonView' }" @click.prevent="$router.push({ name: 'ComparisonView' })">금리 비교</button>
-          <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'BankView' }" @click.prevent="$router.push({ name: 'BankView' })">근처 은행</button>
-          <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'ProductSuggestionView' }" @click.prevent="$router.push({ name: 'ProductSuggestionView' })">상품 추천</button>
-          <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'BankMapView' }" @click.prevent="$router.push({ name: 'BankMapView' })">지도</button>
-          <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'StockView' }" @click.prevent="$router.push({ name: 'StockView' })">주식 정보</button>
-          <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'CoinData' }" @click.prevent="$router.push({ name: 'CoinData' })">코인 정보</button>
-          <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'HomeData' }" @click.prevent="$router.push({ name: 'HomeData' })">아파트 정보</button>
-          <button class="btn geist-mono" :class="{ 'active-menu': $route.name === 'BoardView' }" @click.prevent="$router.push({ name: 'BoardView' })">자유 게시판</button>
+        <a class="navbar-brand" style="padding: 0" @click.prevent="$router.push({ name: 'home' })">
+          <img src="@/assets/logo_white.png" style="padding: 0; height: 100px" />
+        </a>
+
+        <!-- 메뉴 컨테이너 -->
+        <div class="menu-container">
+          <div class="menu-wrapper" :class="{ 'slide-left': !isStableMenu, 'slide-right': isStableMenu }">
+            <!-- 안정적 성향 메뉴 -->
+            <div class="menu-group">
+              <button
+                v-for="(item, index) in stableMenuItems"
+                :key="index"
+                class="btn geist-mono"
+                :class="{ 'active-menu': $route.name === item.route }"
+                @click.prevent="$router.push({ name: item.route })"
+              >
+                {{ item.text }}
+              </button>
+            </div>
+            <!-- 공격적 성향 메뉴 -->
+            <div class="menu-group">
+              <button
+                v-for="(item, index) in aggressiveMenuItems"
+                :key="index"
+                class="btn geist-mono"
+                :class="{ 'active-menu': $route.name === item.route }"
+                @click.prevent="$router.push({ name: item.route })"
+              >
+                {{ item.text }}
+              </button>
+            </div>
+          </div>
         </div>
+
+        <!-- 토글 버튼을 오른쪽으로 이동 -->
+        <button class="btn toggle-btn geist-mono" @click="toggleMenuType">
+          {{ isStableMenu ? "공격적 투자 메뉴" : "안정적 투자 메뉴" }}
+          <span class="toggle-icon" :class="{ rotate: !isStableMenu }">↔</span>
+        </button>
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon white"></span>
         </button>
@@ -83,6 +109,24 @@ export default {
     const isReveal2Visible = ref(false);
     const store = useUserStore();
     const router = useRouter();
+    const isStableMenu = ref(true); // 기본값은 안정적 메뉴
+    const stableMenuItems = [
+      { text: "금리 비교", route: "ComparisonView" },
+      { text: "상품 추천", route: "ProductSuggestionView" },
+      { text: "지도", route: "BankMapView" },
+      { text: "자유 게시판", route: "BoardView" },
+    ];
+
+    const aggressiveMenuItems = [
+      { text: "주식 정보", route: "StockView" },
+      { text: "코인 정보", route: "CoinData" },
+      { text: "아파트 정보", route: "HomeData" },
+      { text: "자유 게시판", route: "BoardView" },
+    ];
+
+    const toggleMenuType = () => {
+      isStableMenu.value = !isStableMenu.value;
+    };
 
     const navigateToLogin = () => {
       router.push({ name: "LogInView" });
@@ -162,6 +206,10 @@ export default {
       });
     });
     return {
+      stableMenuItems,
+      aggressiveMenuItems,
+      isStableMenu,
+      toggleMenuType,
       isNavbarHidden,
       gradientOpacity,
       isReveal1Visible,
@@ -177,100 +225,29 @@ export default {
 </script>
 
 <style>
-.navbar-toggler-icon {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+/* 색상 변수 정의 */
+:root {
+  --primary-color: #17BEBB;
+  --primary-dark: #139795;
+  --white: #ffffff;
+  --black: #333333;
+  --gray-light: #f5f5f5;
 }
 
+/* 기본 리셋 */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body {
-  font-family: Arial, sans-serif;
-}
-
-.scrollContent {
-  margin: 0 auto;
-  width: 100%;
-}
-
-#titlechart2 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100vw;
-  min-height: 100vh; /* 화면 크기만큼 영역을 채우도록 설정 */
-  background: linear-gradient(black, rgb(0, 0, 49));
-}
-
-.image-container {
-  position: relative;
-  width: 100%;
-  height: 100vh; /* 배경 이미지 영역을 화면 전체 크기만큼 설정 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  color: white;
-}
-
-.image-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.gradient-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%);
-  pointer-events: none;
-  z-index: 2;
-  transition: opacity 0.8s ease-in-out;
-}
-
-.box2 {
-  width: 100%;
-  height: 200px;
-  margin: 20px auto;
-  background-color: #ccc;
-  text-align: center;
-  line-height: 200px;
-  font-size: 24px;
-  opacity: 0;
-  transition: all 1s ease-in-out;
-}
-
-.box2.visible {
-  opacity: 1;
-}
-
-.blue {
-  background-color: #4e90ff;
-}
-
-.green {
-  background-color: #00d084;
-}
-
-.spacer {
-  height: 150px;
-}
-
+/* Navbar 기본 스타일 */
 .navbar {
   position: fixed;
   width: 100%;
   top: 0;
+  background-color: var(--white) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
 }
 
@@ -279,260 +256,123 @@ body {
   opacity: 0;
 }
 
-/* text 효과 */
-.texts {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  color: black;
-  font-size: 50px;
+/* 로고 스타일 */
+.navbar-brand {
+  padding: 0;
+  transition: transform 0.3s ease;
 }
 
-.texts span {
-  opacity: 0;
-  transform: translateY(20px); /* 화면 아래에서 시작 */
-  animation: fadeUp 3s forwards;
-  animation-delay: 0s; /* 처음부터 시작 */
+.navbar-brand:hover {
+  transform: scale(1.05);
 }
 
-.texts.active span {
-  animation-play-state: running;
-}
-
-@keyframes fadeUp {
-  0% {
-    opacity: 0;
-    transform: translateY(20px); /* 처음에 아래에 위치 */
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0); /* 끝날 때는 원래 위치로 */
-  }
-}
-
-.texts:nth-child(1) span {
-  animation-delay: 0s;
-}
-
-.texts:nth-child(2) span {
-  animation-delay: 0s;
-}
-
-.texts:nth-child(3) span {
-  animation-delay: 0s;
-}
-
-.geist-mono {
-  font-family: "Oswald", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 1000;
-  font-style: normal;
-}
-.btn {
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-.btn:focus {
-  box-shadow: none !important;
-}
-
-.active-menu {
-  color: #ffbf00; /* 선택된 메뉴 색상 */
-  font-weight: bold;
-}
-
-/* bootstrap의 기본 버튼 스타일 override */
-.btn:active,
-.btn:focus-visible {
-  outline: none !important;
-  box-shadow: none !important;
-}
-/*------------------------------------------------------------- */
-.navbar {
-  position: fixed;
-  width: 100%;
-  top: 0;
-  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out, background-color 0.3s ease;
-  backdrop-filter: blur(10px);
-  background-color: rgb(0, 0, 0) !important;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.navbar.hidden {
-  transform: translateY(-100%);
-  opacity: 0;
-}
-
-/* 네비게이션 버튼 스타일 */
+/* 메뉴 버튼 스타일 */
 .geist-mono {
   font-family: "Oswald", sans-serif;
   font-weight: 500;
-  font-size: 1rem;
+  color: var(--black);
   padding: 8px 16px;
-  transition: all 0.3s ease;
   position: relative;
-  color: #ffffff;
+  transition: color 0.3s ease;
 }
 
 .geist-mono::after {
   content: "";
   position: absolute;
-  width: 0;
-  height: 2px;
   bottom: 0;
   left: 50%;
-  background-color: #ffbf00;
+  width: 0;
+  height: 2px;
+  background-color: var(--primary-color);
   transition: all 0.3s ease;
   transform: translateX(-50%);
 }
 
 .geist-mono:hover {
-  color: #ffbf00;
+  color: var(--primary-color);
 }
 
 .geist-mono:hover::after {
   width: 80%;
 }
 
+/* 활성 메뉴 스타일 */
 .active-menu {
-  color: #ffbf00;
+  color: var(--primary-color);
 }
 
 .active-menu::after {
   width: 80%;
 }
 
-/* 로고 컨테이너 */
-.navbar-brand {
-  position: relative; /* 필요 시 사용 */
-  display: inline-block;
-  transition: all 0.3s ease; /* 부드러운 애니메이션 효과 */
-  font-weight: bold; /* 글자 두께 추가 */
-  font-size: 1.5em; /* 글자 크기 조정 */
+/* 토글 버튼 스타일 */
+.toggle-btn {
+  background: var(--white);
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  padding: 8px 16px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
 }
 
-.navbar-brand:hover {
-  transform: scale(1.05);
-  color: #ffbf00; /* 기존 호버 색상 유지 */
-  text-shadow: 0 0 10px #ffbf00, 0 0 20px #ffbf00, 0 0 30px #ffbf00; /* 글자 빛 효과 */
+.toggle-btn:hover {
+  background: var(--primary-color);
+  color: var(--white);
 }
 
-.navbar-brand:hover::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+/* 메뉴 컨테이너 스타일 */
+.menu-container {
+  flex: 1;
+  overflow: hidden;
+  margin: 0 20px;
+}
+
+.menu-wrapper {
+  display: flex;
   width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(255, 191, 0, 0.5), rgba(255, 191, 0, 0));
-  border-radius: 50%;
-  z-index: -1; /* 로고 뒤에 배치 */
-  filter: blur(20px); /* 부드러운 빛 퍼짐 효과 */
-  animation: glow 6s infinite ease-in-out; /* 빛나는 애니메이션 추가 */
+  transition: transform 0.5s ease;
 }
 
-@keyframes glow {
-  0%,
-  100% {
-    opacity: 0.4;
-  }
-  50% {
-    opacity: 1;
-  }
+.menu-wrapper.slide-left {
+  transform: translateX(-50%);
+}
+
+.menu-wrapper.slide-right {
+  transform: translateX(0);
+}
+
+.menu-group {
+  display: flex;
+  width: 50%;
+  justify-content: space-around;
+  align-items: center;
+}
+
+/* 오프캔버스 메뉴 스타일 */
+.offcanvas {
+  background-color: var(--white);
+  width: 300px !important;
+}
+
+.offcanvas-header {
+  border-bottom: 1px solid var(--gray-light);
 }
 
 /* 스크롤바 스타일 */
 ::-webkit-scrollbar {
-  height: 0; /* 아래쪽 스크롤바 숨기기 */
-  width: 12px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1f1f1f; /* 검은색 배경 */
+  background: var(--gray-light);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(145deg, #ffbf00, #ffd700); /* 노란색 그라데이션 */
-  border-radius: 6px;
-  border: 3px solid #1f1f1f; /* 검은색 테두리 */
+  background: var(--primary-color);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(145deg, #ffd700, #ffbf00); /* 호버 시 색상 반전 */
-}
-
-/* 마우스 커서 스타일 */
-body,
-button,
-input,
-select,
-textarea {
-  cursor: url("https://example.com/custom-cursor.png"), auto; /* 커스텀 커서 이미지 URL */
-}
-/* 햄버거 메뉴 스타일링 */
-.navbar-toggler {
-  border: none;
-  padding: 0.5rem;
-  color: white;
-}
-
-.navbar-toggler:focus {
-  box-shadow: none;
-}
-/* 
-오프캔버스 스타일링 */
-.offcanvas {
-  width: 300px !important; /* 너비 고정 */
-  height: 100vh !important; /* 높이 고정 */
-  z-index: 1045 !important; /* 최상위로 보이도록 */
-  position: fixed !important;
-  visibility: visible;
-  background-color: rgba(255, 255, 255, 0.98);
-  transform: none;
-}
-
-.offcanvas.offcanvas-end {
-  top: 0;
-  right: 0;
-  transform: translateX(100%);
-  transition: transform 0.3s ease-in-out;
-}
-
-.offcanvas.show {
-  transform: translateX(0) !important;
-}
-
-.offcanvas-header {
-  padding: 1rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.offcanvas-body {
-  padding: 1rem;
-  overflow-y: auto;
-}
-.navbar-brand {
-  width: 160px; /* 로고의 고정 너비 */
-  display: flex;
-  justify-content: flex-start;
-  transition: transform 0.3s ease;
-}
-
-/* 햄버거 버튼 컨테이너 스타일 추가 */
-.navbar-toggler {
-  width: 160px; /* 로고와 동일한 너비 */
-  display: flex;
-  justify-content: center;
-  border: none;
-  padding: 0.5rem;
-}
-
-/* 기존 스타일 유지 */
-.navbar-toggler:focus {
-  box-shadow: none;
+  background: var(--primary-dark);
 }
 </style>
