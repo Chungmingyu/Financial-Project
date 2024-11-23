@@ -120,5 +120,11 @@ class UserProfileView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-# 유저 업데이트 뷰
+# from rest_framework.decorators import permission_classes
+@api_view(['DELETE'])
+# @permission_classes([IsAuthenticated])
+def userdelete(request):
+    user = request.user
+    user.delete()
+    print('여긴오냐?')
+    return Response({"message": "회원탈퇴가 완료되었습니다."}, status=204)
