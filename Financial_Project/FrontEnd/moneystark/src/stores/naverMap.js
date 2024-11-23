@@ -66,7 +66,7 @@ export const useNaverMapStore = defineStore("naverMap", {
         position: new kakao.maps.LatLng(place.y, place.x),
       });
       // console.log("@@@@@@@@@@@@@@@@@@@@@@@@");
-      console.log(place.place_name);
+      // console.log(place.place_name);
       // 마커 클릭 시 인포윈도우 표시
       kakao.maps.event.addListener(marker, "click", () => {
         console.log(this.infowindow);
@@ -88,8 +88,15 @@ export const useNaverMapStore = defineStore("naverMap", {
       for (let i = 0; i < this.markers.length; i++) {
         this.markers[i].setMap(null);
       }
+    
       // 마커 배열 초기화
       this.markers = [];
+      console.log("마커가 초기화되었습니다.");
+    
+      // infowindow 초기화
+      if (this.infowindow) {
+        this.infowindow.close(); // 현재 열려 있는 infowindow 닫기
+      }
     },
 
     // 검색어 업데이트

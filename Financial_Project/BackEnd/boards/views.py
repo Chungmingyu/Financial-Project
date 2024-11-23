@@ -93,7 +93,7 @@ def comment_view(request, post_id):
     post = get_object_or_404(Post, id=post_id)
 
     if request.method == "GET":
-        comments = post.comments.all()
+        comments = post.comments.all().order_by('-created_at')  # 내림차순 정렬 추가
         comments_data = [
             {
                 "id": comment.id,
@@ -128,6 +128,7 @@ def comment_view(request, post_id):
                 "post_id": post.id,
                 "content": comment.content,
                 "author": comment.author.username,
+                "created_at": comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
             }
         }, status=201)
 

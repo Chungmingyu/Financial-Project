@@ -1,6 +1,7 @@
 <template>
   <div class="map-container">
     <div class="search-section">
+      <h4 class="do-hyeon-regular">은행을 검색해 보세요!</h4>
       <form @submit.prevent="handleSearch" class="search-form">
         <div class="search-box">
           <!-- 시/도 선택 -->
@@ -16,16 +17,20 @@
               {{ district }}
             </option>
           </select>
+          <!-- 은행 선택 -->
+          <select v-model="selectedBank" id="bank" class="form-control select-input">
+            <option value="">은행을 선택하세요</option>
+            <option v-for="bank in banks" :key="bank" :value="bank.name">{{ bank.name }}</option>
+          </select>
 
           <!-- 추가 검색어 입력 -->
-          <input type="text" v-model="searchPlaceInput" placeholder="은행명을 입력하세요" class="search-input" />
+          <!-- <input type="text" v-model="searchPlaceInput" placeholder="은행명을 입력하세요" class="search-input" /> -->
 
           <button class="search-button">
             <i class="fas fa-search"></i>
           </button>
         </div>
-        <p class="search-example">예시: 서울특별시 강남구 국민은행</p>
-      </form>
+        </form>
     </div>
 
     <div class="content-wrapper">
@@ -56,6 +61,7 @@
 <script>
 import { ref, onMounted, computed } from "vue";
 import { useNaverMapStore } from "@/stores/naverMap";
+import { useProductStore} from "@/stores/product"
 // import { RouterLink,RouterView } from 'vue-router';
 
 export default {
@@ -206,12 +212,32 @@ export default {
       경상남도: ["거제시", "거창군", "고성군", "김해시", "남해군", "밀양시", "사천시", "산청군", "양산시", "의령군", "진주시", "창녕군", "창원시", "통영시", "하동군", "함안군", "함양군", "합천군"],
       제주특별자치도: ["서귀포시", "제주시"],
     });
-
+    const banks = ref([
+  { name: "우리은행", url: "https://www.wooribank.com", logo: "https://simg.wooribank.com/img/intro/header/h1_01.png" },
+  { name: "한국스탠다드차타드은행", url: "https://www.standardchartered.co.kr", logo: "https://www.standardchartered.co.kr/np/assets/images/kr/base/chb_log_reb.png" },
+  { name: "아이엠뱅크", url: "https://www.imbank.co.kr/dgb_ebz_main.jsp", logo: "https://www.imbank.co.kr/img/common/main/ebz_top_dgb_logo_up.png?v=20240607" },
+  { name: "부산은행", url: "https://www.busanbank.co.kr", logo: "https://blog.kakaocdn.net/dn/18TFu/btqyWKDIInm/GfE8079nzAF9txBlV71XS0/img.jpg" },
+  { name: "광주은행", url: "https://www.kjbank.com", logo: "https://imgs.kjbank.com/resource/img/common/logo.png" },
+  { name: "제주은행", url: "https://www.jejubank.co.kr", logo: "https://i.namu.wiki/i/DLhrLR38bUexuN_K8jiwwCqAo5gi2nEc7NmDI_MabOpop-ZWaI0G3KYRmjqyf8-7Crc0rv047buDbEChYyFqcQ.svg" },
+  { name: "전북은행", url: "https://www.jbbank.co.kr/", logo: "https://www.jbbank.co.kr/img/common/renew-logo.png" },
+  { name: "경남은행", url: "https://www.knbank.com", logo: "https://i.namu.wiki/i/dw9S4Oh4zaH3jLwxF8JixDMrQ36XQAJOTBMu0C4sLZ6f6NERx8dnsb5_sCY0DOHF4SuuNOJ7lLe4H1DfNyZjsQ.svg" },
+  { name: "중소기업은행", url: "https://www.ibk.co.kr", logo: "https://www.ibk.co.kr/img/navigation/h1_logo_sub.gif" },
+  { name: "한국산업은행", url: "https://www.kdb.co.kr", logo: "https://blog.kakaocdn.net/dn/SMJ1N/btqDjHIMQ0r/jAKsKJ2lT2XhGiEIsvZGN0/img.jpg" },
+  { name: "국민은행", url: "https://www.kbstar.com", logo: "https://blog.kakaocdn.net/dn/bYyqeR/btqwFAWAKWf/wXPLrundPBKPrhtXgr0Iv1/img.jpg" },
+  { name: "신한은행", url: "https://www.shinhan.com", logo: "https://i.namu.wiki/i/Etmt-wojOBWr5gVcPR0qrTxuej558yfzzyYr0xXYSxljpLuEdPWGSPi-aPdJHQrpZY2o7zvuUMb4PE6PvFjQ3Q.svg" },
+  { name: "농협은행주식회사", url: "https://www.nonghyup.com", logo: "https://blog.kakaocdn.net/dn/bDOvRh/btqyXx4zjvs/gb3v21tHkeCYrozbCH0AYk/img.jpg" },
+  { name: "하나은행", url: "https://www.kebhana.com", logo: "https://image.kebhana.com/cont/common/img/newmain2021/logo.png" },
+  { name: "주식회사 케이뱅크", url: "https://www.kbanknow.com", logo: "https://www.kbanknow.com/resource/img/reform/layout/logo_kbank.png" },
+  { name: "수협은행", url: "https://suhyup-bank.com", logo: "https://suhyup-bank.com/images/sub_new_main/img_logo.png" },
+  { name: "한국씨티은행", url: "https://www.citibank.co.kr", logo: "https://i.namu.wiki/i/MejG2B28te9lfxBlpdWqCguVOnCa6zvyxJrf2u4KamJ7l8lXOG3rCMUyURui3PZhNbcH4aA6CKQK0JMbRjb8kQ.svg" },
+  { name: "주식회사 카카오뱅크", url: "https://www.kakaobank.com", logo: "https://i.namu.wiki/i/tcO6LsmBe-rB-laaABweXNy9TaTU1fruiJaYVH39cCCZzg054tDwfbSmzsOvDU_zVZCJZzPS_YRe7vdgED3xQA.svg" },
+  { name: "토스뱅크 주식회사", url: "https://www.tossbank.com", logo: "https://static.toss.im/icons/png/4x/logo-bank-blue.png" },
+]);
     const mapStore = useNaverMapStore();
     const searchPlace = ref(mapStore.searchPlace);
     const searchResults = computed(() => mapStore.searchResults); // 검색 결과 가져오기
     const searchPlaceSave = ref("");
-    const searchPlaceInput = ref("");
+    const selectedBank = ref("");
     const selectedCity = ref("");
     const selectedDistrict = ref("");
     console.log(searchResults);
@@ -229,7 +255,7 @@ export default {
     });
 
     const handleSearch = () => {
-      searchPlace.value = selectedCity.value + selectedDistrict.value + searchPlaceInput.value;
+      searchPlace.value = selectedCity.value + selectedDistrict.value + selectedBank.value;
       console.log(searchPlace.value);
       mapStore.setSearchPlace(searchPlace.value); // 검색어 업데이트
       mapStore.keywordSearch(); // 검색 실행
@@ -247,13 +273,61 @@ export default {
       districts,
       selectedCity,
       selectedDistrict,
-      searchPlaceInput,
+      // searchPlaceInput,
+      banks,
+      // bankSet,
+      selectedBank
     };
   },
 };
 </script>
 
 <style scoped>
+.select-input {
+  margin-left: 20px; /* 왼쪽 여백 */
+  padding: 12px 16px; /* 내부 여백 */
+  font-size: 16px; /* 글자 크기 */
+  color: #17bebb; /* 텍스트 색상 */
+  border: 2px solid #17bebb; /* 테두리 색상 */
+  border-radius: 10px; /* 둥근 모서리 */
+  background-color: white; /* 배경색 흰색 */
+  outline: none; /* 포커스 시 기본 외곽선 제거 */
+  transition: all 0.3s ease; /* 부드러운 애니메이션 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 살짝 그림자 */
+  appearance: none; /* 기본 드롭다운 화살표 제거 */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* 포커스 시 스타일 */
+.select-input:focus {
+  border-color: #17bebb; /* 포커스 시 테두리 색상 유지 */
+  box-shadow: 0 0 10px rgba(23, 190, 187, 0.5); /* 포커스 시 그림자 강조 */
+}
+
+/* 비활성화 상태 */
+.select-input:disabled {
+  background-color: #f2f2f2; /* 비활성화 시 배경색 */
+  color: #999; /* 비활성화 시 텍스트 색상 */
+  cursor: not-allowed; /* 비활성화 시 커서 */
+  border-color: #ccc; /* 비활성화 시 테두리 색상 */
+}
+
+/* 드롭다운 화살표 커스터마이즈 */
+.select-input {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%2317bebb' d='M2 0L0 2h4z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center; /* 드롭다운 화살표 위치 */
+  background-size: 10px;
+}
+
+/* 호버 효과 */
+.select-input:hover {
+  border-color: #15a8a3; /* 테두리 색상 조금 어둡게 */
+  box-shadow: 0 0 8px rgba(23, 190, 187, 0.5); /* 호버 시 그림자 */
+  cursor: pointer; /* 포인터 커서 */
+}
+
 .map-container {
   max-width: 1200px;
   margin: 2rem auto;
@@ -265,7 +339,7 @@ export default {
 }
 
 .search-form {
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
 }
 
@@ -275,12 +349,14 @@ export default {
   background: white;
   border-radius: 50px;
   padding: 0.5rem;
+  width: 100%;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .search-input {
   flex: 1;
   border: none;
+  margin-left: 20px;
   padding: 0.8rem 1.5rem;
   font-size: 1rem;
   border-radius: 25px;
@@ -391,4 +467,11 @@ export default {
     max-height: 50vh;
   }
 }
+.do-hyeon-regular {
+  text-align: center;
+  font-family: 'Do Hyeon', sans-serif; /* 구글 폰트 'Do Hyeon' 적용 */
+  font-weight: 400; /* 기본 굵기 */
+  font-style: normal; /* 기본 스타일 */
+}
+
 </style>

@@ -1,30 +1,28 @@
 <template>
-  <div>
+  <div class="comment-container">
     <!-- 댓글 목록 -->
-    <div v-if="loading">Loading comments...</div>
-    <div v-else-if="error">{{ error }}</div>
+    <div v-if="loading" class="loading">Loading comments...</div>
+    <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else>
-      <h3>댓글 목록</h3>
-      <ul>
-        <li v-for="comment in comments" :key="comment.id">
-          <p>
-            <strong>{{ comment.author }}</strong>
-            : {{ comment.content }}
-          </p>
-          <p>
-            <small>{{ comment.created_at }}</small>
-          </p>
+      <h3 class="comment-title">댓글 목록</h3>
+      <ul class="comment-list">
+        <li v-for="comment in comments" :key="comment.id" class="comment-item">
+          <div class="comment-header">
+            <strong class="comment-author">{{ comment.author }}</strong>
+            <small class="comment-date">{{ comment.created_at }}</small>
+          </div>
+          <p class="comment-content">{{ comment.content }}</p>
           <!-- 삭제 버튼 추가 -->
-          <button @click="deleteComment(comment.id)">삭제</button>
+          <button class="delete-button" @click="deleteComment(comment.id)">삭제</button>
         </li>
       </ul>
     </div>
 
     <!-- 댓글 추가 폼 -->
     <div class="add-comment">
-      <h3>댓글 추가하기</h3>
-      <textarea v-model="newComment" placeholder="댓글을 입력하세요..."></textarea>
-      <button @click="addComment">댓글 추가</button>
+      <!-- <h3 class="add-comment-title">댓글 추가하기</h3> -->
+      <input v-model="newComment" placeholder="댓글 남기기" class="comment-textarea"></input>
+      <button @click="addComment" class="add-comment-button">댓글 추가</button>
     </div>
   </div>
 </template>
@@ -72,7 +70,6 @@ export default {
       }
       try {
         const user_pk = userstore.user.pk;
-        console.log(userstore.user);
         const response = await axiosInstance.post(
           `/boards/posts/${props.postId}/comments/`,
           {
@@ -85,7 +82,7 @@ export default {
             },
           }
         );
-        comments.value.push(response.data.comment); // 새 댓글 목록에 추가
+        comments.value.unshift(response.data.comment); // 새 댓글 목록에 추가
         newComment.value = ""; // 입력 필드 초기화
       } catch (err) {
         error.value = "댓글 추가에 실패했습니다.";
@@ -97,7 +94,7 @@ export default {
     const deleteComment = async (commentId) => {
       const user_pk = userstore.user.pk;
       try {
-        const response = await axiosInstance.delete(`/boards/comments/${commentId}/delete/`, {
+        await axiosInstance.delete(`/boards/comments/${commentId}/delete/`, {
           data: {
             user_pk: user_pk,
           },
@@ -128,20 +125,172 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped>/* 컨테이너 스타일 */
+.comment-container {
+margin-top: 30px;
+padding: 20px;
+background: #f9f9f9;
+border-radius: 15px;
+box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+max-height: 500px; /* 최대 높이 설정 */
+overflow-y: auto; /* 스크롤 기능 추가 */
+}
+
+/* 로딩 및 에러 메시지 */
+.loading,
+.error {
+text-align: center;
+font-size: 18px;
+color: #555;
+margin: 20px 0;
+}
+
+/* 댓글 목록 제목 */
+.comment-title {
+font-size: 22px;
+font-weight: bold;
+margin-bottom: 15px;
+color: #333;
+}
+
+/* 댓글 목록 스타일 */
+.comment-list {
+list-style: none;
+padding: 0;
+margin: 0;
+height: 150px; /* 원하는 고정 높이로 설정 */
+overflow-y: auto; /* 스크롤 기능 추가 */
+}
+
+.comment-item {
+background: white;
+padding: 15px;
+border-radius: 10px;
+margin-bottom: 15px;
+box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.comment-item:hover {
+transform: translateY(-3px);
+box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.comment-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 8px;
+}
+
+.comment-author {
+font-size: 16px;
+font-weight: bold;
+color: #17bebb;
+}
+
+.comment-date {
+font-size: 14px;
+color: #888;
+}
+
+.comment-content {
+font-size: 16px;
+color: #333;
+line-height: 1.6;
+}
+
+/* 삭제 버튼 스타일 */
+.delete-button {
+background: #ff4d4d;
+color: white;
+border: none;
+border-radius: 8px;
+padding: 5px 10px;
+font-size: 14px;
+cursor: pointer;
+transition: background 0.3s, transform 0.2s;
+margin-top: 10px;
+}
+
+.delete-button:hover {
+background: #e63e3e;
+transform: translateY(-2px);
+}
+
+/* 댓글 추가 섹션 */
 .add-comment {
-  margin-top: 20px;
+margin-top: 30px;
+padding-top: 20px;
+border-top: 1px solid #e6e6e6;
 }
 
-textarea {
-  width: 100%;
-  height: 80px;
-  margin-bottom: 10px;
+.add-comment-title {
+font-size: 20px;
+font-weight: bold;
+margin-bottom: 10px;
+color: #333;
 }
 
-button {
-  padding: 10px 20px;
-  cursor: pointer;
-  margin: 5px;
+.comment-textarea {
+width: 100%;
+height: 100px;
+padding: 10px;
+font-size: 16px;
+border: 1px solid #ccc;
+border-radius: 10px;
+margin-bottom: 10px;
+outline: none;
+transition: border-color 0.3s, box-shadow 0.3s;
 }
+
+.comment-textarea:focus {
+border-color: #17bebb;
+box-shadow: 0 0 8px rgba(23, 190, 187, 0.2);
+}
+
+/* 댓글 추가 버튼 스타일 */
+.add-comment-button {
+background: #17bebb;
+color: white;
+border: none;
+border-radius: 8px;
+padding: 10px 20px;
+font-size: 16px;
+cursor: pointer;
+transition: background 0.3s, box-shadow 0.2s;
+}
+
+.add-comment-button:hover {
+background: #139e9c;
+box-shadow: 0 4px 8px rgba(19, 158, 156, 0.4);
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+.comment-container {
+padding: 15px;
+}
+
+.comment-title,
+.add-comment-title {
+font-size: 18px;
+}
+
+.comment-item {
+padding: 10px;
+}
+
+.comment-textarea {
+height: 50px;
+}
+
+.delete-button,
+.add-comment-button {
+padding: 4px 9px;
+font-size: 14px;
+}
+}
+
+
 </style>

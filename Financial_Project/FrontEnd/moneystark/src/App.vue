@@ -144,4 +144,9 @@ onMounted(() => {
   position: relative;
   z-index: 1;
 }
+
+/* 네브바 제거 */
+.modal-open .navbar {
+  display: none;
+}
 </style>

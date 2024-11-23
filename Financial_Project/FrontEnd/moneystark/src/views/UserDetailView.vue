@@ -1,48 +1,43 @@
 <template>
   <div class="detail-page">
     <div v-if="user" class="user-info">
-      <button @click="deleteUser">회원탈퇴</button>
-      <button>아니 아래 원래 나오는데 배경색때문에 안나오는거임</button>
-      <h1>회원 정보</h1>
-      <p><strong>이름:</strong> {{ user.username }}</p>
-      <p><strong>닉네임:</strong> {{ user.nickname }}</p>
-      <p><strong>성별:</strong> {{ user.gender }}</p>
-      <p><strong>나이:</strong> {{ user.age }}</p>
-      <p><strong>이메일:</strong> {{ user.email }}</p>
-      <p><strong>칭호:</strong> {{ user.style }}</p>
+      <div class="header">
+        <h1>회원 정보</h1>
+        <button class="delete-button" @click="deleteUser">회원탈퇴</button>
+      </div>
+      <div class="user-details">
+        <p><strong>이름:</strong> {{ user.username }}</p>
+        <p><strong>닉네임:</strong> {{ user.nickname }}</p>
+        <p><strong>성별:</strong> {{ user.gender }}</p>
+        <p><strong>나이:</strong> {{ user.age }}</p>
+        <p><strong>이메일:</strong> {{ user.email }}</p>
+        <p><strong>칭호:</strong> {{ user.style }}</p>
+      </div>
 
-      <div v-if="user.deposits" class="deposits-section">
-        <hr />
+      <div class="action-buttons">
         <button class="modal-button" @click="openDepositsModal">가입한 예금 목록 보기</button>
-      </div>
-
-      <div v-if="user.post" class="posts-section">
-        <hr />
         <button class="modal-button" @click="openPostsModal">내가 작성한 게시글 보기</button>
+        <button class="secondary-button" @click="goToEditProfile">회원 정보 수정</button>
+        <button class="secondary-button" @click="$router.push({ name: 'Surveys' })">칭호 생성하기</button>
       </div>
-
-      <button class="secondary-button" @click="goToEditProfile">회원 정보 수정</button>
     </div>
 
-    <div v-else>
+    <div v-else class="loading">
       <p>사용자 정보를 불러오는 중...</p>
-    </div>
-
-    <div>
-      <button class="secondary-button" @click="$router.push({ name: 'Surveys' })">칭호 생성하기</button>
     </div>
 
     <!-- 가입한 예금 목록 모달 -->
     <div v-if="showDepositsModal" class="modal-overlay" @click.self="closeDepositsModal">
       <div class="modal-content">
         <h2>가입한 예금 목록</h2>
-        <p v-for="deposit in user.deposits" :key="deposit.id">
-          <div><strong>은행 이름:</strong> {{ deposit.deposit_product_kor_co_nm }}</div>
-          <div><strong>예금 이름:</strong> {{ deposit.deposit_product_fin_prdt_nm }}</div>
-          <div><strong>넣은 금액:</strong> {{ deposit.amount }}</div>
-          <div><strong>시작일:</strong> {{ deposit.deposit_product_dcls_strt_day }}</div>
-          <div><strong>금리:</strong> {{ deposit.deposit_product_mtrt_int }}</div>
-        </p>
+        <div v-for="deposit in user.deposits" :key="deposit.id" class="deposit-item">
+          <p><strong>은행 이름:</strong> {{ deposit.deposit_product_kor_co_nm }}</p>
+          <p><strong>예금 이름:</strong> {{ deposit.deposit_product_fin_prdt_nm }}</p>
+          <p><strong>넣은 금액:</strong> {{ deposit.amount }}</p>
+          <p><strong>시작일:</strong> {{ deposit.deposit_product_dcls_strt_day }}</p>
+          <p><strong>금리:</strong> {{ deposit.deposit_product_mtrt_int }}</p>
+          <hr />
+        </div>
         <button class="close-button" @click="closeDepositsModal">닫기</button>
       </div>
     </div>
@@ -51,13 +46,14 @@
     <div v-if="showPostsModal" class="modal-overlay" @click.self="closePostsModal">
       <div class="modal-content">
         <h2>내가 작성한 게시글</h2>
-        <p v-for="post in user.post" :key="post.id">
-          <div><strong>게시글 번호:</strong> {{ post.id }}</div>
-          <div><strong>게시글 제목:</strong> {{ post.title }}</div>
-          <div><strong>게시글 내용:</strong> {{ post.content }}</div>
-          <div><strong>작성일:</strong> {{ post.created_at }}</div>
-          <div><strong>좋아요:</strong> {{ post.like_count }}</div>
-        </p>
+        <div v-for="post in user.post" :key="post.id" class="post-item">
+          <p><strong>게시글 번호:</strong> {{ post.id }}</p>
+          <p><strong>게시글 제목:</strong> {{ post.title }}</p>
+          <p><strong>게시글 내용:</strong> {{ post.content }}</p>
+          <p><strong>작성일:</strong> {{ post.created_at }}</p>
+          <p><strong>좋아요:</strong> {{ post.like_count }}</p>
+          <hr />
+        </div>
         <button class="close-button" @click="closePostsModal">닫기</button>
       </div>
     </div>
@@ -71,25 +67,27 @@ import { useRouter } from "vue-router";
 
 export default {
   setup() {
-    const userStore = useUserStore(); // Pinia store 인스턴스 가져오기
-    const user = ref(null); // 사용자 정보
-    const error = ref(null); // 에러 상태 관리
-    const router = useRouter(); // 라우터 사용
+    const userStore = useUserStore();
+    const user = ref(null);
+    const error = ref(null);
+    const router = useRouter();
 
     // 모달 상태
     const showDepositsModal = ref(false);
     const showPostsModal = ref(false);
+
     const deleteUser = async () => {
       if (confirm('정말로 회원탈퇴 하시겠습니까?')) {
-        await userStore.deleteUser()
-        router.push({name:"home"})
+        await userStore.deleteUser();
+        router.push({ name: "home" });
       }
-    }
+    };
+
     // 사용자 정보를 가져오는 함수
     const fetchUserData = async () => {
       try {
-        await userStore.fetchUser(); // 사용자 정보 가져오기
-        user.value = userStore.user; // 사용자 정보 저장
+        await userStore.fetchUser();
+        user.value = userStore.user;
       } catch (err) {
         error.value = "사용자 정보를 불러오는 데 실패했습니다.";
         console.error(err);
@@ -128,7 +126,7 @@ export default {
       closeDepositsModal,
       openPostsModal,
       closePostsModal,
-      deleteUser
+      deleteUser,
     };
   },
 };
@@ -138,68 +136,102 @@ export default {
 /* 전체 페이지 스타일 */
 .detail-page {
   font-family: 'Arial', sans-serif;
-  background-color: #f9f9f9;
-  padding: 20px;
+  background-color: #f0f2f5;
+  padding: 30px;
   max-width: 800px;
-  margin: auto;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin: 40px auto;
+  border-radius: 10px;
+}
+
+/* 로딩 상태 */
+.loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #555;
 }
 
 /* 회원 정보 섹션 */
 .user-info {
   background: #fff;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  margin-bottom: 20px;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
+.user-info .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .user-info h1 {
-  font-size: 1.5rem;
+  font-size: 2rem;
   color: #333;
-  margin-bottom: 15px;
 }
-.user-info p {
+
+.user-info .delete-button {
+  background-color: #ff4d4f;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
   font-size: 1rem;
-  margin-bottom: 10px;
-  line-height: 1.5;
+  transition: background-color 0.3s ease;
 }
-.user-info strong {
+
+.user-info .delete-button:hover {
+  background-color: #d9363e;
+}
+
+.user-details {
+  margin-top: 20px;
+}
+
+.user-details p {
+  font-size: 1.1rem;
+  margin-bottom: 12px;
   color: #555;
 }
 
-/* 예금 및 게시글 섹션 버튼 */
-.deposits-section, .posts-section {
-  margin: 15px 0;
-}
-.modal-button {
-  padding: 10px 15px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.modal-button:hover {
-  background-color: #45a049;
+.user-details strong {
+  color: #333;
 }
 
-/* 추가 버튼 스타일 */
+.action-buttons {
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+/* 버튼 스타일 */
+.modal-button,
 .secondary-button {
-  padding: 10px 15px;
-  background-color: #007BFF;
-  color: white;
+  padding: 12px 20px;
   border: none;
   border-radius: 5px;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 }
+
+.modal-button {
+  background-color: #1890ff;
+  color: #fff;
+}
+
+.modal-button:hover {
+  background-color: #40a9ff;
+}
+
+.secondary-button {
+  background-color: #52c41a;
+  color: #fff;
+}
+
 .secondary-button:hover {
-  background-color: #0056b3;
+  background-color: #73d13d;
 }
 
 /* 모달 스타일 */
@@ -218,30 +250,90 @@ export default {
 
 .modal-content {
   background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  width: 80%;
-  max-width: 500px;
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  text-align: left;
 }
+
 .modal-content h2 {
-  margin-bottom: 15px;
-  font-size: 1.5rem;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  color: #333;
+  text-align: center;
+}
+
+.modal-content .deposit-item,
+.modal-content .post-item {
+  margin-bottom: 20px;
+}
+
+.modal-content .deposit-item p,
+.modal-content .post-item p {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.modal-content strong {
   color: #333;
 }
-.modal-content p {
-  margin: 10px 0;
-}
-.close-button {
-  background-color: #d9534f;
-  color: white;
-  padding: 10px 15px;
-  border-radius: 5px;
+
+.modal-content hr {
   border: none;
-  cursor: pointer;
+  border-top: 1px solid #e8e8e8;
+  margin: 15px 0;
 }
+
+.close-button {
+  display: block;
+  margin: 20px auto 0;
+  background-color: #ff7875;
+  color: #fff;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
 .close-button:hover {
-  background-color: #c9302c;
+  background-color: #ff4d4f;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  .user-info {
+    padding: 20px;
+  }
+
+  .user-info h1 {
+    font-size: 1.5rem;
+  }
+
+  .user-details p {
+    font-size: 1rem;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .modal-content {
+    padding: 20px;
+  }
+
+  .modal-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .modal-content .deposit-item p,
+  .modal-content .post-item p {
+    font-size: 0.9rem;
+  }
 }
 </style>
