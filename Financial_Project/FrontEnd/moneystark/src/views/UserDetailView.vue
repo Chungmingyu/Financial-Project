@@ -1,6 +1,7 @@
 <template>
   <div class="detail-page">
     <div v-if="user" class="user-info">
+      <button @click="deleteUser">회원탈퇴</button>
       <button>아니 아래 원래 나오는데 배경색때문에 안나오는거임</button>
       <h1>회원 정보</h1>
       <p><strong>이름:</strong> {{ user.username }}</p>
@@ -78,7 +79,12 @@ export default {
     // 모달 상태
     const showDepositsModal = ref(false);
     const showPostsModal = ref(false);
-
+    const deleteUser = async () => {
+      if (confirm('정말로 회원탈퇴 하시겠습니까?')) {
+        await userStore.deleteUser()
+        router.push({name:"home"})
+      }
+    }
     // 사용자 정보를 가져오는 함수
     const fetchUserData = async () => {
       try {
@@ -122,6 +128,7 @@ export default {
       closeDepositsModal,
       openPostsModal,
       closePostsModal,
+      deleteUser
     };
   },
 };

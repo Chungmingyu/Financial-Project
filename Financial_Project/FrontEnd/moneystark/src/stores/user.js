@@ -9,6 +9,8 @@ export const useUserStore = defineStore("user", {
     isLoggedIn: (state) => !!state.token,
   },
   actions: {
+    // 회원탈퇴
+    // 회원조회
     async registerUser(formData, router) {
       console.log("폼 데이터:", formData);
       try {
@@ -58,6 +60,22 @@ export const useUserStore = defineStore("user", {
       this.user = null;
       localStorage.removeItem("authToken"); // 로컬 스토리지에서 토큰 삭제
       console.log("로그아웃 성공");
+    },
+
+    async deleteUser() {
+      try {
+        const response = await axiosInstance.delete('accounts/delete/');
+        alert(response.data.message);
+        console.log(response.data.message)
+        useUserStore.logout
+        this.user = null; // 회원 탈퇴 후 유저 정보를 초기화
+        this.token = null
+        localStorage.removeItem("authToken");
+        // router.push({name: 'home'})
+      } catch (error) {
+        console.error('회원탈퇴 중 오류 발생:', error);
+        alert('회원탈퇴에 실패했습니다.');
+      }
     },
     async updateUser(updatedData, router) {
       try {
