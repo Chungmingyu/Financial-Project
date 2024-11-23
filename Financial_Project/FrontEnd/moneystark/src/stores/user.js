@@ -59,7 +59,7 @@ export const useUserStore = defineStore("user", {
       localStorage.removeItem("authToken"); // 로컬 스토리지에서 토큰 삭제
       console.log("로그아웃 성공");
     },
-    async updateUser(updatedData) {
+    async updateUser(updatedData, router) {
       try {
         // PATCH 요청을 사용하여 필요한 정보만 수정하도록 수정
         const response = await axiosInstance.patch("accounts/user/", updatedData, {
@@ -71,6 +71,7 @@ export const useUserStore = defineStore("user", {
         // 서버에서 수정된 사용자 정보를 받아와서 상태를 갱신
         this.user = response.data;
         console.log("사용자 정보 업데이트 성공:", response.data);
+        router.push({ name: "UserDetailView" });
       } catch (error) {
         // 오류 처리: 응답 데이터가 있을 경우와 없을 경우를 구분하여 출력
         console.error("사용자 정보 수정 실패:", error.response ? error.response.data : error);

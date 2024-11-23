@@ -15,6 +15,7 @@
 import { usePostStore } from "@/stores/boards";
 import { ref } from "vue";
 import { useUserStore } from "../../stores/user";
+import { useRouter } from "vue-router";
 
 export default {
   setup() {
@@ -23,11 +24,12 @@ export default {
     const postContentInput = ref("");
     const userStore = useUserStore();
     const userpk = userStore.fetchUser();
+    const router = useRouter();
     // console.log(userpk);
     // console.log(userStore.user);
     const createPost = async (title, content) => {
       try {
-        await postStore.createPost(title, content);
+        await postStore.createPost(title, content, router);
         console.log("Post created successfully");
         console.log(title, content);
         console.log(userpk);

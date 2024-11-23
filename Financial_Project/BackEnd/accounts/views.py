@@ -12,7 +12,7 @@ from rest_framework.authentication import TokenAuthentication, BasicAuthenticati
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import Http404
-from rest_framework.views import APIView
+from rest_framework.views import APIView, View
 from .serializers import CustomUserDetailsSerializer, CustomRegisterSerializer
 from .serializers import CustomUserUpdateSerializer
 from dj_rest_auth.views import LoginView
@@ -23,8 +23,9 @@ from moneys.models import UserDeposit
 
 from dj_rest_auth.registration.views import RegisterView
 from rest_framework.permissions import AllowAny  # 모든 사용자가 접근 가능하게 설정
+from django.http import JsonResponse
 
-
+from django.shortcuts import get_object_or_404
 # views.py
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -34,11 +35,25 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
+class UserDetailByNicknameView(View):
+    def get(self, request, nickname):
+        user = get_object_or_404(User, nickname=nickname)  # 닉네임으로 사용자 조회
+        return JsonResponse({
+            "id": user.id,
+            "username": user.username,
+            "nickname": user.nickname,
+            "email": user.email,
+            "gender": user.gender,
+            "age": user.age,
+        })
+
+
 @api_view(['GET', 'PATCH'])
 def userdetail(request):
     if request.method == "GET":
         user = request.user
-        serializer = CustomUserDetailsSerializer(user)  # UserSerializer 사용
+        serializer = CustomUserDetailsSerializer(
+            user, context={'request': request})  # UserSerializer 사용
         print(serializer)
         print(user)
         return Response(serializer.data)

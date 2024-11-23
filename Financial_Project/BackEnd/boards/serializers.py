@@ -6,10 +6,12 @@ from django.contrib.auth import get_user_model
 class PostSerializer(serializers.ModelSerializer):
     like_count = serializers.SerializerMethodField(read_only=True)
     liked_by_user = serializers.SerializerMethodField(read_only=True)
+    nickname = serializers.SerializerMethodField(
+        read_only=True)  # nickname 필드 추가
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'content', 'author', 'created_at',
+        fields = ['id', 'title', 'content', 'author', 'nickname', 'created_at',
                   'updated_at', 'like_count', 'liked_by_user']
         read_only_fields = ['author']
 
@@ -19,6 +21,9 @@ class PostSerializer(serializers.ModelSerializer):
     def get_liked_by_user(self, obj):
         user = self.context['request'].user
         return obj.like_users.filter(pk=user.pk).exists() if user.is_authenticated else False
+
+    def get_nickname(self, obj):
+        return obj.author.nickname  # author에서 nickname 가져오기
 
 
 # class PostDetailSerializer(serializers.ModelSerializer):

@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import axiosInstance from "./api/userStore"; // axiosInstance import 경로 수정
 import { useUserStore } from "@/stores/user";
+import axios from "axios";
+import { useRouter } from "vue-router";
 
 export const usePostStore = defineStore("post", {
   state: () => ({
@@ -38,10 +40,10 @@ export const usePostStore = defineStore("post", {
           content: comment,
         });
         const newComment = response.data.comment;
-        console.log(newComment)
+        console.log(newComment);
         if (!this.comments[postId]) {
           this.comments[postId] = [];
-          console.log('댓글에 작성자id가 없음')
+          console.log("댓글에 작성자id가 없음");
         }
         this.comments[postId].push(newComment);
         return newComment;
@@ -78,6 +80,20 @@ export const usePostStore = defineStore("post", {
         this.loading = false;
       }
     },
+    async deletePost(postId) {
+      try {
+        const response = await axiosInstance.delete(`/boards/delete`, {
+          data: { postId },
+        });
+        // alert(response.data.message); // 성공 메시지
+        this.posts = this.posts.filter((post) => post.id !== postId);
+        this.post = null; // 현재 게시글 초기화
+        window.location.reload();
+      } catch (error) {
+        console.error("게시글 삭제 실패:", error);
+        throw error;
+      }
+    },
 
     // 좋아요 토글
     async toggleLike(postId) {
@@ -111,15 +127,15 @@ export const usePostStore = defineStore("post", {
     },
 
     // 게시글 생성
-    async createPost(title, content) {
+    async createPost(title, content, router) {
       this.error = null;
       try {
         // console.log('@@@@@@@@@@@@@@@@@@@@@@@@')
         const userStore = useUserStore();
         const userPk = userStore.user?.pk; // 로그인된 사용자 ID 가져오기
-        console.log(userPk)
+        console.log(userPk);
         if (!userPk) {
-          console.log("유저pk없음")
+          console.log("유저pk없음");
           throw new Error("User is not logged in");
         }
 
@@ -128,8 +144,10 @@ export const usePostStore = defineStore("post", {
           content,
           author: userPk, // 사용자 ID 전달
         });
-        console.log(response)
+        console.log(response);
         this.posts.unshift(response.data); // 새 게시글을 목록 맨 앞에 추가
+        router.push({ name: "BoardView" }); // 뒤로 가기
+        console.log("ㅁㄴㅇㄻㄴㅇㄻㄴㄹ");
       } catch (error) {
         this.error = error.response?.data || "Failed to create post";
       }
