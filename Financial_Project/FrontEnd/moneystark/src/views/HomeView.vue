@@ -29,6 +29,24 @@
           </div>
         </div>
       </section>
+      <!-- swiper -->
+      <div class="carousel-container">
+      <!-- 왼쪽 버튼 -->
+      <button class="carousel-button" @click="moveLeft">◀</button>
+
+      <!-- 슬라이드 영역 -->
+      <div class="carousel-content">
+        <Card
+          v-for="(item, index) in items"
+          :key="index"
+          :translate-x="translateX"
+          :item="item"
+        />
+      </div>
+
+      <!-- 오른쪽 버튼 -->
+      <button class="carousel-button" @click="moveRight">▶</button>
+    </div>
 
       <!-- 통계 섹션 -->
       <section class="stats-section">
@@ -83,11 +101,20 @@ import { gsap } from "gsap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
 import NavVarComponent from "@/components/NavVar/NavVarComponent.vue";
+import { Swiper, SwiperSlide } from 'swiper/vue';
+
+// Import Swiper styles
+// import './style.css';
+
+// import required modules
+import { Pagination } from 'swiper/modules';
 
 export default {
   name: "App",
   components: {
     NavVarComponent,
+    Swiper,
+      SwiperSlide,
   },
   setup() {
     const isNavbarHidden = ref(false);
@@ -182,6 +209,42 @@ export default {
       { value: "50+", label: "은행 제휴" },
       { value: "24/7", label: "고객 지원" },
     ];
+    // CAROUSEL COMPONENT
+    const items = ref([
+      "Slide 1",
+      "Slide 2",
+      "Slide 3",
+      "Slide 4",
+      "Slide 5",
+    ]); // 슬라이드 내용
+
+    const currentIndex = ref(0); // 현재 슬라이드 인덱스
+    const translateX = ref(0); // X축 이동값
+
+    // 왼쪽 버튼 클릭
+    const moveLeft = () => {
+      if (currentIndex.value > 0) {
+        currentIndex.value--;
+        translateX.value += 300; // 카드 하나의 너비만큼 이동
+      }
+    };
+
+    // 오른쪽 버튼 클릭
+    const moveRight = () => {
+      if (currentIndex.value < items.value.length - 1) {
+        currentIndex.value++;
+        translateX.value -= 300; // 카드 하나의 너비만큼 이동
+      }
+    };
+
+    // 카드 스타일 계산
+    const getCardStyle = (index) => {
+      return {
+        transform: `translateX(${translateX.value}px)`,
+        transition: "transform 0.3s ease-in-out",
+      };
+    };
+
     return {
       features,
       stats,
@@ -189,11 +252,63 @@ export default {
       gradientOpacity,
       isReveal1Visible,
       isReveal2Visible,
+      items,
+      currentIndex,
+      translateX,
+      moveLeft,
+      moveRight,
+      getCardStyle,
+      // modules: [Pagination],
     };
   },
 };
 </script>
 <style scoped>
+/*  */
+.carousel-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 50px;
+}
+
+/* 좌우 버튼 스타일 */
+.carousel-button {
+  background: #444;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.carousel-button:hover {
+  background: #666;
+}
+
+/* 슬라이드 영역 */
+.carousel-content {
+  display: flex;
+  overflow: hidden;
+  width: 300px; /* 카드 하나의 너비 */
+}
+
+/* 각 카드 스타일 */
+.card {
+  flex: 0 0 300px; /* 카드 하나의 너비 */
+  height: 200px; /* 카드 높이 */
+  margin: 0 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #eee;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+/*  */
 template {
   background: linear-gradient(to bottom, black, blue);
   height: 200vh; /* 페이지가 길게 스크롤되도록 */
