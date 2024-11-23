@@ -26,4 +26,5 @@ urlpatterns = [
          views.check_user_subscription, name='check_user_subscription'),
     path('stock_data/<str:symbol>/', views.stock_data, name='stock_data'),
     path('coin_data/', views.coin_data, name='coin_data'),
+    path('home_data/', views.home_data, name='home_data'),
 ]
