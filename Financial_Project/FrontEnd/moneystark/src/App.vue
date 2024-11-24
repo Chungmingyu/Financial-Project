@@ -1,16 +1,22 @@
 <template>
   <div id="app" class="relative">
+    <!-- 로딩 컴포넌트 -->
     <div v-if="loading">
       <LoadingComponent />
     </div>
+    <!-- 애플리케이션 컨텐츠 -->
     <div v-else class="app-container">
+      <!-- Navbar -->
       <NavVarComponent />
+      <!-- 메인 컨텐츠 -->
       <main class="main-content">
         <RouterView />
       </main>
+      <!-- 챗봇 버튼 -->
       <div v-if="!showChatbot" class="chatbot-button" @click="toggleChatbot">
         <span>💬</span>
       </div>
+      <!-- 챗봇 팝업 -->
       <div :class="['chatbot-popup', { active: showChatbot }]">
         <ChatBotView @close="toggleChatbot" />
       </div>
@@ -24,6 +30,7 @@ import { useRouter, RouterView } from "vue-router";
 import NavVarComponent from "./components/NavVar/NavVarComponent.vue";
 import LoadingComponent from "./components/NavVar/LoadingComponent.vue";
 import ChatBotView from "./views/ChatBotView.vue";
+import { useProductStore } from "@/stores/product";
 
 const loading = ref(true);
 const showChatbot = ref(false);
@@ -33,6 +40,7 @@ const toggleChatbot = () => {
   showChatbot.value = !showChatbot.value;
 };
 
+const productStore = useProductStore();
 onMounted(() => {
   const hasLoaded = localStorage.getItem("hasLoaded");
 
@@ -45,11 +53,7 @@ onMounted(() => {
   } else {
     loading.value = false;
   }
-});
-import { useProductStore } from "@/stores/product";
 
-const productStore = useProductStore();
-onMounted(() => {
   if (!productStore.isDataSaved) {
     productStore.savedata();
     productStore.isDataSaved = true;
@@ -59,25 +63,22 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* App 기본 스타일 */
 #app {
-  /* background-color: #1e1e1e; 어두운 배경색 추가 */
-  /* color: #ffffff; 텍스트 색상 흰색으로 설정 */
-  min-height: 100vh; /* 전체 화면 높이 설정 */
+  min-height: 100vh; /* 화면 전체를 채움 */
 }
 
-.app-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
+/* 메인 컨텐츠 */
 .main-content {
-  margin-top: 100px;
   flex: 1;
   width: 100%;
   position: relative;
+  /* Navbar 높이에 의한 마진 제거 */
+  margin-top: 0;
+  z-index: 1;
 }
 
+/* 챗봇 버튼 스타일 */
 .chatbot-button {
   position: fixed;
   bottom: 20px;
@@ -100,11 +101,6 @@ onMounted(() => {
 .chatbot-button:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-}
-
-.chatbot-button:active {
-  transform: scale(1.1);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
 }
 
 .chatbot-popup {
@@ -131,22 +127,10 @@ onMounted(() => {
   opacity: 1;
 }
 
+/* Navbar 높이에 따른 간격 제거 */
 .app-container {
   position: relative;
   z-index: 1;
-}
-
-.chatbot-popup {
-  z-index: 1000;
-}
-
-.main-content {
-  position: relative;
-  z-index: 1;
-}
-
-/* 네브바 제거 */
-.modal-open .navbar {
-  display: none;
+  padding-top: 0; /* Navbar 높이에 의한 패딩 제거 */
 }
 </style>
