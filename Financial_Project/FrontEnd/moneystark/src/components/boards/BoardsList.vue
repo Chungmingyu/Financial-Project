@@ -2,9 +2,7 @@
   <div class="boards-container">
     <!-- 상단 버튼 -->
     <div class="top-bar">
-      <button class="create-button" @click.prevent="$router.push({ name: 'BoardsCreate' })">
-        + 새 게시글 작성
-      </button>
+      <button class="create-button" @click.prevent="$router.push({ name: 'BoardsCreate' })">+ 새 게시글 작성</button>
     </div>
 
     <!-- 로딩 또는 오류 메시지 -->
@@ -23,30 +21,24 @@
         </div>
         <div class="post-footer">
           <!-- 좋아요 버튼 -->
-          <button
-            class="like-button"
-            :class="{ liked: isLikedByUser(post.id) }"
-            @click="toggleLike(post.id)"
-          >
+          <button class="like-button" :class="{ liked: isLikedByUser(post.id) }" @click="toggleLike(post.id)">
             {{ isLikedByUser(post.id) ? "♥ 좋아요 취소" : "♡ 좋아요" }} ({{ getLikeCount(post.id) }})
           </button>
 
           <!-- 자세히 보기 버튼 -->
-          <button class="detail-button" @click="openPostDetail(post.id)" >
-            자세히 보기
-          </button>
+          <button class="detail-button" @click="openPostDetail(post.id)">자세히 보기</button>
         </div>
       </li>
     </ul>
 
     <!-- 모달 -->
     <Teleport to="body">
-    <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
-      <div class="modal-content">
-        <BoardsListItem :post-id="selectedPostId" @close="closeModal" />
+      <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
+        <div class="modal-content">
+          <BoardsListItem :post-id="selectedPostId" @close="closeModal" />
+        </div>
       </div>
-    </div>
-  </Teleport>
+    </Teleport>
   </div>
 </template>
 
@@ -75,14 +67,14 @@ export default {
     const openPostDetail = (postId) => {
       selectedPostId.value = postId;
       showModal.value = true;
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     };
 
     // 모달 닫기
     const closeModal = () => {
       showModal.value = false;
       selectedPostId.value = null;
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
 
     // 게시글 목록 불러오기
@@ -123,11 +115,13 @@ export default {
 /* 컨테이너 스타일 */
 .boards-container {
   max-width: 800px;
+  position: relative;
   margin: 20px auto;
   padding: 20px;
   background: #f9f9f9;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  /* z-index: -1; */
 }
 
 /* 상단 버튼 스타일 */

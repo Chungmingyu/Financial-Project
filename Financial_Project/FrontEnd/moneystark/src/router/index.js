@@ -22,7 +22,6 @@ import BoardsListItem from "../components/boards/BoardsListItem.vue";
 import HomeData from "../components/stock/HomeData.vue";
 import UserDetailByNickname from "@/views/UserDetailByNickname.vue";
 
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
