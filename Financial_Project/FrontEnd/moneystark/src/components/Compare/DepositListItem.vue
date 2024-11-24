@@ -2,7 +2,10 @@
   <div class="deposit-detail-container">
     <!-- 헤더 섹션 -->
     <header class="header">
-      <button @click="$emit('back')" class="back-button">← 뒤로가기</button>
+      <button @click="$emit('back')" class="back-button">
+        <i class="mdi mdi-arrow-left"></i>
+        뒤로가기
+      </button>
       <!-- 은행 로고 -->
       <img v-if="currentBank" :src="currentBank.logo" class="bank-logo" alt="은행 로고" />
     </header>
@@ -12,90 +15,121 @@
       <h1>{{ deposit.fin_prdt_nm }}</h1>
       <h2>{{ deposit.kor_co_nm }}</h2>
       <div class="highest-rate">
-        <span>최고 금리: <strong>{{ highestRate.toFixed(2) }}%</strong> ({{ highestRateTerm }}개월)</span>
+        <span>
+          최고 금리:
+          <strong>{{ highestRate.toFixed(2) }}%</strong>
+          <template v-if="highestRateTerm > 0"> ({{ highestRateTerm }}개월)</template>
+        </span>
       </div>
       <div class="button-group">
         <button v-if="isLoggedIn" @click="joinProduct(deposit.id, depositAmount)" class="join-button">
+          <i class="mdi mdi-account-check"></i>
           가입하기
         </button>
-        <button @click="goToOfficialSite" class="official-site-button">공식 홈페이지</button>
-        <button @click="showNewsPopup" class="news-button">관련 뉴스</button>
+        <button @click="goToOfficialSite" class="official-site-button">
+          <i class="mdi mdi-bank"></i>
+          공식 홈페이지
+        </button>
+        <button @click="showNewsPopup" class="news-button">
+          <i class="mdi mdi-newspaper"></i>
+          관련 뉴스
+        </button>
       </div>
     </section>
 
     <!-- 상품 안내 섹션 -->
     <section class="deposit-info">
-      <h3>상품 안내</h3>
+      <h3>
+        <i class="mdi mdi-information-outline"></i>
+        상품 안내
+      </h3>
       <div class="info-list">
         <div class="info-item">
-          <span class="label">가입 방법</span>
-          <span class="value">{{ deposit.join_way || '정보 없음' }}</span>
+          <span class="label">
+            <i class="mdi mdi-login"></i>
+            가입 방법
+          </span>
+          <span class="value">{{ deposit.join_way || "정보 없음" }}</span>
         </div>
         <div class="info-item">
-          <span class="label">우대 조건</span>
-          <span class="value">{{ deposit.spcl_cnd || '정보 없음' }}</span>
+          <span class="label">
+            <i class="mdi mdi-star"></i>
+            우대 조건
+          </span>
+          <span class="value">{{ deposit.spcl_cnd || "정보 없음" }}</span>
         </div>
         <div class="info-item">
-          <span class="label">가입 제한</span>
-          <span class="value">{{ deposit.join_deny || '정보 없음' }}</span>
+          <span class="label">
+            <i class="mdi mdi-alert-circle"></i>
+            가입 제한
+          </span>
+          <span class="value">{{ deposit.join_deny || "정보 없음" }}</span>
         </div>
         <div class="info-item">
-          <span class="label">가입 대상</span>
-          <span class="value">{{ deposit.join_member || '정보 없음' }}</span>
+          <span class="label">
+            <i class="mdi mdi-account-group"></i>
+            가입 대상
+          </span>
+          <span class="value">{{ deposit.join_member || "정보 없음" }}</span>
         </div>
         <div class="info-item">
-          <span class="label">최고 한도</span>
-          <span class="value">{{ deposit.max_limit || '제한 없음' }}</span>
+          <span class="label">
+            <i class="mdi mdi-cash"></i>
+            최고 한도
+          </span>
+          <span class="value">{{ deposit.max_limit || "제한 없음" }}</span>
         </div>
         <div class="info-item">
-          <span class="label">기타 유의사항</span>
-          <span class="value">{{ deposit.etc_note || '정보 없음' }}</span>
+          <span class="label">
+            <i class="mdi mdi-note-text"></i>
+            기타 유의사항
+          </span>
+          <span class="value">{{ deposit.etc_note || "정보 없음" }}</span>
         </div>
       </div>
     </section>
 
     <!-- 금리 계산기 섹션 -->
     <section class="rate-calculator">
-      <h3>이자 계산기</h3>
+      <h3>
+        <i class="mdi mdi-calculator"></i>
+        이자 계산기
+      </h3>
       <div class="calculator-form">
-        <label for="depositAmount">예치 금액 (원)</label>
-        <input
-          type="number"
-          id="depositAmount"
-          v-model.number="depositAmount"
-          @input="calculateInterest"
-          placeholder="예: 10,000,000"
-        />
+        <label for="depositAmount">
+          <i class="mdi mdi-currency-krw"></i>
+          예치 금액 (원)
+        </label>
+        <input type="number" id="depositAmount" v-model.number="depositAmount" @input="calculateInterest" placeholder="예: 10,000,000" />
         <div class="rate-buttons">
-          <button
-            :class="{ selected: selectedRate === highestRate }"
-            @click="selectRate(highestRate)"
-          >
-            최고 금리 적용
-          </button>
-          <button
-            :class="{ selected: selectedRate === basicRate }"
-            @click="selectRate(basicRate)"
-          >
-            기본 금리 적용
-          </button>
+          <button :class="{ selected: selectedRateType === 'highest' }" @click="selectRate(highestRate, 'highest')">최고 우대금리 {{ highestRate.toFixed(2) }}% ({{ selectedTerm }}개월)</button>
+          <button :class="{ selected: selectedRateType === 'basic' }" @click="selectRate(basicRate, 'basic')">기본금리 {{ basicRate.toFixed(2) }}% ({{ selectedTerm }}개월)</button>
         </div>
         <div v-if="selectedRate !== null" class="calculation-result">
-          <p>예상 이자: <strong>{{ calculatedInterest.toLocaleString() }}원</strong></p>
-          <p>세전 총액: <strong>{{ (depositAmount + calculatedInterest).toLocaleString() }}원</strong></p>
+          <p>
+            예상 이자:
+            <strong>{{ calculatedInterest.toLocaleString() }}원</strong>
+          </p>
+          <p>
+            세전 총액:
+            <strong>{{ (depositAmount + calculatedInterest).toLocaleString() }}원</strong>
+          </p>
         </div>
       </div>
     </section>
 
     <!-- 금리 정보 테이블 -->
     <section class="rate-info">
-      <h3>금리 정보</h3>
+      <h3>
+        <i class="mdi mdi-chart-line"></i>
+        금리 정보
+      </h3>
       <table class="rate-table">
         <thead>
           <tr>
             <th>예치 기간 (개월)</th>
             <th>금리 유형</th>
-            <th>금리</th>
+            <th>기본 금리</th>
             <th>최고 우대 금리</th>
           </tr>
         </thead>
@@ -104,26 +138,36 @@
             <td>{{ option.save_trm }}</td>
             <td>{{ option.intr_rate_type_nm }}</td>
             <td>{{ option.intr_rate }}%</td>
-            <td>{{ option.intr_rate2 }}%</td>
+            <td>{{ option.intr_rate2 || option.intr_rate }}%</td>
           </tr>
         </tbody>
       </table>
     </section>
 
     <!-- 뉴스 팝업 -->
-    <div v-if="isNewsPopupVisible" class="news-popup">
-      <div class="news-popup-content">
-        <NewsView :query="newsQuery" @update:query="updateNewsQuery" />
-        <button @click="closeNewsPopup" class="close-popup-button">닫기</button>
+    <div v-if="isNewsPopupVisible" class="news-popup-overlay">
+      <div class="news-popup">
+        <header class="news-popup-header">
+          <h3>
+            <i class="mdi mdi-newspaper"></i>
+            관련 뉴스
+          </h3>
+          <button @click="closeNewsPopup" class="close-button">
+            <i class="mdi mdi-close"></i>
+          </button>
+        </header>
+        <div class="news-popup-body">
+          <NewsView :query="newsQuery" @update:query="updateNewsQuery" />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useDepositStore } from '@/stores/deposit';
-import NewsView from '@/views/NewsView.vue';
+import { ref, computed, onMounted } from "vue";
+import { useDepositStore } from "@/stores/deposit";
+import NewsView from "@/views/NewsView.vue";
 
 const store = useDepositStore();
 const props = defineProps({
@@ -135,10 +179,11 @@ const depositAmount = ref(10000000); // 기본값: 1,000만원
 const calculatedInterest = ref(0);
 const selectedRate = ref(null);
 const isNewsPopupVisible = ref(false);
-const newsQuery = ref('');
+const newsQuery = ref("");
+const selectedRateType = ref("highest");
 
 const banks = ref([
-{ name: "우리은행", url: "https://www.wooribank.com", logo: "https://simg.wooribank.com/img/intro/header/h1_01.png" },
+  { name: "우리은행", url: "https://www.wooribank.com", logo: "https://simg.wooribank.com/img/intro/header/h1_01.png" },
   { name: "한국스탠다드차타드은행", url: "https://www.standardchartered.co.kr", logo: "https://www.standardchartered.co.kr/np/assets/images/kr/base/chb_log_reb.png" },
   { name: "아이엠뱅크", url: "https://www.imbank.co.kr/dgb_ebz_main.jsp", logo: "https://www.imbank.co.kr/img/common/main/ebz_top_dgb_logo_up.png?v=20240607" },
   { name: "부산은행", url: "https://www.busanbank.co.kr", logo: "https://blog.kakaocdn.net/dn/18TFu/btqyWKDIInm/GfE8079nzAF9txBlV71XS0/img.jpg" },
@@ -157,27 +202,60 @@ const banks = ref([
   { name: "한국씨티은행", url: "https://www.citibank.co.kr", logo: "https://i.namu.wiki/i/MejG2B28te9lfxBlpdWqCguVOnCa6zvyxJrf2u4KamJ7l8lXOG3rCMUyURui3PZhNbcH4aA6CKQK0JMbRjb8kQ.svg" },
   { name: "주식회사 카카오뱅크", url: "https://www.kakaobank.com", logo: "https://i.namu.wiki/i/tcO6LsmBe-rB-laaABweXNy9TaTU1fruiJaYVH39cCCZzg054tDwfbSmzsOvDU_zVZCJZzPS_YRe7vdgED3xQA.svg" },
   { name: "토스뱅크 주식회사", url: "https://www.tossbank.com", logo: "https://static.toss.im/icons/png/4x/logo-bank-blue.png" },
-
-])
-// 최고 금리 및 기간 계산
+]);
+// highestRateData computed 속성 수정
 const highestRateData = computed(() => {
-  const maxOption = props.deposit.options.reduce((prev, current) =>
-    parseFloat(current.intr_rate2) > parseFloat(prev.intr_rate2) ? current : prev
-  );
+  if (!props.deposit?.options?.length)
+    return {
+      rate: 0,
+      term: 0,
+      option: null,
+    };
+
+  const maxOption = [...props.deposit.options].reduce((max, curr) => {
+    const maxRate = parseFloat(max.intr_rate2 || max.intr_rate);
+    const currRate = parseFloat(curr.intr_rate2 || curr.intr_rate);
+
+    if (maxRate === currRate) {
+      return parseInt(curr.save_trm) < parseInt(max.save_trm) ? curr : max;
+    }
+    return currRate > maxRate ? curr : max;
+  });
+
   return {
-    rate: parseFloat(maxOption.intr_rate2),
-    term: parseInt(maxOption.save_trm, 10),
+    rate: parseFloat(maxOption.intr_rate2 || maxOption.intr_rate),
+    term: parseInt(maxOption.save_trm),
+    option: maxOption,
   };
 });
 
-const highestRate = highestRateData.value.rate;
-const highestRateTerm = highestRateData.value.term;
+// 특정 기간의 기본금리 옵션 찾기
+const findBasicRateForTerm = (term) => {
+  return props.deposit.options.find((opt) => parseInt(opt.save_trm) === term);
+};
+const highestRate = computed(() => {
+  if (!highestRateData.value) return 0;
+  return parseFloat(highestRateData.value.rate);
+});
 
-// 기본 금리 (예: 12개월 기준)
-const basicOption = props.deposit.options.find(
-  (option) => parseInt(option.save_trm, 10) === 12
-);
-const basicRate = basicOption ? parseFloat(basicOption.intr_rate) : highestRate;
+// highestRateTerm computed 속성 수정
+const highestRateTerm = computed(() => {
+  if (!highestRateData.value || !highestRateData.value.term) return 0;
+  return parseInt(highestRateData.value.term);
+});
+
+const basicOption = computed(() => {
+  if (!selectedTerm.value || !props.deposit?.options) return null;
+
+  // 최고금리 기간에 해당하는 기본금리 찾기
+  return props.deposit.options.find((opt) => parseInt(opt.save_trm) === selectedTerm.value);
+});
+
+const basicRate = computed(() => {
+  if (!basicOption.value) return 0;
+  return parseFloat(basicOption.value.intr_rate);
+});
+
 const basicRateTerm = basicOption ? parseInt(basicOption.save_trm, 10) : highestRateTerm;
 
 // 현재 은행 정보
@@ -185,11 +263,16 @@ const currentBank = computed(() => {
   return banks.value.find((bank) => bank.name === props.deposit.kor_co_nm);
 });
 
+const selectedTerm = computed(() => {
+  if (!highestRateData.value) return null;
+  return highestRateData.value.term;
+});
+
 const goToOfficialSite = () => {
   if (currentBank.value) {
-    window.open(currentBank.value.url, '_blank');
+    window.open(currentBank.value.url, "_blank");
   } else {
-    alert('은행 공식 홈페이지 정보를 찾을 수 없습니다.');
+    alert("은행 공식 홈페이지 정보를 찾을 수 없습니다.");
   }
 };
 
@@ -199,33 +282,32 @@ const joinProduct = async (productId, amount) => {
   if (store.error) {
     alert(store.error);
   } else {
-    alert('상품에 가입되었습니다.');
+    alert("상품에 가입되었습니다.");
   }
 };
-
+// 이자 계산 함수 수정
 const calculateInterest = () => {
-  if (selectedRate.value !== null && depositAmount.value) {
-    let term;
-    if (selectedRate.value === highestRate) {
-      term = highestRateTerm;
-    } else if (selectedRate.value === basicRate) {
-      term = basicRateTerm;
-    } else {
-      term = 12; // 기본값으로 12개월 사용
-    }
+  if (!selectedRate.value || !depositAmount.value || !selectedTerm.value) return;
 
-    const interest = (depositAmount.value * selectedRate.value * term) / 1200;
-    calculatedInterest.value = Math.floor(interest);
-  }
+  const rate = selectedRate.value;
+  const term = selectedTerm.value;
+
+  const annualRate = rate / 100;
+  const years = term / 12;
+  const interest = depositAmount.value * annualRate * years;
+
+  calculatedInterest.value = Math.floor(interest);
 };
-
-const selectRate = (rate) => {
+// 금리 선택 함수 수정
+// 금리 선택 함수 수정
+const selectRate = (rate, type) => {
   selectedRate.value = rate;
+  selectedRateType.value = type;
   calculateInterest();
 };
 
 const showNewsPopup = () => {
-  newsQuery.value = `${props.deposit.kor_co_nm} ${props.deposit.fin_prdt_nm}`;
+  newsQuery.value = `${props.deposit.kor_co_nm} ${props.deposit.fin_prdt_nm} 뉴스`;
   isNewsPopupVisible.value = true;
 };
 
@@ -237,8 +319,10 @@ const updateNewsQuery = (newQuery) => {
   newsQuery.value = newQuery;
 };
 
+// onMounted 함수도 수정
 onMounted(() => {
-  selectedRate.value = highestRate;
+  selectedRate.value = highestRate.value;
+  selectedRateType.value = "highest";
   calculateInterest();
 });
 </script>
@@ -249,7 +333,7 @@ onMounted(() => {
   max-width: 1200px;
   margin: 40px auto;
   padding: 20px;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
   background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
@@ -472,41 +556,75 @@ onMounted(() => {
 .rate-table tr:hover {
   background-color: #f9f9f9;
 }
-
-/* 뉴스 팝업 스타일 */
-.news-popup {
+.news-popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
-.news-popup-content {
-  background-color: #fff;
+.news-popup {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 90%;
   max-width: 800px;
-  padding: 20px;
-  border-radius: 12px;
-  position: relative;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  animation: popup-fade 0.3s ease-out;
 }
 
-.close-popup-button {
-  position: absolute;
-  top: 20px;
-  right: 20px;
+.news-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.news-popup-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.close-button {
   background: none;
   border: none;
   font-size: 1.5rem;
+  color: #666;
   cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
 }
 
-.close-popup-button:hover {
-  color: #ff4d4f;
+.close-button:hover {
+  background-color: #f5f5f5;
+}
+
+.news-popup-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+@keyframes popup-fade {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* 반응형 디자인 */
@@ -522,6 +640,77 @@ onMounted(() => {
 
   .calculator-form {
     width: 100%;
+  }
+}
+
+.header .back-button i,
+.button-group button i,
+section h3 i {
+  margin-right: 8px;
+}
+
+.button-group button i {
+  font-size: 1.2rem;
+}
+
+section h3 i {
+  color: #1890ff;
+}
+
+.close-button i {
+  font-size: 24px;
+}
+
+.info-item .label i {
+  margin-right: 5px;
+  color: #1890ff;
+}
+
+/* 아이콘 스타일 추가 */
+.info-item .label i {
+  width: 24px;
+  font-size: 1.2rem;
+  margin-right: 8px;
+  color: #1890ff;
+  vertical-align: middle;
+}
+
+.info-item {
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
+}
+
+.info-item:hover {
+  border-left-color: #1890ff;
+  background-color: #f0f7ff;
+  transform: translateX(5px);
+}
+
+section h3 i {
+  font-size: 1.5rem;
+  margin-right: 10px;
+  color: #1890ff;
+  vertical-align: middle;
+}
+
+.calculator-form label i {
+  color: #1890ff;
+  margin-right: 5px;
+}
+
+/* 애니메이션 효과 */
+.info-item {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 </style>

@@ -1,23 +1,36 @@
 <template>
   <div class="deposit-page">
-    <h2>정기예금 상품 비교</h2>
-    <div class="search-container">
+    <h2>
+      <i class="mdi mdi-bank"></i>
+      정기예금 상품 비교
+    </h2>
+    <!-- 검색 영역을 selectedDeposit이 없을 때만 표시 -->
+    <div v-if="!selectedDeposit" class="search-container">
       <div class="search-options">
         <div class="form-group">
-          <label for="bank">은행 선택</label>
+          <label for="bank">
+            <i class="mdi mdi-office-building"></i>
+            은행 선택
+          </label>
           <select v-model="selectedBank" id="bank" class="form-control">
             <option value="">전체 은행</option>
             <option v-for="bank in banks" :key="bank" :value="bank">{{ bank }}</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="period">예치 기간</label>
+          <label for="period">
+            <i class="mdi mdi-calendar-clock"></i>
+            예치 기간
+          </label>
           <select v-model="selectedPeriod" id="period" class="form-control">
             <option value="">전체 기간</option>
             <option v-for="period in allPeriods" :key="period" :value="period">{{ period }}개월</option>
           </select>
         </div>
-        <button @click="filterProducts" class="search-button">검색</button>
+        <button @click="filterProducts" class="search-button">
+          <i class="mdi mdi-magnify"></i>
+          검색
+        </button>
       </div>
     </div>
 
@@ -26,37 +39,61 @@
         <table class="deposit-table">
           <thead>
             <tr>
-              <th scope="col">금융회사 명</th>
-              <th scope="col">금융 상품명</th>
-              <th scope="col" @click="toggleSort('maxRate')" class="sortable">
-                최고 금리
-                <span class="sort-icon">
-                  <span v-if="sortKey === 'maxRate'">
-                    <span v-if="sortAscending">▲</span>
-                    <span v-else>▼</span>
-                  </span>
-                </span>
+              <th scope="col">
+                <i class="mdi mdi-bank"></i>
+                금융회사
               </th>
-              <th scope="col">예치 기간</th>
-              <th scope="col">상품 상세</th>
+              <th scope="col">
+                <i class="mdi mdi-file-document"></i>
+                상품명
+              </th>
+              <!-- 테이블 헤더 부분 수정 -->
+              <th scope="col" @click="toggleSort('maxRate')" class="sortable rate-header">
+                <div class="header-content">
+                  <span>
+                    <i class="mdi mdi-trending-up"></i>
+                    최고 금리
+                  </span>
+                  <span class="sort-icon">
+                    <i v-if="sortKey === 'maxRate'" :class="sortAscending ? 'mdi mdi-arrow-up' : 'mdi mdi-arrow-down'"></i>
+                  </span>
+                </div>
+              </th>
+              <th scope="col">
+                <i class="mdi mdi-calendar"></i>
+                예치 기간
+              </th>
+              <th scope="col">
+                <i class="mdi mdi-information"></i>
+                상세 정보
+              </th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="deposit in paginatedProducts" :key="deposit.id">
+            <tr v-for="deposit in paginatedProducts" :key="deposit.id" class="table-row">
               <td>{{ deposit.kor_co_nm }}</td>
               <td>{{ deposit.fin_prdt_nm }}</td>
-              <td>{{ getMaxRate(deposit.options).toFixed(2) }}%</td>
+              <td class="highlight-rate">{{ getMaxRate(deposit.options).toFixed(2) }}%</td>
               <td>{{ getAvailableTerms(deposit.options) }}</td>
               <td>
-                <button @click="selectDeposit(deposit)" class="detail-button">자세히 보기</button>
+                <button @click="selectDeposit(deposit)" class="detail-button">
+                  <i class="mdi mdi-eye"></i>
+                  자세히 보기
+                </button>
               </td>
             </tr>
           </tbody>
         </table>
         <div class="pagination">
-          <button @click="prevPage" :disabled="currentPage === 1">이전</button>
+          <button @click="prevPage" :disabled="currentPage === 1">
+            <i class="mdi mdi-chevron-left"></i>
+            이전
+          </button>
           <span>{{ currentPage }} / {{ totalPages }}</span>
-          <button @click="nextPage" :disabled="currentPage === totalPages">다음</button>
+          <button @click="nextPage" :disabled="currentPage === totalPages">
+            다음
+            <i class="mdi mdi-chevron-right"></i>
+          </button>
         </div>
       </div>
 
@@ -68,20 +105,20 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
-import { useProductStore } from '@/stores/product';
-import DepositListItem from './DepositListItem.vue';
+import { ref, onMounted, computed, watch } from "vue";
+import { useProductStore } from "@/stores/product";
+import DepositListItem from "./DepositListItem.vue";
 
 const productStore = useProductStore();
-const selectedBank = ref('');
-const selectedPeriod = ref('');
+const selectedBank = ref("");
+const selectedPeriod = ref("");
 const filteredProducts = ref([]);
 const selectedDeposit = ref(null);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
 // 정렬 상태 관리 변수
-const sortKey = ref('');
+const sortKey = ref("");
 const sortAscending = ref(true);
 
 const banks = computed(() => {
@@ -111,18 +148,14 @@ const paginatedProducts = computed(() => {
 
 const filterProducts = () => {
   filteredProducts.value = productStore.depositProduct.filter((product) => {
-    return (
-      (selectedBank.value === '' || product.kor_co_nm === selectedBank.value) &&
-      (selectedPeriod.value === '' ||
-        product.options.some((option) => option.save_trm === selectedPeriod.value))
-    );
+    return (selectedBank.value === "" || product.kor_co_nm === selectedBank.value) && (selectedPeriod.value === "" || product.options.some((option) => option.save_trm === selectedPeriod.value));
   });
   sortProducts(); // 필터링 후 정렬 적용
   currentPage.value = 1;
 };
 
 const sortProducts = () => {
-  if (sortKey.value === 'maxRate') {
+  if (sortKey.value === "maxRate") {
     filteredProducts.value.sort((a, b) => {
       const rateA = getMaxRate(a.options);
       const rateB = getMaxRate(b.options);
@@ -170,7 +203,7 @@ const getMaxRate = (options) => {
 };
 
 const getAvailableTerms = (options) => {
-  return options.map((opt) => `${opt.save_trm}개월`).join(', ');
+  return options.map((opt) => `${opt.save_trm}개월`).join(", ");
 };
 
 onMounted(async () => {
@@ -180,20 +213,101 @@ onMounted(async () => {
 });
 </script>
 <style scoped>
+:root {
+  --primary-color: #1890ff;
+  --primary-hover: #40a9ff;
+  --success-color: #52c41a;
+  --success-hover: #73d13d;
+  --warning-color: #faad14;
+  --text-primary: #333;
+  --text-secondary: #555;
+  --background-light: #f9f9f9;
+  --border-radius: 8px;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.btn-success:hover {
+  background-color: var(--success-hover);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  box-shadow: var(--box-shadow);
+}
+
+.table th,
+.table td {
+  padding: 15px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+.table th {
+  background-color: var(--background-light);
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.table tr:hover {
+  background-color: #f5f5f5;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.section {
+  background-color: white;
+  border-radius: var(--border-radius);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--box-shadow);
+}
 /* 전체 페이지 스타일 */
 .deposit-page {
   max-width: 1200px;
   margin: 40px auto;
   padding: 20px;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
 }
 
 /* 제목 스타일 */
 .deposit-page h2 {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #1890ff;
+}
+
+.deposit-page h2 i {
   font-size: 2rem;
-  color: #333;
-  margin-bottom: 30px;
 }
 
 /* 검색 영역 스타일 */
@@ -202,6 +316,7 @@ onMounted(async () => {
   padding: 20px;
   border-radius: 10px;
   margin-bottom: 30px;
+  animation: fadeInDown 0.3s ease-out;
 }
 
 .search-options {
@@ -221,9 +336,14 @@ onMounted(async () => {
 }
 
 .form-group label {
-  font-size: 1rem;
-  color: #555;
-  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+}
+
+.form-group label i {
+  color: #1890ff;
 }
 
 .form-control {
@@ -231,6 +351,16 @@ onMounted(async () => {
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 5px;
+  padding-left: 30px;
+  background-position: 8px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
 }
 
 .search-button {
@@ -242,10 +372,20 @@ onMounted(async () => {
   cursor: pointer;
   font-size: 1rem;
   transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 15px;
+  align-self: flex-end;
 }
 
 .search-button:hover {
   background-color: #40a9ff;
+}
+
+.search-button i {
+  font-size: 1.2rem;
 }
 
 /* 컨텐츠 영역 스타일 */
@@ -275,8 +415,28 @@ onMounted(async () => {
   color: #555;
 }
 
+.deposit-table th i {
+  margin-right: 5px;
+  color: #1890ff;
+}
+
 .deposit-table tr:hover {
   background-color: #f1f1f1;
+}
+
+.table-row {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.table-row:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #f8f9ff !important;
+}
+
+.highlight-rate {
+  color: #ff4d4f;
+  font-weight: bold;
 }
 
 .detail-button {
@@ -288,10 +448,19 @@ onMounted(async () => {
   cursor: pointer;
   font-size: 0.9rem;
   transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin: 0 auto;
 }
 
 .detail-button:hover {
   background-color: #73d13d;
+}
+
+.detail-button i {
+  font-size: 1.1rem;
 }
 
 /* 페이지네이션 스타일 */
@@ -328,6 +497,22 @@ onMounted(async () => {
   color: #555;
 }
 
+/* 애니메이션 효과 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.search-results {
+  animation: fadeInUp 0.5s ease-out;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
   .search-options {
@@ -344,6 +529,18 @@ onMounted(async () => {
     width: 100%;
     padding: 12px;
   }
+
+  .deposit-table th i {
+    display: none;
+  }
+
+  .form-group label i {
+    font-size: 1.2rem;
+  }
+
+  .search-button {
+    padding: 15px;
+  }
 }
 /* 컬럼 헤더에 커서 및 강조 효과 추가 */
 .sortable {
@@ -359,5 +556,63 @@ onMounted(async () => {
 .sort-icon {
   margin-left: 5px;
   font-size: 0.8rem;
+}
+/* CSS 수정/추가 */
+.deposit-table th {
+  background-color: #fafafa;
+  font-weight: bold;
+  color: #555;
+  min-width: 100px; /* 최소 너비 설정 */
+  padding: 15px 10px;
+}
+
+.rate-header {
+  min-width: 140px; /* 정렬 헤더의 최소 너비 증가 */
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.sort-icon {
+  display: inline-flex;
+  width: 20px; /* 고정 너비 */
+  justify-content: center;
+  align-items: center;
+}
+
+/* 반응형 대응 */
+@media (max-width: 768px) {
+  .deposit-table th {
+    padding: 12px 8px;
+    font-size: 0.9rem;
+  }
+
+  .rate-header {
+    min-width: 120px;
+  }
+
+  .header-content {
+    gap: 4px;
+  }
+
+  .sort-icon {
+    width: 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  .header-content {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .sort-icon {
+    height: 16px;
+  }
 }
 </style>
