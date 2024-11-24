@@ -283,61 +283,31 @@ export default {
 </script>
 
 <style scoped>
-.select-input {
-  margin-left: 20px; /* 왼쪽 여백 */
-  padding: 12px 16px; /* 내부 여백 */
-  font-size: 16px; /* 글자 크기 */
-  color: #17bebb; /* 텍스트 색상 */
-  border: 2px solid #17bebb; /* 테두리 색상 */
-  border-radius: 10px; /* 둥근 모서리 */
-  background-color: white; /* 배경색 흰색 */
-  outline: none; /* 포커스 시 기본 외곽선 제거 */
-  transition: all 0.3s ease; /* 부드러운 애니메이션 */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 살짝 그림자 */
-  appearance: none; /* 기본 드롭다운 화살표 제거 */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-}
-
-/* 포커스 시 스타일 */
-.select-input:focus {
-  border-color: #17bebb; /* 포커스 시 테두리 색상 유지 */
-  box-shadow: 0 0 10px rgba(23, 190, 187, 0.5); /* 포커스 시 그림자 강조 */
-}
-
-/* 비활성화 상태 */
-.select-input:disabled {
-  background-color: #f2f2f2; /* 비활성화 시 배경색 */
-  color: #999; /* 비활성화 시 텍스트 색상 */
-  cursor: not-allowed; /* 비활성화 시 커서 */
-  border-color: #ccc; /* 비활성화 시 테두리 색상 */
-}
-
-/* 드롭다운 화살표 커스터마이즈 */
-.select-input {
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%2317bebb' d='M2 0L0 2h4z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center; /* 드롭다운 화살표 위치 */
-  background-size: 10px;
-}
-
-/* 호버 효과 */
-.select-input:hover {
-  border-color: #15a8a3; /* 테두리 색상 조금 어둡게 */
-  box-shadow: 0 0 8px rgba(23, 190, 187, 0.5); /* 호버 시 그림자 */
-  cursor: pointer; /* 포인터 커서 */
-}
-
+/* 전체 페이지 컨테이너 */
 .map-container {
   max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: "Noto Sans KR", sans-serif;
 }
 
+/* 검색 섹션 */
 .search-section {
-  margin-bottom: 2rem;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+.search-section h4 {
+  color: #1890ff;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+/* 검색 폼 */
 .search-form {
   max-width: 800px;
   margin: 0 auto;
@@ -345,100 +315,128 @@ export default {
 
 .search-box {
   display: flex;
-  gap: 0.5rem;
-  background: white;
-  border-radius: 50px;
-  padding: 0.5rem;
-  width: 100%;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  gap: 15px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  background: transparent;
+  padding: 15px;
 }
 
-.search-input {
-  flex: 1;
-  border: none;
-  margin-left: 20px;
-  padding: 0.8rem 1.5rem;
+/* 셀렉트 박스 스타일 */
+.select-input {
+  padding: 12px 20px;
   font-size: 1rem;
-  border-radius: 25px;
+  color: #555;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  background-color: white;
+  min-width: 200px;
+  transition: all 0.3s ease;
+  margin: 0;
   outline: none;
+  box-shadow: none;
 }
 
+.select-input:hover {
+  border-color: #1890ff;
+}
+
+.select-input:focus {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.select-input:disabled {
+  background-color: #f5f5f5;
+  color: #bfbfbf;
+  cursor: not-allowed;
+}
+
+/* 검색 버튼 */
 .search-button {
-  background: #ffbf00;
+  padding: 12px 24px;
+  background-color: #1890ff;
   color: white;
   border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 25px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .search-button:hover {
-  background: #e6ac00;
+  background-color: #40a9ff;
 }
 
-.search-example {
-  text-align: center;
-  color: #666;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
+.search-button i {
+  font-size: 1.2rem;
 }
 
+/* 컨텐츠 영역 */
 .content-wrapper {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 2rem;
-  margin-top: 2rem;
+  gap: 20px;
 }
 
+/* 지도 */
 .map-view {
-  width: 100%;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   height: 70vh;
-  border-radius: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* 결과 섹션 */
 .results-section {
   background: white;
-  border-radius: 20px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   height: 70vh;
   overflow-y: auto;
 }
 
 .results-title {
-  color: #333;
-  margin-bottom: 1rem;
+  color: #555;
+  margin-bottom: 20px;
   font-size: 1.2rem;
 }
 
 .highlight {
-  color: #ffbf00;
+  color: #1890ff;
   font-weight: bold;
 }
 
+/* 검색 결과 리스트 */
 .results-list {
   list-style: none;
   padding: 0;
 }
 
 .result-item {
-  padding: 1rem;
-  border-radius: 10px;
-  background: #f8f9fa;
-  margin-bottom: 1rem;
-  transition: transform 0.2s ease;
+  padding: 15px;
+  border-radius: 8px;
+  background: #f9f9f9;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+  border: 1px solid #eee;
 }
 
 .result-item:hover {
   transform: translateY(-2px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #1890ff;
 }
 
 .result-item h4 {
-  color: #333;
-  margin: 0 0 0.5rem 0;
+  color: #1890ff;
+  margin: 0 0 8px 0;
 }
 
 .result-item p {
@@ -447,24 +445,23 @@ export default {
   font-size: 0.9rem;
 }
 
-.no-results {
-  text-align: center;
-  color: #666;
-  padding: 2rem;
-}
-
+/* 반응형 디자인 */
 @media (max-width: 768px) {
   .content-wrapper {
     grid-template-columns: 1fr;
   }
 
-  .map-view {
+  .map-view,
+  .results-section {
     height: 50vh;
   }
 
-  .results-section {
-    height: auto;
-    max-height: 50vh;
+  .search-box {
+    flex-direction: column;
+  }
+
+  .select-input {
+    width: 100%;
   }
 }
 .do-hyeon-regular {

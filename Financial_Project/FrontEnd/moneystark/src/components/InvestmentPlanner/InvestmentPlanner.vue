@@ -1,13 +1,13 @@
 <template>
   <div class="investment-planner">
     <div class="planner-container">
-      <!-- 헤더 섹션 -->
-      <header class="planner-header">
+      <div class="page-title">
         <h1>
-          <i class="mdi mdi-chart-timeline-variant"></i>
-          맞춤형 투자 플래너
+          <i class="mdi mdi-robot-excited"></i>
+          AI 맞춤형 투자 플래너
+          <span class="subtitle">똑똑한 AI가 추천하는 최적의 금융 포트폴리오</span>
         </h1>
-      </header>
+      </div>
 
       <!-- 입력 폼과 포트폴리오 차트 섹션 -->
       <section class="form-chart-section">
@@ -20,13 +20,7 @@
                 투자 금액
               </label>
               <div class="input-with-icon">
-                <input 
-                  type="number"
-                  v-model="formData.total_amount"
-                  min="1000000"
-                  step="1000000"
-                  placeholder="최소 100만원"
-                />
+                <input type="number" v-model="formData.total_amount" min="1000000" step="1000000" placeholder="최소 100만원" />
                 <span class="input-suffix">원</span>
               </div>
             </div>
@@ -38,13 +32,7 @@
                 투자 기간
               </label>
               <div class="input-with-icon">
-                <input 
-                  type="number"
-                  v-model="formData.period_months"
-                  min="6"
-                  max="120"
-                  placeholder="6-120개월"
-                />
+                <input type="number" v-model="formData.period_months" min="6" max="120" placeholder="6-120개월" />
                 <span class="input-suffix">개월</span>
               </div>
             </div>
@@ -57,23 +45,15 @@
               </label>
               <div class="bank-selection">
                 <div class="selected-banks">
-                  <span v-for="bank in selectedBanks" 
-                        :key="bank.code" 
-                        class="bank-tag">
+                  <span v-for="bank in selectedBanks" :key="bank.code" class="bank-tag">
                     {{ bank.name }}
-                    <button @click="removeBank(bank.code)" 
-                            type="button"
-                            class="remove-bank">
+                    <button @click="removeBank(bank.code)" type="button" class="remove-bank">
                       <i class="mdi mdi-close"></i>
                     </button>
                   </span>
                 </div>
-                <select v-model="formData.preferred_banks" 
-                        multiple 
-                        class="bank-select">
-                  <option v-for="bank in availableBanks" 
-                          :key="bank.code" 
-                          :value="bank.code">
+                <select v-model="formData.preferred_banks" multiple class="bank-select">
+                  <option v-for="bank in availableBanks" :key="bank.code" :value="bank.code">
                     {{ bank.name }}
                   </option>
                 </select>
@@ -81,20 +61,16 @@
             </div>
 
             <!-- 제출 버튼 -->
-            <button type="submit" 
-                    class="submit-button" 
-                    :disabled="loading">
+            <button type="submit" class="submit-button" :disabled="loading">
               <i class="mdi mdi-calculator"></i>
-              {{ loading ? '계획 생성 중...' : '투자 계획 생성' }}
+              {{ loading ? "계획 생성 중..." : "투자 계획 생성" }}
             </button>
           </form>
 
           <!-- 차트 토글 버튼 -->
-          <button v-if="plan"
-                  @click="toggleCharts"
-                  class="toggle-charts-button">
+          <button v-if="plan" @click="toggleCharts" class="toggle-charts-button">
             <i class="mdi" :class="showCharts ? 'mdi-chevron-up' : 'mdi-chevron-down'"></i>
-            차트 {{ showCharts ? '숨기기' : '보기' }}
+            차트 {{ showCharts ? "숨기기" : "보기" }}
           </button>
         </div>
 
@@ -128,9 +104,7 @@
           추천 투자 상품 상세
         </h2>
         <div class="products-grid">
-          <div v-for="item in plan.items" 
-               :key="item.product_id" 
-               class="product-card">
+          <div v-for="item in plan.items" :key="item.product_id" class="product-card">
             <!-- 상품 헤더 -->
             <div class="product-header">
               <div>
@@ -167,8 +141,7 @@
             </div>
 
             <!-- 상세 정보 버튼 -->
-            <button @click="showProductDetails(item)" 
-                    class="details-button">
+            <button @click="showProductDetails(item)" class="details-button">
               <i class="mdi mdi-information"></i>
               상세 정보 보기
             </button>
@@ -180,15 +153,9 @@
     <!-- 상품 상세 모달 -->
     <Teleport to="body">
       <Transition name="modal">
-        <div v-if="selectedProduct" 
-             class="modal-overlay"
-             @click="selectedProduct = null">
-          <div class="modal-container" 
-               @click.stop>
-            <ProductDetailModal 
-              :product="selectedProduct"
-              @close="selectedProduct = null"
-              @select="handleProductSelect" />
+        <div v-if="selectedProduct" class="modal-overlay" @click="selectedProduct = null">
+          <div class="modal-container" @click.stop>
+            <ProductDetailModal :product="selectedProduct" @close="selectedProduct = null" @select="handleProductSelect" />
           </div>
         </div>
       </Transition>
@@ -369,34 +336,70 @@ export default {
 }
 
 /* 헤더 스타일 */
-.planner-header {
-  margin-bottom: 2rem;
+.page-title {
   text-align: center;
+  padding: 2.5rem 0;
+  margin-bottom: 3rem;
+  background: linear-gradient(135deg, rgba(24, 144, 255, 0.1), rgba(82, 196, 26, 0.1));
+  border-radius: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.planner-header h1 {
-  font-size: 2rem;
-  color: #1a202c;
+.page-title h1 {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  gap: 1rem;
+  color: #1890ff;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
 }
 
-.planner-header h1 i {
-  color: #2563eb;
-  font-size: 2.25rem;
+.page-title h1 i {
+  font-size: 3.5rem;
+  background: linear-gradient(45deg, #1890ff, #52c41a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #666;
+  font-weight: normal;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .page-title h1 {
+    font-size: 2rem;
+  }
+  
+  .page-title h1 i {
+    font-size: 2.8rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
 }
 
 /* 입력 폼 섹션 */
 .form-chart-section {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(300px, 400px) 1fr; /* 폼 영역 크기 고정 */
   gap: 2rem;
   background: white;
   padding: 2rem;
   border-radius: 1rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* 넘치는 부분 숨김 */
+}
+
+.chart-container {
+  min-width: 0; /* 차트 영역이 넘치지 않도록 설정 */
+  width: 100%;
 }
 
 .form-wrapper {
@@ -506,6 +509,21 @@ export default {
 }
 
 /* 버튼 스타일 */
+.submit-button,
+.details-button,
+.join-button,
+.select-button {
+  background-color: #2563eb !important;
+  color: white !important;
+}
+
+.submit-button:hover:not(:disabled),
+.details-button:hover,
+.join-button:hover,
+.select-button:hover {
+  background-color: #1d4ed8 !important;
+}
+
 .submit-button {
   display: flex;
   align-items: center;
@@ -534,6 +552,7 @@ export default {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem;
+  background-color: white;
   border: 1px solid #2563eb;
   color: #2563eb;
   border-radius: 0.5rem;
@@ -560,6 +579,17 @@ export default {
   background: white;
   border-radius: 1rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.products-section h2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.75rem;
+  color: #1e40af;
+  margin-bottom: 2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid #3b82f6;
 }
 
 .products-grid {
@@ -590,17 +620,63 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 50;
+  z-index: 1000;
+  padding: 1rem;
+  backdrop-filter: blur(4px);
 }
 
 .modal-container {
   width: 100%;
-  max-width: 42rem;
+  max-width: 900px;
   max-height: 90vh;
-  overflow-y: auto;
-  background: white;
+  background: transparent;
   border-radius: 1rem;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+/* 버튼 스타일 통일 */
+.details-button {
+  background-color: #2563eb !important;
+  color: white !important;
+  border: none !important;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.details-button:hover {
+  background-color: #1d4ed8 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 버튼 스타일 통일 */
+.submit-button,
+.details-button,
+.join-button,
+.select-button,
+.official-site-button,
+.news-button {
+  background-color: #2563eb !important;
+  color: white !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.submit-button:hover:not(:disabled),
+.details-button:hover,
+.join-button:hover,
+.select-button:hover,
+.official-site-button:hover,
+.news-button:hover {
+  background-color: #1d4ed8 !important;
+  transform: translateY(-1px);
 }
 
 /* 애니메이션 */
@@ -626,7 +702,7 @@ export default {
   .planner-container {
     padding: 1rem;
   }
-  
+
   .products-grid {
     grid-template-columns: 1fr;
   }

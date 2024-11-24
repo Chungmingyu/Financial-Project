@@ -128,13 +128,12 @@ export default {
 <style scoped>
 .portfolio-chart {
   width: 100%;
-  height: 400px;
+  height: 350px; /* 높이 조정 */
+  min-width: 0; /* 넘침 방지 */
   background: white;
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  padding: 1rem;
   transition: all 0.3s ease;
-  animation: slideIn 0.3s ease-out;
 }
 
 .portfolio-chart:hover {
