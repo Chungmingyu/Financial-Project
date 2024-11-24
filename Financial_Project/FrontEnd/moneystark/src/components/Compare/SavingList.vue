@@ -1,109 +1,113 @@
 <template>
-  <div>
-    <h2>정기적금 정보</h2>
-    <div class="container">
-      <div v-if="!selectedSaving" class="search-container">
-        <h3>적금 검색</h3>
-        <div class="search-options">
-          <label for="bank">은행:</label>
+  <div class="saving-page">
+    <h2>
+      <i class="mdi mdi-piggy-bank"></i>
+      정기적금 상품 비교
+    </h2>
+    <!-- 검색 영역 -->
+    <div v-if="!selectedSaving" class="search-container">
+      <div class="search-options">
+        <div class="form-group">
+          <label for="bank">
+            <i class="mdi mdi-office-building"></i>
+            은행 선택
+          </label>
           <select v-model="selectedBank" id="bank" class="form-control">
-            <option value="">모든 은행</option>
+            <option value="">전체 은행</option>
             <option v-for="bank in banks" :key="bank" :value="bank">{{ bank }}</option>
           </select>
-
-          <label for="period">예치 기간:</label>
+        </div>
+        <div class="form-group">
+          <label for="period">
+            <i class="mdi mdi-calendar-clock"></i>
+            적금 기간
+          </label>
           <select v-model="selectedPeriod" id="period" class="form-control">
-            <option value="">모든 기간</option>
+            <option value="">전체 기간</option>
             <option v-for="period in allPeriods" :key="period" :value="period">{{ period }}개월</option>
           </select>
+        </div>
+        <button @click="filterProducts" class="search-button">
+          <i class="mdi mdi-magnify"></i>
+          검색
+        </button>
+      </div>
+    </div>
 
-          <button @click="filterProducts" class="btn btn-primary">검색</button>
+    <!-- 콘텐츠 영역 -->
+    <div class="content-container">
+      <div v-if="!selectedSaving" class="search-results">
+        <table class="saving-table">
+          <thead>
+            <tr>
+              <th scope="col">
+                <i class="mdi mdi-bank"></i>
+                금융회사
+              </th>
+              <th scope="col">
+                <i class="mdi mdi-file-document"></i>
+                상품명
+              </th>
+              <th scope="col" @click="toggleSort('maxRate')" class="sortable rate-header">
+                <div class="header-content">
+                  <span>
+                    <i class="mdi mdi-trending-up"></i>
+                    최고 금리
+                  </span>
+                  <span class="sort-icon">
+                    <i v-if="sortKey === 'maxRate'" :class="sortAscending ? 'mdi mdi-arrow-up' : 'mdi mdi-arrow-down'"></i>
+                  </span>
+                </div>
+              </th>
+              <th scope="col">
+                <i class="mdi mdi-calendar"></i>
+                적금 기간
+              </th>
+              <th scope="col">
+                <i class="mdi mdi-information"></i>
+                상세 정보
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="saving in paginatedProducts" :key="saving.id" class="table-row">
+              <td>{{ saving.kor_co_nm }}</td>
+              <td>{{ saving.fin_prdt_nm }}</td>
+              <td class="highlight-rate">{{ getMaxRate(saving.options).toFixed(2) }}%</td>
+              <td>{{ getAvailableTerms(saving.options) }}</td>
+              <td>
+                <button @click="selectSaving(saving)" class="detail-button">
+                  <i class="mdi mdi-eye"></i>
+                  자세히 보기
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- 페이지네이션 -->
+        <div class="pagination">
+          <button @click="prevPage" :disabled="currentPage === 1">
+            <i class="mdi mdi-chevron-left"></i>
+            이전
+          </button>
+          <span>{{ currentPage }} / {{ totalPages }}</span>
+          <button @click="nextPage" :disabled="currentPage === totalPages">
+            다음
+            <i class="mdi mdi-chevron-right"></i>
+          </button>
         </div>
       </div>
 
-      <div class="content-container">
-        <div v-if="!selectedSaving" class="search-results">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">공시 제출월</th>
-                <th scope="col">금융회사 명</th>
-                <th scope="col">금융 상품명</th>
-                <th scope="col">
-                  1개월
-                  <span class="sort-arrows" @click="sortByTerm(1)">
-                    <span :class="{ active: sortTerm === 1 && sortAscending }">&uarr;</span>
-                    <span :class="{ active: sortTerm === 1 && !sortAscending }">&darr;</span>
-                  </span>
-                </th>
-                <th scope="col">
-                  3개월
-                  <span class="sort-arrows" @click="sortByTerm(3)">
-                    <span :class="{ active: sortTerm === 3 && sortAscending }">&uarr;</span>
-                    <span :class="{ active: sortTerm === 3 && !sortAscending }">&darr;</span>
-                  </span>
-                </th>
-                <th scope="col">
-                  6개월
-                  <span class="sort-arrows" @click="sortByTerm(6)">
-                    <span :class="{ active: sortTerm === 6 && sortAscending }">&uarr;</span>
-                    <span :class="{ active: sortTerm === 6 && !sortAscending }">&darr;</span>
-                  </span>
-                </th>
-                <th scope="col">
-                  12개월
-                  <span class="sort-arrows" @click="sortByTerm(12)">
-                    <span :class="{ active: sortTerm === 12 && sortAscending }">&uarr;</span>
-                    <span :class="{ active: sortTerm === 12 && !sortAscending }">&darr;</span>
-                  </span>
-                </th>
-                <th scope="col">
-                  24개월
-                  <span class="sort-arrows" @click="sortByTerm(24)">
-                    <span :class="{ active: sortTerm === 24 && sortAscending }">&uarr;</span>
-                    <span :class="{ active: sortTerm === 24 && !sortAscending }">&darr;</span>
-                  </span>
-                </th>
-                <th scope="col">
-                  36개월
-                  <span class="sort-arrows" @click="sortByTerm(36)">
-                    <span :class="{ active: sortTerm === 36 && sortAscending }">&uarr;</span>
-                    <span :class="{ active: sortTerm === 36 && !sortAscending }">&darr;</span>
-                  </span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="saving in paginatedProducts" :key="saving.id" @click="selectSaving(saving)">
-                <td>{{ saving.dcls_month.slice(0, 4) }}년 {{ saving.dcls_month.slice(4, 6) }}월</td>
-                <td>{{ saving.kor_co_nm }}</td>
-                <td>{{ saving.fin_prdt_nm }}</td>
-                <td>{{ getRate(saving.options, 1) }}</td>
-                <td>{{ getRate(saving.options, 3) }}</td>
-                <td>{{ getRate(saving.options, 6) }}</td>
-                <td>{{ getRate(saving.options, 12) }}</td>
-                <td>{{ getRate(saving.options, 24) }}</td>
-                <td>{{ getRate(saving.options, 36) }}</td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="pagination">
-            <button @click="prevPage" :disabled="currentPage === 1">이전</button>
-            <span>{{ currentPage }} / {{ totalPages }}</span>
-            <button @click="nextPage" :disabled="currentPage === totalPages">다음</button>
-          </div>
-        </div>
-
-        <div v-if="selectedSaving" class="item-details full-screen">
-          <SavingListItem :saving="selectedSaving" @back="selectedSaving = null" />
-        </div>
+      <!-- 선택한 적금 상세 정보 -->
+      <div v-if="selectedSaving" class="item-details">
+        <SavingListItem :saving="selectedSaving" @back="selectedSaving = null" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useProductStore } from "@/stores/product";
 import SavingListItem from "./SavingListItem.vue";
 
@@ -114,12 +118,14 @@ const filteredProducts = ref([]);
 const selectedSaving = ref(null);
 const currentPage = ref(1);
 const itemsPerPage = 10;
+
+// 정렬 상태
+const sortKey = ref("");
 const sortAscending = ref(true);
-const sortTerm = ref(null);
 
 const banks = computed(() => {
   const bankSet = new Set(productStore.savingProduct.map((product) => product.kor_co_nm));
-  return Array.from(bankSet);
+  return Array.from(bankSet).sort();
 });
 
 const allPeriods = computed(() => {
@@ -146,9 +152,30 @@ const filterProducts = () => {
   filteredProducts.value = productStore.savingProduct.filter((product) => {
     return (selectedBank.value === "" || product.kor_co_nm === selectedBank.value) && (selectedPeriod.value === "" || product.options.some((option) => option.save_trm === selectedPeriod.value));
   });
-  currentPage.value = 1; // 검색 시 첫 페이지로 이동
-  if (selectedPeriod.value) {
-    sortByTerm(selectedPeriod.value, true); // 검색 시 내림차순 정렬
+  sortProducts(); // 정렬 적용
+  currentPage.value = 1;
+};
+
+const sortProducts = () => {
+  if (sortKey.value === "maxRate") {
+    filteredProducts.value.sort((a, b) => {
+      const rateA = getMaxRate(a.options);
+      const rateB = getMaxRate(b.options);
+      return sortAscending.value ? rateA - rateB : rateB - rateA;
+    });
+  }
+};
+
+watch([sortKey, sortAscending], () => {
+  sortProducts();
+});
+
+const toggleSort = (key) => {
+  if (sortKey.value === key) {
+    sortAscending.value = !sortAscending.value;
+  } else {
+    sortKey.value = key;
+    sortAscending.value = true;
   }
 };
 
@@ -157,189 +184,304 @@ const selectSaving = (saving) => {
 };
 
 const prevPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--;
-  }
+  if (currentPage.value > 1) currentPage.value--;
 };
 
 const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++;
-  }
+  if (currentPage.value < totalPages.value) currentPage.value++;
 };
 
-const getRate = (options, term) => {
-  const option = options.find((opt) => opt.save_trm === term);
-  return option ? option.intr_rate2 || option.intr_rate : "-";
+const getMaxRate = (options) => {
+  const rates = options.map((opt) => parseFloat(opt.intr_rate2 || opt.intr_rate));
+  return Math.max(...rates);
 };
 
-const sortByTerm = (term, descending = false) => {
-  if (sortTerm.value === term && !descending) {
-    sortAscending.value = !sortAscending.value;
-  } else {
-    sortAscending.value = true;
-  }
-  sortTerm.value = term;
-  filteredProducts.value.sort((a, b) => {
-    const rateA = getRate(a.options, term);
-    const rateB = getRate(b.options, term);
-    if (rateA === "-") return 1;
-    if (rateB === "-") return -1;
-    return sortAscending.value ? rateA - rateB : rateB - rateA;
-  });
-  if (descending) {
-    filteredProducts.value.reverse();
-  }
+const getAvailableTerms = (options) => {
+  // Set을 사용하여 중복 제거
+  const uniqueTerms = new Set(options.map(opt => opt.save_trm));
+  // 정렬하여 배열로 변환
+  const sortedTerms = Array.from(uniqueTerms).sort((a, b) => a - b);
+  // 개월 단위 추가하여 문자열로 변환
+  return sortedTerms.map(term => `${term}개월`).join(", ");
 };
 
 onMounted(async () => {
   await productStore.getSavingProduct();
-  filteredProducts.value = productStore.savingProduct;
+  filteredProducts.value = productStore.savingProduct.slice();
+  sortProducts(); // 초기 정렬
 });
 </script>
 
 <style scoped>
-h2 {
-  color: #333;
-  text-align: center;
-  margin-bottom: 20px;
-  font-family: "Arial", sans-serif;
+:root {
+  --primary-color: #1890ff;
+  --primary-hover: #40a9ff;
+  --success-color: #52c41a;
+  --success-hover: #73d13d;
+  --warning-color: #faad14;
+  --text-primary: #333;
+  --text-secondary: #555;
+  --background-light: #f9f9f9;
+  --border-radius: 8px;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
-
-.container {
-  display: flex;
-  height: 100vh; /* 전체 높이를 차지하도록 설정 */
-  padding: 20px;
-  background-color: #f4f4f9;
-}
-
-.search-container {
-  flex: 0.7; /* 검색 영역을 더 줄임 */
-  margin-right: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.search-options {
-  display: flex;
-  flex-direction: column;
-}
-
-.search-options label {
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #555;
-}
-
-.search-options select {
-  margin-bottom: 10px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 14px;
-}
-
-.search-options button {
-  padding: 10px 15px;
-  background-color: #333;
-  color: white;
+.btn {
+  padding: 12px 24px;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s;
-  font-size: 14px;
+  transition: all 0.3s ease;
 }
 
-.search-options button:hover {
-  background-color: #555;
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
 }
 
-.content-container {
-  flex: 3.3; /* 리스트 영역을 더 넓힘 */
-  display: flex;
-  flex-direction: column;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  position: relative; /* 추가 */
+.btn-primary:hover {
+  background-color: var(--primary-hover);
 }
 
-.search-results,
-.item-details {
-  flex: 1;
-  overflow-y: auto; /* 내용이 넘칠 경우 스크롤바 표시 */
+.btn-success {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.btn-success:hover {
+  background-color: var(--success-hover);
 }
 
 .table {
   width: 100%;
-  margin-top: 20px;
   border-collapse: collapse;
-  background-color: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: var(--box-shadow);
 }
 
 .table th,
 .table td {
-  text-align: center;
   padding: 15px;
-  border: 1px solid #ddd;
-  font-size: 14px;
-}
-
-.table th:first-child,
-.table td:first-child {
-  width: 120px; /* 첫 번째 컬럼의 너비를 늘림 */
+  text-align: center;
+  border-bottom: 1px solid #eee;
 }
 
 .table th {
-  background-color: #333;
+  background-color: var(--background-light);
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.table tr:hover {
+  background-color: #f5f5f5;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.section {
+  background-color: white;
+  border-radius: var(--border-radius);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--box-shadow);
+}
+/* 전체 페이지 스타일 */
+.saving-page {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+/* 제목 스타일 */
+.saving-page h2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #1890ff;
+}
+
+.saving-page h2 i {
+  font-size: 2rem;
+}
+
+/* 검색 영역 스타일 */
+.search-container {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  animation: fadeInDown 0.3s ease-out;
+}
+
+.search-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  flex: 1;
+  min-width: 200px;
+  margin-right: 20px;
+}
+
+.form-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+}
+
+.form-group label i {
+  color: #1890ff;
+}
+
+.form-control {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding-left: 30px;
+  background-position: 8px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.search-button {
+  padding: 12px 30px;
+  background-color: #1890ff;
   color: white;
-  white-space: nowrap;
-}
-
-.table tbody tr {
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
+  font-size: 1rem;
   transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 15px;
+  align-self: flex-end;
 }
 
-.table tbody tr:hover {
+.search-button:hover {
+  background-color: #40a9ff;
+}
+
+.search-button i {
+  font-size: 1.2rem;
+}
+
+/* 컨텐츠 영역 스타일 */
+.content-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+/* 테이블 스타일 */
+.saving-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.saving-table th,
+.saving-table td {
+  padding: 15px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+.saving-table th {
+  background-color: #fafafa;
+  font-weight: bold;
+  color: #555;
+  min-width: 100px;
+  padding: 15px 10px;
+  text-align: center;
+}
+
+.saving-table th i {
+  margin-right: 5px;
+  color: #1890ff;
+}
+
+.saving-table tr:hover {
   background-color: #f1f1f1;
 }
 
-.sort-arrows {
-  display: inline-block;
+.table-row {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.table-row:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #f8f9ff !important;
+}
+
+.highlight-rate {
+  color: #ff4d4f;
+  font-weight: bold;
+}
+
+.detail-button {
+  padding: 8px 15px;
+  background-color: #52c41a;
+  color: white;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 12px;
-  margin-left: 5px;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin: 0 auto;
 }
 
-.sort-arrows span.active {
-  color: #ff6347;
+.detail-button:hover {
+  background-color: #73d13d;
 }
 
+.detail-button i {
+  font-size: 1.1rem;
+}
+
+/* 페이지네이션 스타일 */
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
 }
 
 .pagination button {
-  padding: 10px 15px;
+  padding: 8px 15px;
   margin: 0 5px;
-  background-color: #333;
+  background-color: #1890ff;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 5px;
   cursor: pointer;
+  font-size: 0.9rem;
   transition: background-color 0.3s;
 }
 
@@ -349,24 +491,132 @@ h2 {
 }
 
 .pagination button:hover:not(:disabled) {
-  background-color: #555;
+  background-color: #40a9ff;
 }
 
 .pagination span {
   margin: 0 10px;
+  font-size: 1rem;
+  color: #555;
 }
 
-.full-screen {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: white;
-  z-index: 1000;
-  overflow-y: auto;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
+/* 애니메이션 효과 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.search-results {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .search-options {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-group {
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+
+  .search-button {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .saving-table th i {
+    display: none;
+  }
+
+  .form-group label i {
+    font-size: 1.2rem;
+  }
+
+  .search-button {
+    padding: 15px;
+  }
+}
+/* 컬럼 헤더에 커서 및 강조 효과 추가 */
+.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable:hover {
+  background-color: #f5f5f5;
+}
+
+/* 정렬 아이콘 스타일 */
+.sort-icon {
+  margin-left: 5px;
+  font-size: 0.8rem;
+}
+
+/* CSS 수정/추가 */
+.saving-table th {
+  background-color: #fafafa;
+  font-weight: bold;
+  color: #555;
+  min-width: 100px; /* 최소 너비 설정 */
+  padding: 15px 10px;
+}
+
+.rate-header {
+  min-width: 140px; /* 정렬 헤더의 최소 너비 증가 */
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.sort-icon {
+  display: inline-flex;
+  width: 20px; /* 고정 너비 */
+  justify-content: center;
+  align-items: center;
+}
+
+/* 반응형 대응 */
+@media (max-width: 768px) {
+  .saving-table th {
+    padding: 12px 8px;
+    font-size: 0.9rem;
+  }
+
+  .rate-header {
+    min-width: 120px;
+  }
+
+  .header-content {
+    gap: 4px;
+  }
+
+  .sort-icon {
+    width: 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  .header-content {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .sort-icon {
+    height: 16px;
+  }
 }
 </style>

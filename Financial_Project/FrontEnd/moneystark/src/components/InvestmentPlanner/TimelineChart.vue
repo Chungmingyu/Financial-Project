@@ -1,10 +1,25 @@
 <template>
   <div class="charts-container">
-    <div class="timeline-chart">
-      <canvas ref="chartCanvas"></canvas>
+    <!-- Investment Timeline Chart -->
+    <div class="chart-section">
+      <h3>
+        <i class="mdi mdi-chart-timeline"></i>
+        투자 금액 타임라인
+      </h3>
+      <div class="chart-wrapper">
+        <canvas ref="chartCanvas"></canvas>
+      </div>
     </div>
-    <div class="interest-chart">
-      <canvas ref="interestChartCanvas"></canvas>
+
+    <!-- Interest Rate Chart -->
+    <div class="chart-section">
+      <h3>
+        <i class="mdi mdi-chart-line"></i>
+        금리 변화
+      </h3>
+      <div class="chart-wrapper">
+        <canvas ref="interestChartCanvas"></canvas>
+      </div>
     </div>
   </div>
 </template>
@@ -21,10 +36,11 @@ export default {
       type: Array,
       required: true,
     },
-    products: {  // products prop 추가
+    products: {
+      // products prop 추가
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
 
   setup(props) {
@@ -60,13 +76,11 @@ export default {
       // 이자율 데이터셋 수정
       const interestDatasets = props.items.map((item, index) => {
         const product = props.products[item.product_type]?.[item.product_id];
-        const option = product?.options?.find(opt => opt.save_trm === item.period);
-        
+        const option = product?.options?.find((opt) => opt.save_trm === item.period);
+
         let rate = 0;
         if (option) {
-          rate = option.intr_rate2 
-            ? ((Number(option.intr_rate) + Number(option.intr_rate2)) / 2) 
-            : Number(option.intr_rate || 0);
+          rate = option.intr_rate2 ? (Number(option.intr_rate) + Number(option.intr_rate2)) / 2 : Number(option.intr_rate || 0);
         }
 
         return {
@@ -91,30 +105,30 @@ export default {
         interaction: {
           intersect: false,
           mode: "nearest",
-          axis: "x"
+          axis: "x",
         },
         scales: {
           x: {
             grid: {
               display: true,
-              color: 'rgba(0, 0, 0, 0.05)'
+              color: "rgba(0, 0, 0, 0.05)",
             },
             ticks: {
               maxRotation: 45,
               minRotation: 45,
               callback: (value, index) => {
                 const month = months[index];
-                return `${Math.floor(month/12)}년 ${month%12}개월`;
-              }
-            }
+                return `${Math.floor(month / 12)}년 ${month % 12}개월`;
+              },
+            },
           },
-        }
+        },
       };
 
       // 원금 차트
       chart = new Chart(ctx, {
         type: "line",
-        data: { labels: months.map(m => `${Math.floor(m/12)}년 ${m%12}개월`), datasets },
+        data: { labels: months.map((m) => `${Math.floor(m / 12)}년 ${m % 12}개월`), datasets },
         options: {
           ...commonOptions,
           scales: {
@@ -122,20 +136,20 @@ export default {
             y: {
               beginAtZero: true,
               grid: {
-                color: 'rgba(0, 0, 0, 0.05)',
+                color: "rgba(0, 0, 0, 0.05)",
               },
               ticks: {
-                callback: value => `${new Intl.NumberFormat('ko-KR').format(value)}원`
-              }
-            }
-          }
-        }
+                callback: (value) => `${new Intl.NumberFormat("ko-KR").format(value)}원`,
+              },
+            },
+          },
+        },
       });
 
       // 이자율 차트
       interestChart = new Chart(interestCtx, {
         type: "line",
-        data: { labels: months.map(m => `${Math.floor(m/12)}년 ${m%12}개월`), datasets: interestDatasets },
+        data: { labels: months.map((m) => `${Math.floor(m / 12)}년 ${m % 12}개월`), datasets: interestDatasets },
         options: {
           ...commonOptions,
           scales: {
@@ -143,14 +157,14 @@ export default {
             y: {
               beginAtZero: true,
               grid: {
-                color: 'rgba(0, 0, 0, 0.05)',
+                color: "rgba(0, 0, 0, 0.05)",
               },
               ticks: {
-                callback: value => `${value.toFixed(2)}%`
-              }
-            }
-          }
-        }
+                callback: (value) => `${value.toFixed(2)}%`,
+              },
+            },
+          },
+        },
       });
     };
 
@@ -168,7 +182,7 @@ export default {
 
     return {
       chartCanvas,
-      interestChartCanvas
+      interestChartCanvas,
     };
   },
 };
@@ -178,17 +192,70 @@ export default {
 .charts-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 20px;
+  gap: 2rem;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.timeline-chart,
-.interest-chart {
-  width: 100%;
-  height: 400px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+.chart-section {
+  flex: 1;
+  min-height: 400px;
+}
+
+.chart-section h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  color: #1a202c;
+  margin-bottom: 1rem;
+}
+
+.chart-section h3 i {
+  color: #2563eb;
+  font-size: 1.5rem;
+}
+
+.chart-wrapper {
+  position: relative;
+  height: 350px;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  transition: transform 0.2s ease;
+}
+
+.chart-wrapper:hover {
+  transform: translateY(-2px);
+}
+
+@media (min-width: 1024px) {
+  .charts-container {
+    flex-direction: row;
+  }
+}
+
+@media (max-width: 768px) {
+  .chart-wrapper {
+    height: 300px;
+  }
+}
+
+/* Animation */
+@keyframes chartFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chart-section {
+  animation: chartFadeIn 0.5s ease-out;
 }
 </style>

@@ -1,131 +1,197 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="investment-planner">
+    <div class="planner-container">
+      <!-- 헤더 섹션 -->
+      <header class="planner-header">
+        <h1>
+          <i class="mdi mdi-chart-timeline-variant"></i>
+          맞춤형 투자 플래너
+        </h1>
+      </header>
+
       <!-- 입력 폼과 포트폴리오 차트 섹션 -->
-      <div class="bg-white shadow-lg rounded-xl p-8 mb-8">
-        <h1 class="text-3xl font-bold mb-8 text-gray-800">맞춤형 투자 플래너</h1>
-
-        <div class="flex flex-col lg:flex-row gap-8">
-          <!-- 입력 폼 -->
-          <div class="lg:w-1/2">
-            <!-- col-span-1 추가 -->
-            <form @submit.prevent="generatePlan" class="space-y-6">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">투자 금액</label>
-                <div class="relative">
-                  <input type="number" v-model="formData.total_amount" class="w-full p-3 border rounded-lg pr-12" min="1000000" step="1000000" />
-                  <span class="absolute right-3 top-3 text-gray-500">원</span>
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">투자 기간</label>
-                <div class="relative">
-                  <input type="number" v-model="formData.period_months" class="w-full p-3 border rounded-lg pr-16" min="6" max="120" />
-                  <span class="absolute right-3 top-3 text-gray-500">개월</span>
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">선호 은행</label>
-                <div class="relative">
-                  <div class="flex flex-wrap gap-2 mb-2">
-                    <span v-for="bank in selectedBanks" :key="bank.code" class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-700">
-                      {{ bank.name }}
-                      <button @click="removeBank(bank.code)" class="ml-2 text-blue-500 hover:text-blue-700">×</button>
-                    </span>
-                  </div>
-                  <select v-model="formData.preferred_banks" multiple class="w-full p-3 border rounded-lg">
-                    <option v-for="bank in availableBanks" :key="bank.code" :value="bank.code">
-                      {{ bank.name }}
-                    </option>
-                  </select>
-                </div>
-              </div>
-
-              <button type="submit" class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors" :disabled="loading">
-                {{ loading ? "계획 생성 중..." : "투자 계획 생성" }}
-              </button>
-            </form>
-            <button
-              v-if="plan"
-              @click="toggleCharts"
-              class="w-full mt-4 px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors flex items-center justify-center gap-2"
-            >
-              <span>차트 {{ showCharts ? "숨기기" : "보기" }}</span>
-              <span class="transform transition-transform" :class="{ 'rotate-180': showCharts }">▼</span>
-            </button>
-          </div>
-
-          <!-- 포트폴리오 차트 -->
-          <Transition name="fade">
-            <div v-if="showCharts && plan" class="lg:w-1/2">
-              <div class="w-full">
-                <h2 class="text-xl font-semibold mb-4">포트폴리오 분포</h2>
-                <PortfolioChart :items="plan.items" />
+      <section class="form-chart-section">
+        <div class="form-wrapper">
+          <form @submit.prevent="generatePlan" class="investment-form">
+            <!-- 투자 금액 입력 -->
+            <div class="input-group">
+              <label>
+                <i class="mdi mdi-currency-krw"></i>
+                투자 금액
+              </label>
+              <div class="input-with-icon">
+                <input 
+                  type="number"
+                  v-model="formData.total_amount"
+                  min="1000000"
+                  step="1000000"
+                  placeholder="최소 100만원"
+                />
+                <span class="input-suffix">원</span>
               </div>
             </div>
-          </Transition>
+
+            <!-- 투자 기간 입력 -->
+            <div class="input-group">
+              <label>
+                <i class="mdi mdi-calendar-range"></i>
+                투자 기간
+              </label>
+              <div class="input-with-icon">
+                <input 
+                  type="number"
+                  v-model="formData.period_months"
+                  min="6"
+                  max="120"
+                  placeholder="6-120개월"
+                />
+                <span class="input-suffix">개월</span>
+              </div>
+            </div>
+
+            <!-- 선호 은행 선택 -->
+            <div class="input-group">
+              <label>
+                <i class="mdi mdi-bank"></i>
+                선호 은행
+              </label>
+              <div class="bank-selection">
+                <div class="selected-banks">
+                  <span v-for="bank in selectedBanks" 
+                        :key="bank.code" 
+                        class="bank-tag">
+                    {{ bank.name }}
+                    <button @click="removeBank(bank.code)" 
+                            type="button"
+                            class="remove-bank">
+                      <i class="mdi mdi-close"></i>
+                    </button>
+                  </span>
+                </div>
+                <select v-model="formData.preferred_banks" 
+                        multiple 
+                        class="bank-select">
+                  <option v-for="bank in availableBanks" 
+                          :key="bank.code" 
+                          :value="bank.code">
+                    {{ bank.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 제출 버튼 -->
+            <button type="submit" 
+                    class="submit-button" 
+                    :disabled="loading">
+              <i class="mdi mdi-calculator"></i>
+              {{ loading ? '계획 생성 중...' : '투자 계획 생성' }}
+            </button>
+          </form>
+
+          <!-- 차트 토글 버튼 -->
+          <button v-if="plan"
+                  @click="toggleCharts"
+                  class="toggle-charts-button">
+            <i class="mdi" :class="showCharts ? 'mdi-chevron-up' : 'mdi-chevron-down'"></i>
+            차트 {{ showCharts ? '숨기기' : '보기' }}
+          </button>
         </div>
-      </div>
+
+        <!-- 포트폴리오 차트 -->
+        <Transition name="fade">
+          <div v-if="showCharts && plan" class="chart-container">
+            <h2>
+              <i class="mdi mdi-chart-pie"></i>
+              포트폴리오 분포
+            </h2>
+            <PortfolioChart :items="plan.items" />
+          </div>
+        </Transition>
+      </section>
 
       <!-- 타임라인 차트 -->
-      <div v-if="showCharts && plan" class="bg-white shadow-lg rounded-xl p-8 mb-8">
-        <h2 class="text-xl font-semibold mb-6">투자 타임라인</h2>
-        <TimelineChart :items="plan.items" :products="products" />
-      </div>
+      <Transition name="fade">
+        <section v-if="showCharts && plan" class="timeline-section">
+          <h2>
+            <i class="mdi mdi-chart-timeline"></i>
+            투자 타임라인
+          </h2>
+          <TimelineChart :items="plan.items" :products="products" />
+        </section>
+      </Transition>
 
-      <!-- 투�� 상품 상세 리스트 -->
-      <div v-if="plan" class="bg-white shadow-lg rounded-xl p-8">
-        <h2 class="text-xl font-semibold mb-6">추천 투자 상품 상세</h2>
-        <div class="space-y-4">
-          <div v-for="item in plan.items" :key="item.product_id" class="bg-white rounded-lg border hover:border-blue-500 transition-colors duration-200 p-6">
-            <div class="flex items-center justify-between mb-4">
+      <!-- 추천 상품 리스트 -->
+      <section v-if="plan" class="products-section">
+        <h2>
+          <i class="mdi mdi-format-list-bulleted"></i>
+          추천 투자 상품 상세
+        </h2>
+        <div class="products-grid">
+          <div v-for="item in plan.items" 
+               :key="item.product_id" 
+               class="product-card">
+            <!-- 상품 헤더 -->
+            <div class="product-header">
               <div>
-                <span class="text-sm text-gray-500">{{ getBankName(item.product_id) }}</span>
-                <h3 class="text-lg font-semibold">{{ getProductName(item.product_id) }}</h3>
+                <span class="bank-name">{{ getBankName(item.product_id) }}</span>
+                <h3 class="product-name">{{ getProductName(item.product_id) }}</h3>
               </div>
-              <span class="px-4 py-2 rounded-full text-sm font-medium" :class="item.product_type === 'deposit' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'">
+              <span :class="['product-type', item.product_type]">
                 {{ getProductType(item.product_type) }}
               </span>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div>
-                <span class="text-sm text-gray-500">투자금액</span>
-                <p class="text-lg font-semibold">{{ formatAmount(item.amount) }}원</p>
+            <!-- 상품 상세 정보 -->
+            <div class="product-details">
+              <div class="detail-item">
+                <i class="mdi mdi-cash"></i>
+                <span class="label">투자금액</span>
+                <strong>{{ formatAmount(item.amount) }}원</strong>
               </div>
-              <div>
-                <span class="text-sm text-gray-500">예상 만기금액</span>
-                <p class="text-lg font-semibold text-blue-600">{{ calculateMaturityAmount(item) }}원</p>
+              <div class="detail-item">
+                <i class="mdi mdi-cash-multiple"></i>
+                <span class="label">예상 만기금액</span>
+                <strong class="amount">{{ calculateMaturityAmount(item) }}원</strong>
               </div>
-              <div>
-                <span class="text-sm text-gray-500">투자 시작</span>
-                <p>{{ item.start_month }}개월 후</p>
+              <div class="detail-item">
+                <i class="mdi mdi-calendar-start"></i>
+                <span class="label">투자 시작</span>
+                <strong>{{ item.start_month }}개월 후</strong>
               </div>
-              <div>
-                <span class="text-sm text-gray-500">투자 기간</span>
-                <p>{{ item.period }}개월</p>
+              <div class="detail-item">
+                <i class="mdi mdi-calendar-clock"></i>
+                <span class="label">투자 기간</span>
+                <strong>{{ item.period }}개월</strong>
               </div>
             </div>
 
-            <button @click="showProductDetails(item)" class="mt-4 px-4 py-2 border border-blue-600 text-blue-600 rounded hover:bg-blue-50 transition-colors">상세 정보 보기</button>
+            <!-- 상세 정보 버튼 -->
+            <button @click="showProductDetails(item)" 
+                    class="details-button">
+              <i class="mdi mdi-information"></i>
+              상세 정보 보기
+            </button>
           </div>
         </div>
-      </div>
+      </section>
     </div>
 
-    <!-- 모달 -->
-    <Teleport to="#app">
-      <transition name="fade">
-        <div v-if="selectedProduct" class="fixed inset-0 z-[1100]" style="background: rgba(0, 0, 0, 0.5)">
-          <div class="fixed inset-0 flex items-center justify-center p-4">
-            <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-2xl" @click.stop>
-              <ProductDetailModal :product="selectedProduct" @close="selectedProduct = null" />
-            </div>
+    <!-- 상품 상세 모달 -->
+    <Teleport to="body">
+      <Transition name="modal">
+        <div v-if="selectedProduct" 
+             class="modal-overlay"
+             @click="selectedProduct = null">
+          <div class="modal-container" 
+               @click.stop>
+            <ProductDetailModal 
+              :product="selectedProduct"
+              @close="selectedProduct = null"
+              @select="handleProductSelect" />
           </div>
         </div>
-      </transition>
+      </Transition>
     </Teleport>
   </div>
 </template>
@@ -291,20 +357,253 @@ export default {
 };
 </script>
 <style scoped>
-select[multiple] {
-  height: 120px;
+.investment-planner {
+  min-height: 100vh;
+  background-color: #f5f7fa;
 }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
+.planner-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
+/* 헤더 스타일 */
+.planner-header {
+  margin-bottom: 2rem;
+  text-align: center;
 }
-/* 기존 스타일 유지하고 추가 */
+
+.planner-header h1 {
+  font-size: 2rem;
+  color: #1a202c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.planner-header h1 i {
+  color: #2563eb;
+  font-size: 2.25rem;
+}
+
+/* 입력 폼 섹션 */
+.form-chart-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.investment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 입력 그룹 스타일 */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.input-group label i {
+  color: #2563eb;
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon input {
+  width: 100%;
+  padding: 0.75rem 3rem 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.input-with-icon input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  outline: none;
+}
+
+.input-suffix {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+}
+
+/* 은행 선택 스타일 */
+.bank-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.selected-banks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-height: 2rem;
+}
+
+.bank-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  background: #e0e7ff;
+  color: #4f46e5;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+}
+
+.remove-bank {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.125rem;
+  color: #4f46e5;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.remove-bank:hover {
+  background-color: #4f46e5;
+  color: white;
+}
+
+.bank-select {
+  padding: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  height: 8rem;
+}
+
+/* 버튼 스타일 */
+.submit-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background-color: #2563eb;
+  color: white;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: #1d4ed8;
+}
+
+.submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.toggle-charts-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid #2563eb;
+  color: #2563eb;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.toggle-charts-button:hover {
+  background-color: #e0e7ff;
+}
+
+/* 차트 컨테이너 스타일 */
+.chart-container {
+  padding: 1.5rem;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* 상품 리스트 스타일 */
+.products-section {
+  margin-top: 2rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.product-card {
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  transition: all 0.2s;
+}
+
+.product-card:hover {
+  border-color: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* 모달 스타일 */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.modal-container {
+  width: 100%;
+  max-width: 42rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* 애니메이션 */
 .fade-enter-active,
 .fade-leave-active {
   transition: all 0.3s ease;
@@ -313,59 +612,23 @@ select[multiple] {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-  transform: translateY(-20px);
+  transform: translateY(-1rem);
 }
 
-select[multiple] {
-  height: 120px;
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+  .form-chart-section {
+    grid-template-columns: 1fr;
+  }
 }
 
-/* 가로 스크롤바 스타일링 */
-.overflow-x-auto {
-  scrollbar-width: thin;
-  scrollbar-color: #cbd5e0 #edf2f7;
-}
-
-.overflow-x-auto::-webkit-scrollbar {
-  height: 6px;
-}
-
-.overflow-x-auto::-webkit-scrollbar-track {
-  background: #edf2f7;
-  border-radius: 3px;
-}
-
-.overflow-x-auto::-webkit-scrollbar-thumb {
-  background-color: #cbd5e0;
-  border-radius: 3px;
-}
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: translateY(-20px);
-}
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: translateY(-20px);
-}
-
-/* 화살표 회전 애니메이션 */
-.rotate-180 {
-  transform: rotate(180deg);
-}
-
-.transform {
-  transition: transform 0.3s ease;
+@media (max-width: 768px) {
+  .planner-container {
+    padding: 1rem;
+  }
+  
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
