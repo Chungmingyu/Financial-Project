@@ -107,6 +107,12 @@ export default {
           mode: "nearest",
           axis: "x",
         },
+        plugins: {
+          legend: {
+            position: 'top', // 범례 위치 변경
+            align: 'start',
+          }
+        },
         scales: {
           x: {
             grid: {
@@ -197,11 +203,14 @@ export default {
   background-color: #ffffff;
   border-radius: 1rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* 넘침 방지 */
 }
 
 .chart-section {
   flex: 1;
   min-height: 400px;
+  width: 100%; /* 너비 제한 */
+  overflow: hidden; /* 넘침 방지 */
 }
 
 .chart-section h3 {

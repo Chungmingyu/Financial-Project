@@ -14,18 +14,29 @@
 
     <div class="map-wrapper">
       <svg viewBox="0 0 800 1200" preserveAspectRatio="xMidYMid meet">
-        <g v-for="region in mappedRegions" :key="region.id" :fill="getRegionColor(region.price)" @mousemove="handleMouseMove($event, region)" @mouseleave="hoveredRegion = null" class="region">
+        <g v-for="region in mappedRegions" 
+           :key="region.id" 
+           :fill="getRegionColor(region.price)" 
+           @mousemove="handleMouseMove($event, region)" 
+           @mouseleave="hoveredRegion = null" 
+           class="region">
           <path :d="region.path" />
-          <text :x="region.center?.[0]" :y="region.center?.[1]" class="region-label" stroke="#000" stroke-width="2" stroke-linejoin="round">
+          <text :x="region.center?.[0]" 
+                :y="region.center?.[1]" 
+                class="region-label" 
+                stroke="#fff" 
+                stroke-width="3" 
+                stroke-linejoin="round">
             {{ region.name }}
           </text>
-          <text :x="region.center?.[0]" :y="region.center?.[1]" class="region-label region-label-front">
+          <text :x="region.center?.[0]" 
+                :y="region.center?.[1]" 
+                class="region-label region-label-front">
             {{ region.name }}
           </text>
         </g>
       </svg>
 
-      <!-- 가격 정보 비콘 -->
       <div v-if="hoveredRegion" class="price-beacon" :style="beaconStyle">
         <div class="beacon-content">
           <h4>{{ hoveredRegion.name }}</h4>
@@ -35,7 +46,6 @@
       </div>
     </div>
 
-    <!-- 하단 정보 표시 -->
     <div v-if="hoveredRegion" class="bottom-info">
       <div class="info-content">
         <h3>{{ hoveredRegion.name }}</h3>
@@ -71,6 +81,7 @@ const REGION_NAMES = {
   Sejong: "세종",
   Ulsan: "울산",
 };
+
 export default {
   name: "KoreaMap",
   props: {
@@ -87,11 +98,11 @@ export default {
     return {
       hoveredRegion: null,
       mousePosition: { x: 0, y: 0 },
+      legendColors: ["#e3f2fd", "#90caf9", "#42a5f5", "#1e88e5", "#0d47a1"], // 파란색 계열
     };
   },
   computed: {
     mappedRegions() {
-      console.log("원본 데이터:", this.data);
       const cityData = this.data.reduce((acc, item) => {
         const parts = item.location_full?.split(">") || [];
         const mainRegion = parts[0];
@@ -107,28 +118,14 @@ export default {
         }
         return acc;
       }, {});
-      // 3. 필터링된 시도 데이터 확인
-      console.log("필터링된 시도 데이터:", cityData);
 
       return southKorea.locations.map((region) => {
-        // 영문 지역명을 한글로 변환
         const koreanName = REGION_NAMES[region.name] || region.name;
-
-        console.log("매칭 시도:", {
-          originalName: region.name,
-          koreanName: koreanName,
-        });
-        // 매칭 데이터 찾기
         const matchedData = cityData[koreanName];
-
-        console.log("매칭 결과:", {
-          region: koreanName,
-          matchedData: matchedData,
-        });
 
         return {
           id: region.id,
-          name: koreanName, // 한글 지역명 사용
+          name: koreanName,
           path: region.path,
           price: matchedData ? matchedData.price : 0,
           center: region.center,
@@ -149,12 +146,8 @@ export default {
         max: this.sortedPrices[this.sortedPrices.length - 1] || 0,
       };
     },
-    legendColors() {
-      return ["#fff5f0", "#fed4c7", "#fc8e7c", "#e73525", "#67000d"];
-    },
     legendValues() {
       const prices = this.data.filter((item) => item.price > 0).map((item) => item.price);
-
       const min = Math.min(...prices);
       const max = Math.max(...prices);
       const step = (max - min) / 4;
@@ -166,39 +159,17 @@ export default {
           return this.formatPrice(value);
         });
     },
-    tooltipStyle() {
+    beaconStyle() {
+      const rect = this.$el.getBoundingClientRect();
       return {
-        left: `${this.mousePosition.x + 10}px`,
-        top: `${this.mousePosition.y + 10}px`,
+        left: `${this.mousePosition.x - rect.left}px`,
+        top: `${this.mousePosition.y - rect.top - 120}px`,
       };
     },
   },
-  getRegionColor(price) {
-    if (!price || price <= 0) return "#cccccc";
-
-    const { min, max } = this.priceRange;
-    const normalized = (price - min) / (max - min);
-    const colorIndex = Math.min(Math.floor(normalized * this.legendColors.length), this.legendColors.length - 1);
-
-    return this.legendColors[colorIndex];
-  },
-  beaconStyle() {
-    const rect = this.$el.getBoundingClientRect();
-    return {
-      left: `${this.mousePosition.x - rect.left}px`,
-      top: `${this.mousePosition.y - rect.top - 120}px`,
-    };
-  },
-
   methods: {
     getRegionColor(price) {
-      //   // 6. 색상 계산 과정 확인
-      //   console.log("색상 계산:", {
-      //     price: price,
-      //     priceRange: this.priceRange,
-      //     legendColors: this.legendColors,
-      //   });
-      if (!price || price <= 0) return "#cccccc";
+      if (!price || price <= 0) return "#f8fafc"; // 데이터 없는 지역 색상을 약간 더 밝게 조정
 
       const { min, max } = this.priceRange;
       const normalized = (price - min) / (max - min);
@@ -219,14 +190,6 @@ export default {
       return new Intl.NumberFormat("ko-KR").format(billion);
     },
   },
-  watch: {
-    data: {
-      handler(newData) {
-        // console.log("Received data:", newData);
-      },
-      immediate: true,
-    },
-  },
 };
 </script>
 
@@ -234,108 +197,125 @@ export default {
 .map-container {
   position: relative;
   width: 95%;
-  max-width: 1400px;
-  min-height: 900px;
-  background: #1e1e1e;
-  border-radius: 12px;
+  max-width: 1200px;
+  margin: 40px auto;
   padding: 30px;
-  margin: 0 auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(13, 71, 161, 0.08);
 }
 
-.map-wrapper {
+.map-title {
+  color: #1565c0;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  font-weight: 700;
+  text-shadow: 1px 1px 2px rgba(13, 71, 161, 0.1);
+}
+
+.legend {
+  position: absolute;
+  right: 30px;
+  top: 30px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(13, 71, 161, 0.1);
+  border: 1px solid #e3f2fd;
+  backdrop-filter: blur(8px);
+}
+
+.legend-title {
+  color: #1565c0;
+  font-weight: 700;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+
+.legend-item {
   display: flex;
-  justify-content: center;
   align-items: center;
-  height: calc(100% - 100px);
-  position: relative;
-  margin-top: 20px;
+  gap: 12px;
+  margin-bottom: 10px;
 }
 
-svg {
-  width: 90%;
-  height: 90%;
-  max-height: 800px;
-}
-
-.region-label {
-  fill: #fff;
-  font-size: 16px;
-  font-weight: bold;
-  text-anchor: middle;
-  pointer-events: none;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+.legend-color {
+  width: 35px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1px solid rgba(13, 71, 161, 0.1);
+  box-shadow: 0 2px 4px rgba(13, 71, 161, 0.05);
 }
 
 .region {
-  stroke: #444;
-  stroke-width: 1;
-  transition: all 0.3s;
+  stroke: #ffffff;
+  stroke-width: 1.5;
+  transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .region:hover {
-  opacity: 0.85;
-  stroke: #fff;
+  opacity: 0.9;
+  stroke: #1e88e5;
   stroke-width: 2;
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+  filter: drop-shadow(0 0 10px rgba(13, 71, 161, 0.3));
+}
+
+.region-label {
+  font-size: 14px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: #1565c0;
+  font-weight: 600;
+  pointer-events: none;
 }
 
 .price-beacon {
   position: absolute;
-  pointer-events: none;
-  transform: translate(-50%, -100%);
+  background: rgba(255, 255, 255, 0.98);
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(13, 71, 161, 0.15);
+  border: 1px solid #e3f2fd;
   z-index: 1000;
-}
-
-.beacon-content {
-  background: rgba(0, 0, 0, 0.9);
-  padding: 12px 16px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(4px);
+  min-width: 200px;
+  backdrop-filter: blur(8px);
+  transform: translate(-50%, -100%);
 }
 
 .beacon-content h4 {
-  margin: 0 0 4px;
-  color: #fff;
-  font-size: 16px;
+  color: #1565c0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
 }
 
 .beacon-content .price {
-  margin: 0;
-  color: #4caf50;
-  font-size: 18px;
-  font-weight: bold;
+  color: #0d47a1;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 6px;
 }
 
 .beacon-content .location {
-  margin: 4px 0 0;
-  color: #aaa;
-  font-size: 12px;
+  color: #1976d2;
+  font-size: 0.95rem;
 }
 
 .bottom-info {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.95);
+  margin-top: 20px;
+  background: #f8fafc;
   padding: 20px;
-  border-radius: 0 0 12px 12px;
-  backdrop-filter: blur(10px);
-}
-
-.info-content {
-  max-width: 800px;
-  margin: 0 auto;
-  color: #fff;
+  border-radius: 12px;
+  border: 1px solid #e3f2fd;
 }
 
 .info-content h3 {
-  margin: 0 0 10px;
-  font-size: 24px;
+  color: #1565c0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 10px;
 }
 
 .info-details {
@@ -345,135 +325,30 @@ svg {
 }
 
 .price-large {
-  margin: 0;
-  font-size: 28px;
-  font-weight: bold;
-  color: #4caf50;
+  color: #0d47a1;
+  font-size: 1.6rem;
+  font-weight: 700;
 }
 
 .location-detail {
-  margin: 0;
-  color: #aaa;
-  font-size: 16px;
+  color: #1976d2;
+  font-size: 1.1rem;
 }
 
-.map-title {
-  color: #fff;
-  text-align: center;
-  margin-bottom: 30px;
-  font-size: 2em;
-  font-weight: bold;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
+@media (max-width: 768px) {
+  .map-container {
+    padding: 20px;
+  }
+  
+  .legend {
+    position: static;
+    margin-bottom: 20px;
+    width: 100%;
+  }
 
-.legend {
-  position: absolute;
-  right: 40px;
-  top: 40px;
-  background: rgba(0, 0, 0, 0.95);
-  padding: 20px;
-  border-radius: 8px;
-  color: white;
-  z-index: 1000;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.map-title {
-  color: #fff;
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 1.5em;
-  font-weight: bold;
-}
-
-.legend {
-  position: absolute;
-  right: 30px;
-  top: 30px;
-  background: rgba(0, 0, 0, 0.9);
-  padding: 15px;
-  border-radius: 4px;
-  color: white;
-  z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-.legend-title {
-  margin-bottom: 10px;
-  font-weight: bold;
-  font-size: 14px;
-}
-
-.legend-scale {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 140px;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 13px;
-}
-
-.legend-color {
-  width: 30px;
-  height: 20px;
-  border: 1px solid #444;
-  border-radius: 2px;
-}
-
-.region-label {
-  fill: #fff;
-  font-size: 14px;
-  text-anchor: middle;
-  pointer-events: none;
-}
-
-.region-label-front {
-  stroke: none;
-}
-
-.region {
-  stroke: #333;
-  stroke-width: 1;
-  transition: all 0.3s;
-  cursor: pointer;
-}
-
-.region:hover {
-  opacity: 0.8;
-  stroke: #fff;
-  stroke-width: 2;
-}
-
-.tooltip {
-  position: absolute;
-  background: rgba(0, 0, 0, 0.9);
-  color: white;
-  padding: 15px;
-  border-radius: 4px;
-  font-size: 14px;
-  pointer-events: none;
-  z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  min-width: 200px;
-}
-
-.tooltip h4 {
-  margin: 0 0 8px;
-  font-size: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  padding-bottom: 5px;
-}
-
-.tooltip-detail {
-  font-size: 12px;
-  color: #ccc;
-  margin-top: 5px;
+  .info-details {
+    flex-direction: column;
+    gap: 10px;
+  }
 }
 </style>

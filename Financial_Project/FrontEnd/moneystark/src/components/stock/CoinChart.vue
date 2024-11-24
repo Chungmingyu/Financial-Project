@@ -1,7 +1,6 @@
-<!-- CoinChart.vue -->
 <template>
   <div class="chart-wrapper">
-    <apexchart type="line" height="200" :options="chartOptions" :series="series" />
+    <apexchart type="line" height="300" :options="chartOptions" :series="series" />
   </div>
 </template>
 
@@ -26,63 +25,77 @@ export default defineComponent({
       chartOptions: {
         chart: {
           type: "line",
-          animations: { enabled: false },
+          animations: {
+            enabled: true,
+            easing: "smooth",
+            speed: 1000,
+            animateGradually: {
+              enabled: true,
+              delay: 150,
+            },
+          },
           toolbar: { show: false },
-          background: "#242424",
+          background: "#ffffff",
           zoom: { enabled: false },
-          sparkline: { enabled: false }, // 전체 차트 표시
+          sparkline: { enabled: false },
         },
         theme: {
-          mode: "dark", // 다크 테마 적용
+          mode: "light",
         },
         stroke: {
           curve: "smooth",
-          width: 3, // 선 두께 증가
-          colors: [this.isUp ? "#ff5252" : "#2962ff"],
+          width: 2.5,
+          colors: [this.isUp ? "#ff4d4f" : "#1890ff"],
+          lineCap: "round",
         },
         fill: {
           type: "gradient",
           gradient: {
-            shadeIntensity: 0.5, // 그라데이션 강도 감소
-            opacityFrom: 0.8,
-            opacityTo: 0.4,
-            stops: [0, 90, 100],
+            shadeIntensity: 1,
+            inverseColors: false,
+            opacityFrom: 0.45,
+            opacityTo: 0.1,
+            stops: [20, 100],
           },
         },
         markers: {
-          size: 4, // 마커 크기 증가
-          colors: undefined,
-          strokeColors: "#242424",
-          strokeWidth: 2,
-          hover: { size: 6 },
+          show: false,
         },
         xaxis: {
           type: "datetime",
           labels: {
-            datetimeUTC: false, // UTC 시간 비활성화
+            datetimeUTC: false,
             style: {
-              colors: "#bbb", // 밝은 색상의 텍스트
+              colors: "#999",
+              fontSize: "11px",
+              fontFamily: "'Noto Sans KR', sans-serif",
+              fontWeight: 400,
             },
             datetimeFormatter: {
-              year: "yyyy",
-              month: "MMM",
-              day: "dd",
-              hour: "HH:mm:ss",
+              hour: "HH:mm",
+              minute: "HH:mm",
+              second: "HH:mm:ss",
             },
           },
-          axisBorder: { show: false },
-          axisTicks: { show: false },
+          axisBorder: {
+            show: false,
+          },
+          axisTicks: {
+            show: false,
+          },
         },
         yaxis: {
           labels: {
             show: true,
             formatter: (value) => value.toLocaleString() + "원",
             style: {
-              colors: "#bbb", // 밝은 색상의 텍스트
-              fontSize: "12px",
+              colors: "#999",
+              fontSize: "11px",
+              fontFamily: "'Noto Sans KR', sans-serif",
+              fontWeight: 400,
             },
           },
-          tickAmount: 5, // y축 눈금 개수
+          tickAmount: 4,
         },
         tooltip: {
           theme: "light",
@@ -93,19 +106,57 @@ export default defineComponent({
           y: {
             formatter: (value) => value.toLocaleString() + "원",
             title: {
-              formatter: () => "가격: ",
+              formatter: () => "가격",
             },
           },
-          marker: { show: true },
+          marker: {
+            show: false,
+          },
+          style: {
+            fontSize: "12px",
+            fontFamily: "'Noto Sans KR', sans-serif",
+          },
+          fixed: {
+            enabled: true,
+            position: "topRight",
+            offsetY: 10,
+            offsetX: 0,
+          },
+        },
+        sparkline: { enabled: false },
+        padding: {
+          left: 20,
+          right: 20,
         },
         grid: {
           show: true,
-          borderColor: "#333", // 어두운 그리드 라인
-          strokeDashArray: 5,
+          borderColor: "#f5f5f5",
+          strokeDashArray: 3,
           position: "back",
-          xaxis: { lines: { show: true } },
-          yaxis: { lines: { show: true } },
-          padding: { left: 20, right: 20 },
+          padding: {
+            top: 10,
+            right: 40, // 오른쪽 여백 증가
+            bottom: 10,
+            left: 40, // 왼쪽 여백 증가
+          },
+          xaxis: {
+            lines: {
+              show: true,
+              opacity: 0.5,
+            },
+          },
+          yaxis: {
+            lines: {
+              show: true,
+              opacity: 0.5,
+            },
+          },
+          padding: {
+            top: 10,
+            right: 25,
+            bottom: 10,
+            left: 15,
+          },
         },
       },
       series: [
@@ -119,11 +170,11 @@ export default defineComponent({
   watch: {
     isUp: {
       handler(newValue) {
-        const color = newValue ? "#ff5252" : "#2962ff";
+        const color = newValue ? "#ff4d4f" : "#1890ff";
         this.chartOptions.stroke.colors = [color];
         this.chartOptions.fill.gradient.colorStops = [
-          { offset: 0, color: color, opacity: 0.8 },
-          { offset: 100, color: color, opacity: 0.2 },
+          { offset: 0, color: color, opacity: 0.7 },
+          { offset: 100, color: color, opacity: 0.3 },
         ];
       },
       immediate: true,
@@ -164,8 +215,16 @@ export default defineComponent({
 .chart-wrapper {
   width: 100%;
   height: 100%;
-  background: transparent;
-  padding: 10px;
-  border-radius: 8px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 15px;
+  transition: all 0.3s ease;
+  max-width: 1200px; /* 최대 너비 제한 */
+  margin: 0 auto; /* 중앙 정렬 */
+}
+
+.chart-wrapper:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 </style>

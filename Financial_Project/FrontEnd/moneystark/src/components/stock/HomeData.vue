@@ -5,13 +5,13 @@
       <button :class="{ active: !showMap }" @click="showMap = false">테이블 보기</button>
       <button :class="{ active: showMap }" @click="showMap = true">지도 보기</button>
     </div>
+    <div class="type-selector">
+      <button v-for="(type, key) in houseTypes" :key="key" :class="{ active: selectedType === key }" @click="changeType(key)">
+        {{ type.name }}
+      </button>
+    </div>
+    
     <div v-if="!showMap">
-      <div class="type-selector">
-        <button v-for="(type, key) in houseTypes" :key="key" :class="{ active: selectedType === key }" @click="changeType(key)">
-          {{ type.name }}
-        </button>
-      </div>
-
       <div v-if="loading">데이터를 불러오는 중...</div>
       <div v-else-if="error">{{ error }}</div>
       <div v-else class="table-container">
@@ -51,12 +51,7 @@
         </div>
       </div>
     </div>
-    <korea-map 
-      v-if="showMap" 
-      :data="data" 
-      :selectedType="houseTypes[selectedType].name"
-      v-show="!loading"
-    />
+    <korea-map v-if="showMap" :data="data" :selectedType="houseTypes[selectedType].name" v-show="!loading" />
   </div>
 </template>
 
@@ -136,145 +131,96 @@ export default {
 </script>
 
 <style scoped>
-.view-selector {
-  margin-bottom: 20px;
-  display: flex;
-  gap: 10px;
-}
-
-.view-selector button {
-  padding: 8px 16px;
-  background-color: #2c2c2c;
-  border: 1px solid #444;
-  color: #e4e4e4;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.view-selector button.active {
-  background-color: #4a4a4a;
-  border-color: #666;
-}
-.type-selector {
-  margin-bottom: 20px;
-}
-
-.type-selector button {
-  padding: 8px 16px;
-  margin-right: 10px;
-  background-color: #2c2c2c;
-  border: 1px solid #444;
-  color: #e4e4e4;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.type-selector button.active {
-  background-color: #4a4a4a;
-  border-color: #666;
-}
 .home-data {
+  max-width: 1200px;
+  margin: 40px auto;
   padding: 20px;
-  color: #e4e4e4;
+  font-family: "Noto Sans KR", sans-serif;
 }
 
 h2 {
-  color: #fff;
-  margin-bottom: 20px;
+  color: #1890ff;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
 }
 
-.national-data {
-  background-color: #2c2c2c;
-  padding: 15px;
-  margin-bottom: 20px;
-  border-radius: 5px;
-  border: 1px solid #444;
+.view-selector,
+.type-selector {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
 }
 
-.national-data h3 {
-  margin: 0 0 10px 0;
+.view-selector button,
+.type-selector button {
+  padding: 12px 24px;
+  background-color: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.view-selector button.active,
+.type-selector button.active {
+  background-color: #1890ff;
+  border-color: #1890ff;
   color: #fff;
 }
 
 .table-container {
-  overflow-x: auto;
-  margin-top: 20px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.national-data {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border: 1px solid #e9ecef;
 }
 
 table {
   width: 100%;
-  border-collapse: collapse;
-  margin: 0 auto;
-  background-color: #1e1e1e;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 20px;
 }
 
-th,
-td {
-  padding: 12px;
+th, td {
+  padding: 15px;
   text-align: left;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #e9ecef;
 }
 
 th {
-  background-color: #2c2c2c;
-  color: #fff;
-  font-weight: bold;
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #333;
 }
 
 tr:hover {
-  background-color: #2a2a2a;
-}
-
-td {
-  color: #e4e4e4;
-}
-
-.error {
-  color: #ff6b6b;
-  text-align: center;
-  margin-top: 20px;
-}
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  gap: 15px;
-}
-
-.pagination-btn {
-  padding: 8px 16px;
-  background-color: #2c2c2c;
-  border: 1px solid #444;
-  color: #e4e4e4;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.pagination-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.page-info {
-  color: #e4e4e4;
+  background: #f0f7ff;
 }
 
 .pagination-controls {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .pagination-controls select {
-  padding: 8px;
-  background-color: #2c2c2c;
-  border: 1px solid #444;
-  color: #e4e4e4;
-  border-radius: 4px;
+  padding: 8px 16px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  background: #fff;
+  color: #555;
   cursor: pointer;
-}
-
-.pagination-controls select option {
-  background-color: #2c2c2c;
-  color: #e4e4e4;
+  transition: all 0.3s ease;
 }
 </style>
