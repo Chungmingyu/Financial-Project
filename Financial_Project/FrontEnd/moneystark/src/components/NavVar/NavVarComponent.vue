@@ -35,14 +35,16 @@
 <script>
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import homeLogo from "@/assets/navbar/logo.jpg";
+import homeLogo from "@/assets/navbar/logo2.png";
 import otherLogo from "@/assets/navbar/logo_white.png";
+import { useUserStore } from "../../stores/user";
 
 export default {
   name: "NavVarComponent",
   setup() {
     const route = useRoute();
     const router = useRouter();
+    const store = useUserStore();
 
     // 현재 페이지가 메인 화면인지 확인
     const isHomePage = computed(() => route.name === "home");
@@ -74,7 +76,7 @@ export default {
 
     // 상태 관리
     const dropdownVisible = ref(false);
-    const isLoggedIn = ref(false); // 로그인 여부 (임시 설정)
+    const isLoggedIn = computed(() => store.isLoggedIn);
 
     // 햄버거 드롭다운 토글
     const toggleDropdown = () => {
@@ -83,7 +85,7 @@ export default {
 
     // 드롭다운 메뉴 동작
     const navigateToLogin = () => {
-      dropdownVisible.value = false;
+      // dropdownVisible.value = false;
       router.push({ name: "LogInView" });
     };
 
@@ -98,8 +100,7 @@ export default {
     };
 
     const handleLogout = () => {
-      dropdownVisible.value = false;
-      isLoggedIn.value = false;
+      store.logout();
       alert("로그아웃 되었습니다.");
       router.push({ name: "home" });
     };
@@ -131,6 +132,7 @@ export default {
   z-index: 1; /* 일반 화면에서는 낮은 z-index */
   background-color: rgba(255, 255, 255, 0.9); /* 기본 배경색 */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+  border-bottom: 1px solid #727272; /* 회색 줄 추가 */
   transition: all 0.3s ease;
   color: black; /* 기본 텍스트 색상 */
 }
@@ -169,12 +171,13 @@ export default {
   color: #17bebb; /* Hover 시 색상 */
 }
 .logo {
-  height: 50px; /* 로고 크기 조정 */
+  height: 100px; /* 로고 크기 조정 */
   transition: all 0.3s ease; /* 부드러운 전환 효과 */
+  padding: 0;
 }
 
 .navbar.navbar-main .logo {
-  height: 60px; /* 메인 화면에서 로고 크기 조정 */
+  height: 100px; /* 메인 화면에서 로고 크기 조정 */
 }
 .hamburger {
   position: relative;
