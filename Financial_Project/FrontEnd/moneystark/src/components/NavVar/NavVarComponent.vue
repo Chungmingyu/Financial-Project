@@ -6,11 +6,16 @@
       </a>
 
       <div class="menu-group">
-        <button v-for="(item, index) in menuItems" :key="index" :class="['menu-item', { 'menu-item-dark': !isHomePage }]" @click.prevent="$router.push({ name: item.route })">
+        <button
+          v-for="(item, index) in menuItems"
+          :key="index"
+          :class="['menu-item', { 'menu-item-dark': !isHomePage }, { 'menu-item-active': currentRoute === item.route }]"
+          @click.prevent="$router.push({ name: item.route })"
+        >
           {{ item.text }}
         </button>
         <div class="menu-switch">
-          <button class="switch-btn" @click="toggleMenu">투자 스타일 변경</button>
+          <button :class="['switch-btn', { 'switch-btn-active': !isStableMenu }]" @click="toggleMenu">투자 스타일 변경</button>
         </div>
       </div>
 
@@ -109,7 +114,7 @@ export default {
     const isSidebarOpen = ref(false);
 
     const isHomePage = computed(() => route.name === "home");
-
+    const currentRoute = computed(() => route.name);
     const stableMenuItems = [
       { text: "금리 비교", route: "ComparisonView" },
       { text: "상품 추천", route: "ProductSuggestionView" },
@@ -191,6 +196,7 @@ export default {
     });
 
     return {
+      currentRoute, 
       isHomePage,
       homeLogo,
       otherLogo,
@@ -216,6 +222,91 @@ export default {
 </script>
 
 <style scoped>
+
+.switch-btn {
+  background: none;
+  border: 2px solid #ffffff;
+  border-radius: 20px;
+  color: #000000;
+  font-weight: 600;
+  padding: 8px 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.switch-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: -1;
+}
+
+.switch-btn:hover::before {
+  left: 0;
+}
+
+.switch-btn:hover {
+  color: rgb(0, 0, 0);
+  transform: scale(1.05);
+}
+
+.switch-btn-active {
+  background: #000000;
+  color: rgb(0, 0, 0);
+}
+
+.switch-btn:active {
+  transform: scale(0.95);
+}
+
+.menu-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: currentColor;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.menu-item:hover::after {
+  width: 100%;
+}
+
+.menu-item-active::after {
+  width: 100%;
+  background: #000000;
+}
+
+.menu-item-active {
+  color: #000000 !important;
+}
+
+.navbar-main .menu-item-active {
+  color: #000000 !important;
+}
+
+.navbar-main .menu-item-active::after {
+  background: #000000;
+}
+
+.menu-item:active {
+  transform: scale(0.95);
+  
+}
 .navbar {
   position: relative;
   top: 0;

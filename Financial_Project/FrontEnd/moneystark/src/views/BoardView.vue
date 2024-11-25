@@ -1,7 +1,8 @@
 <template>
   <div class="image-container">
     <div class="image-overlay">
-      <h2>"소소한 재테크 팁부터 창의적인 투자 전략까지, 자유롭게 나누는 공간입니다."</h2>
+      <h2>"소소한 재테크 팁부터 창의적인 투자 전략까지,</h2>
+      <h2>자유롭게 나누는 공간입니다."</h2>
       <p>다양한 사람들의 재테크 이야기를 듣고, 당신의 이야기를 더해보세요.</p>
     </div>
   </div>
@@ -35,10 +36,10 @@ import BoardsList from "../components/boards/BoardsList.vue";
 /* 이미지 컨테이너 스타일 */
 .image-container {
   position: relative;
-  width: 70%;
+  width: 80%;
   height: 400px; /* 이미지 높이 설정 */
   margin: 0 auto; /* 가로 중앙 정렬 */
-  margin-top: 40px;
+  /* margin-top: 40px; */
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), /* 어두운 레이어 추가 */ url("@/assets/boards/talk.jpg") no-repeat center center/cover; /* 배경 이미지 설정 */
 }
 
