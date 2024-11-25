@@ -1,36 +1,98 @@
 <template>
   <nav :class="['navbar', { 'navbar-main': isHomePage }]">
     <div class="container-fluid">
-      <!-- 로고 -->
       <a class="navbar-brand" @click.prevent="$router.push({ name: 'home' })">
         <img :src="isHomePage ? homeLogo : otherLogo" :class="isHomePage ? 'logo-home' : 'logo-other'" alt="Logo" class="logo" />
       </a>
 
-      <!-- 메뉴 -->
       <div class="menu-group">
         <button v-for="(item, index) in menuItems" :key="index" :class="['menu-item', { 'menu-item-dark': !isHomePage }]" @click.prevent="$router.push({ name: item.route })">
           {{ item.text }}
         </button>
+        <div class="menu-switch">
+          <button class="switch-btn" @click="toggleMenu">투자 스타일 변경</button>
+        </div>
       </div>
 
-      <!-- 투자 스타일 변경 버튼 -->
-      <div class="menu-switch">
-        <button class="switch-btn" @click="toggleMenu">투자 스타일 변경</button>
+      <div class="right-menu-group">
+        <div class="hamburger">
+          <button class="hamburger-btn" @click="toggleSidebar">
+            <span :class="['hamburger-line', { active: isSidebarOpen }]"></span>
+            <span :class="['hamburger-line', { active: isSidebarOpen }]"></span>
+            <span :class="['hamburger-line', { active: isSidebarOpen }]"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div v-if="isSidebarOpen" class="sidebar-overlay" @click="closeSidebar"></div>
+
+    <!-- Sidebar -->
+    <div :class="['sidebar', { open: isSidebarOpen }]">
+      <div class="sidebar-header">
+        <button class="close-btn" @click="closeSidebar">×</button>
       </div>
 
-      <!-- 햄버거 버튼 -->
-      <div class="hamburger">
-        <button class="hamburger-btn" @click="toggleDropdown">☰</button>
-        <div v-if="dropdownVisible" class="dropdown-menu">
-          <button v-if="isLoggedIn" class="menu-item" @click="navigateToUserInfo">회원정보</button>
-          <button v-if="isLoggedIn" class="menu-item" @click="handleLogout">로그아웃</button>
-          <button v-if="!isLoggedIn" class="menu-item" @click="navigateToLogin">로그인</button>
-          <button v-if="!isLoggedIn" class="menu-item" @click="navigateToSignup">회원가입</button>
+      <div class="sidebar-content">
+        <div v-if="isLoggedIn" class="user-section">
+          <div class="user-greeting">환영합니다!</div>
+          <div class="profile-card">
+            <div class="profile-image">
+              <svg viewBox="0 0 36 36" fill="none" role="img" xmlns="http://www.w3.org/2000/svg" width="80" height="80">
+                <mask id=":r1k:" maskUnits="userSpaceOnUse" x="0" y="0" width="36" height="36"><rect width="36" height="36" rx="72" fill="#FFFFFF"></rect></mask>
+                <g mask="url(#:r1k:)">
+                  <rect width="36" height="36" fill="#eb0a44"></rect>
+                  <rect x="0" y="0" width="36" height="36" transform="translate(1 7) rotate(63 18 18) scale(1)" fill="#f2a73d" rx="36"></rect>
+                  <g transform="translate(-7 3.5) rotate(3 18 18)">
+                    <path d="M13,19 a1,0.75 0 0,0 10,0" fill="#000000"></path>
+                    <rect x="11" y="14" width="1.5" height="2" rx="1" stroke="none" fill="#000000"></rect>
+                    <rect x="23" y="14" width="1.5" height="2" rx="1" stroke="none" fill="#000000"></rect>
+                  </g>
+                </g>
+              </svg>
+            </div>
+            <div class="profile-info">
+              <div class="profile-name">{{ userName }}</div>
+              <div class="profile-details">{{ userDetails }}</div>
+            </div>
+          </div>
+          <div class="sidebar-menu">
+            <button class="sidebar-item" @click="navigateToExchangeCalculator">
+              <span class="item-icon">💱</span>
+              환율 계산기
+            </button>
+            <button class="sidebar-item" @click="navigateToUserInfo">
+              <span class="item-icon">👤</span>
+              회원정보
+            </button>
+            <button class="sidebar-item" @click="handleLogout">
+              <span class="item-icon">🚪</span>
+              로그아웃
+            </button>
+          </div>
+        </div>
+        <div v-else class="auth-section">
+          <div class="sidebar-menu">
+            <button class="sidebar-item" @click="navigateToExchangeCalculator">
+              <span class="item-icon">💱</span>
+              환율 계산기
+            </button>
+            <button class="sidebar-item" @click="navigateToLogin">
+              <span class="item-icon">🔑</span>
+              로그인
+            </button>
+            <button class="sidebar-item" @click="navigateToSignup">
+              <span class="item-icon">✏️</span>
+              회원가입
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </nav>
 </template>
+
 <script>
 import { computed, ref, onMounted, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -44,11 +106,10 @@ export default {
     const route = useRoute();
     const router = useRouter();
     const store = useUserStore();
+    const isSidebarOpen = ref(false);
 
-    // 현재 페이지가 메인 화면인지 확인
     const isHomePage = computed(() => route.name === "home");
 
-    // 메뉴 데이터
     const stableMenuItems = [
       { text: "금리 비교", route: "ComparisonView" },
       { text: "상품 추천", route: "ProductSuggestionView" },
@@ -63,49 +124,70 @@ export default {
       { text: "자유 게시판", route: "BoardView" },
     ];
 
-    // 초기 메뉴 상태
-    const menuItems = ref([...stableMenuItems]); // 기본값: stableMenuItems
+    const menuItems = ref([...stableMenuItems]);
     const isStableMenu = ref(true);
 
-    // 투자 스타일 변경
     const toggleMenu = () => {
       isStableMenu.value = !isStableMenu.value;
       menuItems.value = isStableMenu.value ? stableMenuItems : aggressiveMenuItems;
     };
 
-    // 반응형 상태
+    const toggleSidebar = () => {
+      isSidebarOpen.value = !isSidebarOpen.value;
+      if (isSidebarOpen.value) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "";
+      }
+    };
+
+    const closeSidebar = () => {
+      isSidebarOpen.value = false;
+      document.body.style.overflow = "";
+    };
+
     const isMobile = ref(false);
+    const isLoggedIn = computed(() => store.isLoggedIn);
+
     const updateDeviceStatus = () => {
       isMobile.value = window.innerWidth <= 768;
     };
 
-    // 햄버거 메뉴 상태
-    const dropdownVisible = ref(false);
-    const toggleDropdown = () => {
-      dropdownVisible.value = !dropdownVisible.value;
+    const navigateToLogin = () => {
+      router.push({ name: "LogInView" });
+      closeSidebar();
     };
 
-    // 로그인 상태
-    const isLoggedIn = computed(() => store.isLoggedIn);
+    const navigateToSignup = () => {
+      router.push({ name: "SignUpView" });
+      closeSidebar();
+    };
 
-    // 로그인/회원 관련 동작
-    const navigateToLogin = () => router.push({ name: "LogInView" });
-    const navigateToSignup = () => router.push({ name: "SignUpView" });
-    const navigateToUserInfo = () => router.push({ name: "UserDetailView" });
+    const navigateToUserInfo = () => {
+      router.push({ name: "UserDetailView" });
+      closeSidebar();
+    };
+
+    const navigateToExchangeCalculator = () => {
+      router.push({ name: "CurrencyCalculatorView" });
+      closeSidebar();
+    };
+
     const handleLogout = () => {
       store.logout();
       alert("로그아웃 되었습니다.");
       router.push({ name: "home" });
+      closeSidebar();
     };
 
-    // 이벤트 등록 및 해제
     onMounted(() => {
       window.addEventListener("resize", updateDeviceStatus);
-      updateDeviceStatus(); // 초기화
+      updateDeviceStatus();
     });
 
     onUnmounted(() => {
       window.removeEventListener("resize", updateDeviceStatus);
+      document.body.style.overflow = "";
     });
 
     return {
@@ -116,13 +198,18 @@ export default {
       isStableMenu,
       toggleMenu,
       isMobile,
-      dropdownVisible,
-      toggleDropdown,
       isLoggedIn,
+      isSidebarOpen,
+      toggleSidebar,
+      closeSidebar,
       navigateToLogin,
       navigateToSignup,
       navigateToUserInfo,
+      navigateToExchangeCalculator,
       handleLogout,
+      userProfileImage: store.userProfileImage,
+      userName: store.userName,
+      userDetails: store.userDetails,
     };
   },
 };
@@ -130,108 +217,237 @@ export default {
 
 <style scoped>
 .navbar {
-  position: relative; /* 기본적으로 문서 흐름에 포함 */
+  position: relative;
   top: 0;
   width: 100%;
-  z-index: 1; /* 일반 화면에서는 낮은 z-index */
-  background-color: rgba(255, 255, 255, 0.9); /* 기본 배경색 */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
-  border-bottom: 1px solid #727272; /* 회색 줄 추가 */
-  transition: all 0.3s ease;
-  color: black; /* 기본 텍스트 색상 */
+  z-index: 1000;
+  background-color: #fff;
+  transition: all 0.5s ease;
+  height: 100px;
 }
 
 .navbar.navbar-main {
-  position: fixed; /* 메인 화면에서는 고정 */
-  z-index: 5; /* 메인 화면에서 다른 요소 위에 표시 */
-  background-color: transparent; /* 투명 배경 */
-  box-shadow: none; /* 그림자 제거 */
-  color: white; /* 메인 화면에서는 흰색 텍스트 */
+  position: fixed;
+  background-color: transparent;
+  height: 120px;
 }
 
-.navbar-brand img {
-  height: 130px;
+.container-fluid {
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 80px;
+  transition: all 0.5s ease;
+}
+
+.navbar.navbar-main .logo {
+  height: 100px;
 }
 
 .menu-group {
   display: flex;
-  gap: 20px;
+  gap: 3rem;
+  margin: 0 2rem;
+  padding-bottom: 10px;
 }
 
 .menu-item {
-  font-size: 16px;
-  color: inherit; /* 부모의 색상 상속 */
+  position: relative;
+  font-size: 1.2rem;
+  font-weight: 600;
   background: none;
   border: none;
   cursor: pointer;
-  transition: color 0.3s ease;
+  padding: 0.5rem 0;
+  transition: all 0.3s ease;
 }
 
 .menu-item-dark {
-  color: black; /* 다른 화면에서 검은색 텍스트 */
-}
-
-.menu-item:hover {
-  color: #17bebb; /* Hover 시 색상 */
-}
-.logo {
-  height: 100px; /* 로고 크기 조정 */
-  transition: all 0.3s ease; /* 부드러운 전환 효과 */
-  padding: 0;
-}
-
-.navbar.navbar-main .logo {
-  height: 100px; /* 메인 화면에서 로고 크기 조정 */
-}
-.hamburger {
-  position: relative;
-}
-
-.hamburger-btn {
-  font-size: 24px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: inherit;
-}
-
-/* 드롭다운 메뉴 */
-.dropdown-menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background: white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  z-index: 1000;
-}
-
-.dropdown-menu .menu-item {
-  padding: 10px 20px;
   color: #333;
 }
 
-.dropdown-menu .menu-item:hover {
-  background: #f1f1f1;
+.navbar-main .menu-item {
+  color: white;
 }
 
-.menu-divider {
-  height: 1px;
-  background: #ddd;
-  margin: 5px 0;
+.right-menu-group {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
 }
 
-/* 반응형 설정 */
+.switch-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.hamburger-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  padding-right: 30px;
+  z-index: 1100;
+  padding-bottom: 20px;
+}
+
+.hamburger-line {
+  width: 24px;
+  height: 2px;
+  background-color: currentColor;
+  transition: all 0.3s ease;
+}
+
+.hamburger-line.active:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger-line.active:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-line.active:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 400px;
+  height: 100vh;
+  background-color: white;
+  z-index: 1100;
+  transition: right 0.3s ease;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar.open {
+  right: 0;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  padding-right: 30px;
+}
+
+.sidebar-content {
+  padding: 1rem;
+}
+
+.user-greeting {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+  padding-bottom: 30px;
+}
+
+.profile-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.profile-details {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1rem;
+}
+
+.sidebar-item:hover {
+  background-color: #f5f5f5;
+}
+
+.item-icon {
+  font-size: 1.2rem;
+}
+
 @media (max-width: 962px) {
   .menu-group {
-    display: none; /* 작은 화면에서는 메뉴 숨김 */
+    display: none;
   }
 
-  .hamburger {
-    display: block; /* 작은 화면에서 햄버거 메뉴 표시 */
+  .right-menu-group {
+    gap: 1rem;
+  }
+
+  .navbar {
+    padding: 0.5rem 1rem;
   }
 }
 </style>

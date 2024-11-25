@@ -175,7 +175,6 @@ export default {
 .page-container {
   min-height: 100vh;
   background-color: none;
-  padding: 40px 20px;
 }
 
 .content-container {

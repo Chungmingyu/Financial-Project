@@ -28,7 +28,7 @@
           <label>원화 금액</label>
           <div class="input-wrapper">
             <input type="number" v-model="krwAmount" @input="convertToForeign" class="amount-input" />
-            <span class="currency-symbol">₩</span>
+            <span class="currency-symbol"></span>
             <i class="fas fa-won-sign icon"></i>
           </div>
         </div>
@@ -82,14 +82,14 @@ onMounted(fetchRates);
 </script>
 
 <style scoped>
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css");
 
 .calculator-container {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  /* background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); */
   padding: 20px;
 }
 
