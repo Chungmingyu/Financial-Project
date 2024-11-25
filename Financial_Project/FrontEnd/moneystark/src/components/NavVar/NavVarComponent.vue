@@ -31,16 +31,15 @@
     </div>
   </nav>
 </template>
-
 <script>
-import { computed, ref } from "vue";
+import { computed, ref, onMounted, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import homeLogo from "@/assets/navbar/logo2.png";
 import otherLogo from "@/assets/navbar/logo_white.png";
 import { useUserStore } from "../../stores/user";
 
 export default {
-  name: "NavVarComponent",
+  name: "NavBarComponent",
   setup() {
     const route = useRoute();
     const router = useRouter();
@@ -66,7 +65,7 @@ export default {
 
     // 초기 메뉴 상태
     const menuItems = ref([...stableMenuItems]); // 기본값: stableMenuItems
-    const isStableMenu = ref(true); // true일 경우 안정적 투자 메뉴, false일 경우 공격적 투자 메뉴
+    const isStableMenu = ref(true);
 
     // 투자 스타일 변경
     const toggleMenu = () => {
@@ -74,36 +73,40 @@ export default {
       menuItems.value = isStableMenu.value ? stableMenuItems : aggressiveMenuItems;
     };
 
-    // 상태 관리
-    const dropdownVisible = ref(false);
-    const isLoggedIn = computed(() => store.isLoggedIn);
+    // 반응형 상태
+    const isMobile = ref(false);
+    const updateDeviceStatus = () => {
+      isMobile.value = window.innerWidth <= 768;
+    };
 
-    // 햄버거 드롭다운 토글
+    // 햄버거 메뉴 상태
+    const dropdownVisible = ref(false);
     const toggleDropdown = () => {
       dropdownVisible.value = !dropdownVisible.value;
     };
 
-    // 드롭다운 메뉴 동작
-    const navigateToLogin = () => {
-      // dropdownVisible.value = false;
-      router.push({ name: "LogInView" });
-    };
+    // 로그인 상태
+    const isLoggedIn = computed(() => store.isLoggedIn);
 
-    const navigateToSignup = () => {
-      dropdownVisible.value = false;
-      router.push({ name: "SignUpView" });
-    };
-
-    const navigateToUserInfo = () => {
-      dropdownVisible.value = false;
-      router.push({ name: "UserDetailView" });
-    };
-
+    // 로그인/회원 관련 동작
+    const navigateToLogin = () => router.push({ name: "LogInView" });
+    const navigateToSignup = () => router.push({ name: "SignUpView" });
+    const navigateToUserInfo = () => router.push({ name: "UserDetailView" });
     const handleLogout = () => {
       store.logout();
       alert("로그아웃 되었습니다.");
       router.push({ name: "home" });
     };
+
+    // 이벤트 등록 및 해제
+    onMounted(() => {
+      window.addEventListener("resize", updateDeviceStatus);
+      updateDeviceStatus(); // 초기화
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener("resize", updateDeviceStatus);
+    });
 
     return {
       isHomePage,
@@ -112,9 +115,10 @@ export default {
       menuItems,
       isStableMenu,
       toggleMenu,
+      isMobile,
       dropdownVisible,
-      isLoggedIn,
       toggleDropdown,
+      isLoggedIn,
       navigateToLogin,
       navigateToSignup,
       navigateToUserInfo,
@@ -202,35 +206,32 @@ export default {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  z-index: 10000;
+  z-index: 1000;
 }
 
 .dropdown-menu .menu-item {
   padding: 10px 20px;
   color: #333;
-  text-align: left;
 }
 
 .dropdown-menu .menu-item:hover {
   background: #f1f1f1;
-  color: #17bebb;
-}
-.menu-switch {
-  margin-left: 20px;
 }
 
-.switch-btn {
-  font-size: 14px;
-  padding: 10px 15px;
-  background-color: #17bebb;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.menu-divider {
+  height: 1px;
+  background: #ddd;
+  margin: 5px 0;
 }
 
-.switch-btn:hover {
-  background-color: #139e9c;
+/* 반응형 설정 */
+@media (max-width: 962px) {
+  .menu-group {
+    display: none; /* 작은 화면에서는 메뉴 숨김 */
+  }
+
+  .hamburger {
+    display: block; /* 작은 화면에서 햄버거 메뉴 표시 */
+  }
 }
 </style>
