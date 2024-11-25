@@ -324,15 +324,22 @@ export default {
 </script>
 <style scoped>
 .investment-planner {
-  min-height: 100vh;
-  min-width: 2900px;
+  display: flex; /* 플렉스 레이아웃 사용 */
+  justify-content: center; /* 가로 중앙 정렬 */
+  /* align-items: center; 세로 중앙 정렬 */
+  min-height: 100vh; /* 화면 전체 높이 */
   background-color: none;
+  margin-top: 20px;
 }
 
 .planner-container {
+  display: block; /* 기존 설정 유지 */
   max-width: 1700px;
-  margin: 0 auto;
+  width: 100%; /* 부모 요소 크기 기준으로 조정 */
   padding: 2rem;
+  background-color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 박스 그림자 추가 */
+  border-radius: 1rem; /* 둥근 모서리 */
 }
 
 /* 헤더 스타일 */
