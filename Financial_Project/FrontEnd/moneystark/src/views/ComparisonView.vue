@@ -1,9 +1,14 @@
 <template>
+  <div class="image-container">
+    <div class="image-overlay">
+      <h2>
+        <i class="mdi mdi-chart-line"></i>
+        금리 비교
+      </h2>
+      <p>다양한 금융사의 최신 금리 데이터를 바탕으로 최적의 예적금 상품을 추천드립니다.</p>
+    </div>
+  </div>
   <div class="comparison-container">
-    <h1>
-      <i class="mdi mdi-chart-line"></i>
-      금리비교
-    </h1>
     <div class="nav-links">
       <button @click="selectItem('deposit')" :class="{ active: selectedItem === 'deposit' }" class="nav-button">
         <i class="mdi mdi-bank"></i>
@@ -158,5 +163,38 @@ h1 i {
   h1 i {
     font-size: 2rem;
   }
+}
+
+.image-container {
+  position: relative;
+  width: 70%;
+  height: 400px; /* 이미지 높이 설정 */
+  margin: 0 auto; /* 가로 중앙 정렬 */
+  margin-top: 40px;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), /* 어두운 레이어 추가 */ url("@/assets/compare/deposit.jpg") no-repeat center center/cover; /* 배경 이미지 설정 */
+}
+
+/* 이미지 위 텍스트 스타일 */
+.image-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  text-align: center;
+  /* background: rgba(0, 0, 0, 0.5); 반투명 배경 */
+  padding: 20px;
+  border-radius: 10px;
+  /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); */
+}
+
+.image-overlay h2 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.image-overlay p {
+  font-size: 22px;
+  margin: 0;
 }
 </style>

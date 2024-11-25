@@ -21,6 +21,7 @@ import Surveys from "../components/Surveys/Surveys.vue";
 import BoardsListItem from "../components/boards/BoardsListItem.vue";
 import HomeData from "../components/stock/HomeData.vue";
 import UserDetailByNickname from "@/views/UserDetailByNickname.vue";
+import StyleView from "../views/StyleView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -126,6 +127,11 @@ const router = createRouter({
       name: "UserDetailByNickname",
       component: UserDetailByNickname,
       props: true, // 닉네임을 props로 전달
+    },
+    {
+      path: "/style",
+      name: "StyleView",
+      component: StyleView,
     },
   ],
 });
