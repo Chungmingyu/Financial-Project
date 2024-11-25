@@ -326,7 +326,6 @@ export default {
 <style scoped>
 .investment-planner {
   min-height: 100vh;
-  background-color: #f5f7fa;
 }
 
 .planner-container {
@@ -375,11 +374,11 @@ export default {
   .page-title h1 {
     font-size: 2rem;
   }
-  
+
   .page-title h1 i {
     font-size: 2.8rem;
   }
-  
+
   .subtitle {
     font-size: 1rem;
   }
