@@ -1,10 +1,19 @@
 <template>
   <div class="comment-container">
     <!-- 댓글 목록 -->
-    <div v-if="loading" class="loading">Loading comments...</div>
-    <div v-else-if="error" class="error">{{ error }}</div>
+    <div v-if="loading" class="loading">
+      <i class="mdi mdi-loading mdi-spin"></i>
+      Loading comments...
+    </div>
+    <div v-else-if="error" class="error">
+      <i class="mdi mdi-alert-circle-outline"></i>
+      {{ error }}
+    </div>
     <div v-else>
-      <h3 class="comment-title">댓글 목록</h3>
+      <h3 class="comment-title">
+        <i class="mdi mdi-comment-multiple-outline"></i>
+        댓글 목록
+      </h3>
       <ul class="comment-list">
         <li v-for="comment in comments" :key="comment.id" class="comment-item">
           <div class="comment-header">
@@ -13,16 +22,21 @@
           </div>
           <p class="comment-content">{{ comment.content }}</p>
           <!-- 삭제 버튼 추가 -->
-          <button class="delete-button" @click="deleteComment(comment.id)">삭제</button>
+          <button class="delete-button" @click="deleteComment(comment.id)">
+            <i class="mdi mdi-delete-outline"></i>
+            삭제
+          </button>
         </li>
       </ul>
     </div>
 
     <!-- 댓글 추가 폼 -->
     <div class="add-comment">
-      <!-- <h3 class="add-comment-title">댓글 추가하기</h3> -->
       <input v-model="newComment" placeholder="댓글 남기기" class="comment-textarea"></input>
-      <button @click="addComment" class="add-comment-button">댓글 추가</button>
+      <button @click="addComment" class="add-comment-button">
+        <i class="mdi mdi-send"></i>
+        댓글 추가
+      </button>
     </div>
   </div>
 </template>
@@ -125,172 +139,187 @@ export default {
 };
 </script>
 
-<style scoped>/* 컨테이너 스타일 */
+<style scoped>
+/* 컨테이너 스타일 */
 .comment-container {
-margin-top: 30px;
-padding: 20px;
-background: #f9f9f9;
-border-radius: 15px;
-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-max-height: 500px; /* 최대 높이 설정 */
-overflow-y: auto; /* 스크롤 기능 추가 */
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-height: 500px; /* 최대 높이 설정 */
+  overflow-y: auto; /* 스크롤 기능 추가 */
 }
 
 /* 로딩 및 에러 메시지 */
 .loading,
 .error {
-text-align: center;
-font-size: 18px;
-color: #555;
-margin: 20px 0;
+  text-align: center;
+  font-size: 18px;
+  color: #333;
+  margin: 20px 0;
+}
+
+.loading i,
+.error i {
+  margin-right: 5px;
 }
 
 /* 댓글 목록 제목 */
 .comment-title {
-font-size: 22px;
-font-weight: bold;
-margin-bottom: 15px;
-color: #333;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.comment-title i {
+  margin-right: 10px;
 }
 
 /* 댓글 목록 스타일 */
 .comment-list {
-list-style: none;
-padding: 0;
-margin: 0;
-height: 150px; /* 원하는 고정 높이로 설정 */
-overflow-y: auto; /* 스크롤 기능 추가 */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  height: 150px; /* 원하는 고정 높이로 설정 */
+  overflow-y: auto; /* 스크롤 기능 추가 */
 }
 
 .comment-item {
-background: white;
-padding: 15px;
-border-radius: 10px;
-margin-bottom: 15px;
-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-transition: transform 0.2s, box-shadow 0.2s;
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .comment-item:hover {
-transform: translateY(-3px);
-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .comment-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
 }
 
 .comment-author {
-font-size: 16px;
-font-weight: bold;
-color: #17bebb;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
 }
 
 .comment-date {
-font-size: 14px;
-color: #888;
+  font-size: 14px;
+  color: #888;
 }
 
 .comment-content {
-font-size: 16px;
-color: #333;
-line-height: 1.6;
+  font-size: 16px;
+  color: #333;
+  line-height: 1.6;
 }
 
 /* 삭제 버튼 스타일 */
 .delete-button {
-background: #ff4d4d;
-color: white;
-border: none;
-border-radius: 8px;
-padding: 5px 10px;
-font-size: 14px;
-cursor: pointer;
-transition: background 0.3s, transform 0.2s;
-margin-top: 10px;
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.delete-button i {
+  margin-right: 5px;
 }
 
 .delete-button:hover {
-background: #e63e3e;
-transform: translateY(-2px);
+  background: #e63e3e;
+  transform: translateY(-2px);
 }
 
 /* 댓글 추가 섹션 */
 .add-comment {
-margin-top: 30px;
-padding-top: 20px;
-border-top: 1px solid #e6e6e6;
-}
-
-.add-comment-title {
-font-size: 20px;
-font-weight: bold;
-margin-bottom: 10px;
-color: #333;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #e6e6e6;
 }
 
 .comment-textarea {
-width: 100%;
-height: 100px;
-padding: 10px;
-font-size: 16px;
-border: 1px solid #ccc;
-border-radius: 10px;
-margin-bottom: 10px;
-outline: none;
-transition: border-color 0.3s, box-shadow 0.3s;
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .comment-textarea:focus {
-border-color: #17bebb;
-box-shadow: 0 0 8px rgba(23, 190, 187, 0.2);
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
 }
 
 /* 댓글 추가 버튼 스타일 */
 .add-comment-button {
-background: #17bebb;
-color: white;
-border: none;
-border-radius: 8px;
-padding: 10px 20px;
-font-size: 16px;
-cursor: pointer;
-transition: background 0.3s, box-shadow 0.2s;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.add-comment-button i {
+  margin-right: 5px;
 }
 
 .add-comment-button:hover {
-background: #139e9c;
-box-shadow: 0 4px 8px rgba(19, 158, 156, 0.4);
+  background: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 86, 179, 0.4);
 }
 
 /* 반응형 스타일 */
 @media (max-width: 768px) {
-.comment-container {
-padding: 15px;
-}
+  .comment-container {
+    padding: 15px;
+  }
 
-.comment-title,
-.add-comment-title {
-font-size: 18px;
-}
+  .comment-title {
+    font-size: 18px;
+  }
 
-.comment-item {
-padding: 10px;
-}
+  .comment-item {
+    padding: 10px;
+  }
 
-.comment-textarea {
-height: 50px;
-}
+  .comment-textarea {
+    height: 50px;
+  }
 
-.delete-button,
-.add-comment-button {
-padding: 4px 9px;
-font-size: 14px;
+  .delete-button,
+  .add-comment-button {
+    padding: 4px 9px;
+    font-size: 14px;
+  }
 }
-}
-
-
 </style>

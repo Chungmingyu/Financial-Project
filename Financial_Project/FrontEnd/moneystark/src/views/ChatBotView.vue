@@ -1,7 +1,7 @@
 <template>
   <div class="chatbot">
     <div class="chatbot-header">
-      <span>머비스</span>
+      <span>재비스</span>
       <button @click="$emit('close')">X</button>
     </div>
     <div class="messages">
@@ -70,7 +70,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .chatbot {
   display: flex;
   flex-direction: column;
@@ -86,7 +86,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  background-color: #ffbf00;
+  background-color: #007bff;
   color: white;
   font-weight: bold;
   border-top-left-radius: 10px;
@@ -117,7 +117,7 @@ input {
 
 button {
   padding: 10px 20px;
-  background-color: #ffbf00;
+  background-color: #007bff;
   color: white;
   border: none;
   border-radius: 5px;
@@ -125,7 +125,7 @@ button {
 }
 
 button:hover {
-  background-color: #e0a800;
+  background-color: #0056b3;
 }
 
 .message {

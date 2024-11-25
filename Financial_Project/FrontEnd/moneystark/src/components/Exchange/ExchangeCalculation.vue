@@ -11,6 +11,7 @@
                 {{ rate.cur_nm }}
               </option>
             </select>
+            <i class="fas fa-money-bill-wave icon"></i>
           </div>
         </div>
 
@@ -19,6 +20,7 @@
           <div class="input-wrapper">
             <input type="number" v-model="foreignAmount" @input="convertToKrw" class="amount-input" />
             <span class="currency-symbol">{{ selectedCurrencySymbol }}</span>
+            <i class="fas fa-coins icon"></i>
           </div>
         </div>
 
@@ -27,6 +29,7 @@
           <div class="input-wrapper">
             <input type="number" v-model="krwAmount" @input="convertToForeign" class="amount-input" />
             <span class="currency-symbol">₩</span>
+            <i class="fas fa-won-sign icon"></i>
           </div>
         </div>
 
@@ -77,7 +80,10 @@ const selectedCurrencySymbol = computed(() => {
 
 onMounted(fetchRates);
 </script>
+
 <style scoped>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+
 .calculator-container {
   min-height: 100vh;
   display: flex;
@@ -136,16 +142,22 @@ label {
 
 .currency-select:focus,
 .amount-input:focus {
-  border-color: #FFBF00;
+  border-color: #007bff;
   outline: none;
-  box-shadow: 0 0 0 3px rgba(119, 0, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
 }
 
 .currency-symbol {
   position: absolute;
-  right: 12px;
-  color: #FFBF00;
+  right: 40px;
+  color: #007bff;
   font-weight: 600;
+}
+
+.icon {
+  position: absolute;
+  right: 12px;
+  color: #007bff;
 }
 
 .info-text {
@@ -178,7 +190,7 @@ label {
 /* 호버 효과 */
 .currency-select:hover,
 .amount-input:hover {
-  border-color: #FFBF00;
+  border-color: #007bff;
 }
 
 /* 애니메이션 */
