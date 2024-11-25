@@ -12,26 +12,19 @@
       </div>
     </div>
 
+    <!-- 검색 필터 추가 -->
+    <div class="search-filter">
+      <input v-model="searchQuery" type="text" placeholder="지역 검색" @input="handleSearch" />
+    </div>
+
     <div class="map-wrapper">
       <svg viewBox="0 0 800 1200" preserveAspectRatio="xMidYMid meet">
-        <g v-for="region in mappedRegions" 
-           :key="region.id" 
-           :fill="getRegionColor(region.price)" 
-           @mousemove="handleMouseMove($event, region)" 
-           @mouseleave="hoveredRegion = null" 
-           class="region">
+        <g v-for="region in mappedRegions" :key="region.id" :fill="getRegionColor(region.price)" @mousemove="handleMouseMove($event, region)" @mouseleave="hoveredRegion = null" class="region" :class="{ highlighted: isRegionHighlighted(region) }">
           <path :d="region.path" />
-          <text :x="region.center?.[0]" 
-                :y="region.center?.[1]" 
-                class="region-label" 
-                stroke="#fff" 
-                stroke-width="3" 
-                stroke-linejoin="round">
+          <text :x="region.center?.[0]" :y="region.center?.[1]" class="region-label" stroke="#fff" stroke-width="3" stroke-linejoin="round">
             {{ region.name }}
           </text>
-          <text :x="region.center?.[0]" 
-                :y="region.center?.[1]" 
-                class="region-label region-label-front">
+          <text :x="region.center?.[0]" :y="region.center?.[1]" class="region-label region-label-front">
             {{ region.name }}
           </text>
         </g>
@@ -99,6 +92,7 @@ export default {
       hoveredRegion: null,
       mousePosition: { x: 0, y: 0 },
       legendColors: ["#e3f2fd", "#90caf9", "#42a5f5", "#1e88e5", "#0d47a1"], // 파란색 계열
+      searchQuery: "", // 검색어 추가
     };
   },
   computed: {
@@ -163,7 +157,7 @@ export default {
       const rect = this.$el.getBoundingClientRect();
       return {
         left: `${this.mousePosition.x - rect.left}px`,
-        top: `${this.mousePosition.y - rect.top - 120}px`,
+        top: `${this.mousePosition.y - rect.top - 60}px`,
       };
     },
   },
@@ -186,8 +180,19 @@ export default {
     },
     formatPrice(price) {
       if (!price) return "0";
-      const billion = (price * 0.0001).toFixed(2);
+      const billion = (price * 0.001).toFixed(2);
       return new Intl.NumberFormat("ko-KR").format(billion);
+    },
+    isRegionHighlighted(region) {
+      return this.searchQuery && region.name.includes(this.searchQuery);
+    },
+    handleSearch() {
+      const region = this.mappedRegions.find((region) => region.name.includes(this.searchQuery));
+      if (region) {
+        this.hoveredRegion = region;
+      } else {
+        this.hoveredRegion = null;
+      }
     },
   },
 };
@@ -203,6 +208,7 @@ export default {
   background: #ffffff;
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(13, 71, 161, 0.08);
+  max-height: 1000px;
 }
 
 .map-title {
@@ -216,8 +222,8 @@ export default {
 
 .legend {
   position: absolute;
-  right: 30px;
-  top: 30px;
+  right: 100px;
+  top: 100px;
   background: rgba(255, 255, 255, 0.95);
   padding: 20px;
   border-radius: 12px;
@@ -248,6 +254,28 @@ export default {
   box-shadow: 0 2px 4px rgba(13, 71, 161, 0.05);
 }
 
+/* 검색 필터 스타일 */
+.search-filter {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.search-filter input {
+  width: 300px;
+  padding: 10px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.search-filter input:focus {
+  border-color: #1890ff;
+  box-shadow: 0 0 8px rgba(24, 144, 255, 0.2);
+}
+
 .region {
   stroke: #ffffff;
   stroke-width: 1.5;
@@ -255,7 +283,8 @@ export default {
   cursor: pointer;
 }
 
-.region:hover {
+.region:hover,
+.region.highlighted {
   opacity: 0.9;
   stroke: #1e88e5;
   stroke-width: 2;
@@ -286,69 +315,52 @@ export default {
 
 .beacon-content h4 {
   color: #1565c0;
-  font-size: 1.2rem;
   font-weight: 700;
   margin-bottom: 8px;
 }
 
 .beacon-content .price {
-  color: #0d47a1;
-  font-size: 1.3rem;
-  font-weight: 700;
-  margin-bottom: 6px;
+  color: #1e88e5;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 4px;
 }
 
 .beacon-content .location {
-  color: #1976d2;
-  font-size: 0.95rem;
+  color: #757575;
+  font-size: 0.9rem;
 }
 
 .bottom-info {
-  margin-top: 20px;
-  background: #f8fafc;
+  position: absolute;
+  bottom: 300px;
+  left: 80%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.95);
   padding: 20px;
   border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(13, 71, 161, 0.1);
   border: 1px solid #e3f2fd;
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  min-width: 300px;
 }
 
 .info-content h3 {
   color: #1565c0;
-  font-size: 1.4rem;
   font-weight: 700;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
-.info-details {
-  display: flex;
-  align-items: baseline;
-  gap: 20px;
+.info-details .price-large {
+  color: #1e88e5;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 8px;
 }
 
-.price-large {
-  color: #0d47a1;
-  font-size: 1.6rem;
-  font-weight: 700;
-}
-
-.location-detail {
-  color: #1976d2;
-  font-size: 1.1rem;
-}
-
-@media (max-width: 768px) {
-  .map-container {
-    padding: 20px;
-  }
-  
-  .legend {
-    position: static;
-    margin-bottom: 20px;
-    width: 100%;
-  }
-
-  .info-details {
-    flex-direction: column;
-    gap: 10px;
-  }
+.info-details .location-detail {
+  color: #757575;
+  font-size: 1rem;
 }
 </style>

@@ -83,7 +83,7 @@ onMounted(() => {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: #ffbf00;
+  background-color: #007bff;
   color: white;
   border-radius: 50%;
   width: 60px;

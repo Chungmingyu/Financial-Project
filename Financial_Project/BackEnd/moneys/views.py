@@ -24,10 +24,10 @@ from django.http import JsonResponse
 def home_data(request):
     api_key = settings.HOME_API_KEY
     house_types = {
-        'house': {'id': 'A_2024_00025', 'name': '주택종합'},
-        'apartment': {'id': 'A_2024_00060', 'name': '아파트'},
-        'row_house': {'id': 'A_2024_00095', 'name': '연립/다세대'},
-        'single_house': {'id': 'A_2024_00128', 'name': '단독주택'}
+        'house': {'id': 'A_2024_00026', 'name': '주택종합'},
+        'apartment': {'id': 'A_2024_00061', 'name': '아파트'},
+        'row_house': {'id': 'A_2024_00096', 'name': '연립/다세대'},
+        'single_house': {'id': 'A_2024_00129', 'name': '단독주택'}
     }
 
     # URL 파라미터로 주택 유형 받기
