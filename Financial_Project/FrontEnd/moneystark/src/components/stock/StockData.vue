@@ -51,17 +51,26 @@
         </div>
       </div>
     </div>
+
+    <div v-if="newsList.length" class="news-container">
+      <h3>관련 뉴스</h3>
+      <ul class="news-list">
+        <li v-for="(news, index) in newsList" :key="index" class="news-item">
+          <a :href="news.link" target="_blank" class="news-link">
+            <img :src="news.image" alt="뉴스 이미지" v-if="news.image" class="news-image" />
+            <div class="news-content">
+              <h3 class="news-title">{{ news.title }}</h3>
+              <p class="news-snippet">{{ news.snippet }}</p>
+            </div>
+          </a>
+        </li>
+      </ul>
+    </div>
+
     <div>
       <h3>인기 있는 주식 심볼</h3>
       <div v-for="item in popularSymbols" :key="item.symbol" class="symbol-container">
         <button @click="fetchStockData(item.symbol)" class="symbol-button">{{ item.symbol }} - {{ item.name }} ({{ item.sector }})</button>
-        <!-- <div v-if="symbolData[item.symbol]" class="stock-data">
-          <p>현재 가격: {{ symbolData[item.symbol].quote.c }}</p>
-          <p>고가: {{ symbolData[item.symbol].quote.h }}</p>
-          <p>저가: {{ symbolData[item.symbol].quote.l }}</p>
-          <p>시가: {{ symbolData[item.symbol].quote.o }}</p>
-          <p>이전 종가: {{ symbolData[item.symbol].quote.pc }}</p>
-        </div> -->
       </div>
     </div>
   </div>
@@ -76,6 +85,7 @@ export default {
       symbol: "",
       stockData: null,
       loading: false,
+      newsList: [],
       popularSymbols: [
         { symbol: "AAPL", name: "Apple Inc.", sector: "기술" },
         { symbol: "AMZN", name: "Amazon.com, Inc.", sector: "소매/기술" },
@@ -124,10 +134,25 @@ export default {
         console.log(response.data);
         this.symbolData = { ...this.symbolData, [symbolStr]: response.data };
         this.stockData = response.data; // 검색 결과도 표시
+        await this.fetchNews(`${symbolStr} 뉴스`); // 뉴스 데이터 가져오기
       } catch (error) {
         console.error("Error fetching stock data:", error);
       } finally {
         this.loading = false;
+      }
+    },
+    async fetchNews(symbol) {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/news/?q=${encodeURIComponent(symbol)} 뉴스`);
+        const data = await response.json();
+        this.newsList = data.news.map((item) => ({
+          title: item.title,
+          link: item.link,
+          snippet: item.snippet,
+          image: item.pagemap?.cse_image?.[0]?.src || null,
+        }));
+      } catch (error) {
+        console.error("뉴스를 가져오는 중 오류 발생:", error);
       }
     },
     getPriceChange() {
@@ -149,6 +174,7 @@ export default {
 </script>
 
 <style scoped>
+/* 기존 스타일 유지 */
 .container {
   max-width: 1200px;
   margin: 40px auto;
@@ -390,5 +416,55 @@ h3 {
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+}
+
+/* 뉴스 스타일 추가 */
+.news-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.news-list {
+  list-style: none;
+  padding: 0;
+  max-height: 600px;
+  overflow-y: auto;
+  margin-top: 20px; /* 검색창과 결과 목록 사이에 간격 추가 */
+}
+
+.news-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.news-link {
+  display: flex;
+  text-decoration: none;
+  color: inherit;
+}
+
+.news-image {
+  width: 150px;
+  height: 100px;
+  object-fit: cover;
+  margin-right: 20px;
+}
+
+.news-content {
+  flex: 1;
+}
+
+.news-title {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+.news-snippet {
+  margin: 0;
+  color: #555;
 }
 </style>
