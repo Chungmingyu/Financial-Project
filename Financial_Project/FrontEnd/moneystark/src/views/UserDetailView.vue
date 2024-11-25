@@ -6,12 +6,32 @@
         <button class="delete-button" @click="deleteUser">회원탈퇴</button>
       </div>
       <div class="user-details">
-        <p><strong>이름:</strong> {{ user.username }}</p>
-        <p><strong>닉네임:</strong> {{ user.nickname }}</p>
-        <p><strong>성별:</strong> {{ user.gender }}</p>
-        <p><strong>나이:</strong> {{ user.age }}</p>
-        <p><strong>이메일:</strong> {{ user.email }}</p>
-        <p><strong>칭호:</strong> {{ user.style }}</p>
+        <p>
+          <strong>이름:</strong>
+          {{ user.username }}
+        </p>
+        <p>
+          <strong>닉네임:</strong>
+          {{ user.nickname }}
+        </p>
+        <p>
+          <strong>성별:</strong>
+          {{ user.gender }}
+        </p>
+        <p>
+          <strong>나이:</strong>
+          {{ user.age }}
+        </p>
+        <p>
+          <strong>이메일:</strong>
+          {{ user.email }}
+        </p>
+        <p @click="$router.push({ name: 'StyleView' })">
+          <strong>칭호:</strong>
+          <i :class="getTitleIcon(user.style)"></i>
+          {{ user.style }}
+        </p>
+        <p style="font-weight: lighter">칭호를 눌러보세요!</p>
       </div>
 
       <div class="action-buttons">
@@ -31,11 +51,26 @@
       <div class="modal-content">
         <h2>가입한 예금 목록</h2>
         <div v-for="deposit in user.deposits" :key="deposit.id" class="deposit-item">
-          <p><strong>은행 이름:</strong> {{ deposit.deposit_product_kor_co_nm }}</p>
-          <p><strong>예금 이름:</strong> {{ deposit.deposit_product_fin_prdt_nm }}</p>
-          <p><strong>넣은 금액:</strong> {{ deposit.amount }}</p>
-          <p><strong>시작일:</strong> {{ deposit.deposit_product_dcls_strt_day }}</p>
-          <p><strong>금리:</strong> {{ deposit.deposit_product_mtrt_int }}</p>
+          <p>
+            <strong>은행 이름:</strong>
+            {{ deposit.deposit_product_kor_co_nm }}
+          </p>
+          <p>
+            <strong>예금 이름:</strong>
+            {{ deposit.deposit_product_fin_prdt_nm }}
+          </p>
+          <p>
+            <strong>넣은 금액:</strong>
+            {{ deposit.amount }}
+          </p>
+          <p>
+            <strong>시작일:</strong>
+            {{ deposit.deposit_product_dcls_strt_day }}
+          </p>
+          <p>
+            <strong>금리:</strong>
+            {{ deposit.deposit_product_mtrt_int }}
+          </p>
           <hr />
         </div>
         <button class="close-button" @click="closeDepositsModal">닫기</button>
@@ -47,11 +82,26 @@
       <div class="modal-content">
         <h2>내가 작성한 게시글</h2>
         <div v-for="post in user.post" :key="post.id" class="post-item">
-          <p><strong>게시글 번호:</strong> {{ post.id }}</p>
-          <p><strong>게시글 제목:</strong> {{ post.title }}</p>
-          <p><strong>게시글 내용:</strong> {{ post.content }}</p>
-          <p><strong>작성일:</strong> {{ post.created_at }}</p>
-          <p><strong>좋아요:</strong> {{ post.like_count }}</p>
+          <p>
+            <strong>게시글 번호:</strong>
+            {{ post.id }}
+          </p>
+          <p>
+            <strong>게시글 제목:</strong>
+            {{ post.title }}
+          </p>
+          <p>
+            <strong>게시글 내용:</strong>
+            {{ post.content }}
+          </p>
+          <p>
+            <strong>작성일:</strong>
+            {{ post.created_at }}
+          </p>
+          <p>
+            <strong>좋아요:</strong>
+            {{ post.like_count }}
+          </p>
           <hr />
         </div>
         <button class="close-button" @click="closePostsModal">닫기</button>
@@ -67,6 +117,27 @@ import { useRouter } from "vue-router";
 
 export default {
   setup() {
+    const titleIcons = {
+      "투자 초보": "fas fa-seedling", // 새싹 아이콘
+      "무지의 용사": "fas fa-user-shield", // 방패를 든 사용자 아이콘
+      "금융 신입": "fas fa-baby", // 아기 아이콘
+
+      "중급 투자자": "fas fa-user-tie", // 넥타이 맨 사용자 아이콘
+      "투자 도전자": "fas fa-fist-raised", // 주먹 쥔 손 아이콘
+      "금융 중수": "fas fa-graduation-cap", // 졸업 모자 아이콘
+
+      "고급 투자자": "fas fa-chess-knight", // 체스 말 아이콘
+      "숙련된 전략가": "fas fa-brain", // 뇌 아이콘
+      "금융 마에스트로": "fas fa-magic", // 마법 지팡이 아이콘
+
+      "전설의 투자자": "fas fa-crown", // 왕관 아이콘
+      "투자의 마스터": "fas fa-user-secret", // 시크릿 사용자 아이콘
+      "엘리트 금융 전문가": "fas fa-gem", // 보석 아이콘
+    };
+    const getTitleIcon = (title) => {
+      return titleIcons[title] || "mdi-account"; // 기본 아이콘 설정
+    };
+
     const userStore = useUserStore();
     const user = ref(null);
     const error = ref(null);
@@ -77,7 +148,7 @@ export default {
     const showPostsModal = ref(false);
 
     const deleteUser = async () => {
-      if (confirm('정말로 회원탈퇴 하시겠습니까?')) {
+      if (confirm("정말로 회원탈퇴 하시겠습니까?")) {
         await userStore.deleteUser();
         router.push({ name: "home" });
       }
@@ -127,6 +198,8 @@ export default {
       openPostsModal,
       closePostsModal,
       deleteUser,
+      titleIcons,
+      getTitleIcon,
     };
   },
 };
@@ -135,7 +208,7 @@ export default {
 <style scoped>
 /* 전체 페이지 스타일 */
 .detail-page {
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   background-color: #f0f2f5;
   padding: 30px;
   max-width: 800px;

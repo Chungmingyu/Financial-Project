@@ -1,14 +1,12 @@
 <template>
+  <div class="image-container">
+    <div class="image-overlay">
+      <h2>"머신러닝 기반으로 설계된 재테크 솔루션! 데이터를 분석해 당신에게 가장 적합한 금융 상품과 투자 전략을 제안합니다."</h2>
+      <p>AI 분석으로 더 나은 선택을 돕는 스마트 금융 도우미를 만나보세요!</p>
+    </div>
+  </div>
   <div class="investment-planner">
     <div class="planner-container">
-      <div class="page-title">
-        <h1>
-          <i class="mdi mdi-robot-excited"></i>
-          AI 맞춤형 투자 플래너
-          <span class="subtitle">똑똑한 AI가 추천하는 최적의 금융 포트폴리오</span>
-        </h1>
-      </div>
-
       <!-- 입력 폼과 포트폴리오 차트 섹션 -->
       <section class="form-chart-section">
         <div class="form-wrapper">
@@ -90,6 +88,7 @@
       <Transition name="fade">
         <section v-if="showCharts && plan" class="timeline-section">
           <h2>
+            <br />
             <i class="mdi mdi-chart-timeline"></i>
             투자 타임라인
           </h2>
@@ -326,10 +325,12 @@ export default {
 <style scoped>
 .investment-planner {
   min-height: 100vh;
+  min-width: 2900px;
+  background-color: none;
 }
 
 .planner-container {
-  max-width: 1200px;
+  max-width: 1700px;
   margin: 0 auto;
   padding: 2rem;
 }
@@ -394,6 +395,7 @@ export default {
   border-radius: 1rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   overflow: hidden; /* 넘치는 부분 숨김 */
+  background-color: rgb(238, 238, 238);
 }
 
 .chart-container {
@@ -705,5 +707,37 @@ export default {
   .products-grid {
     grid-template-columns: 1fr;
   }
+}
+.image-container {
+  position: relative;
+  width: 70%;
+  height: 400px; /* 이미지 높이 설정 */
+  margin: 0 auto; /* 가로 중앙 정렬 */
+  margin-top: 40px;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), /* 어두운 레이어 추가 */ url("@/assets/ai/ai.jpg") no-repeat center center/cover; /* 배경 이미지 설정 */
+}
+
+/* 이미지 위 텍스트 스타일 */
+.image-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  text-align: center;
+  /* background: rgba(0, 0, 0, 0.5); 반투명 배경 */
+  padding: 20px;
+  border-radius: 10px;
+  /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); */
+}
+
+.image-overlay h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.image-overlay p {
+  font-size: 16px;
+  margin: 0;
 }
 </style>

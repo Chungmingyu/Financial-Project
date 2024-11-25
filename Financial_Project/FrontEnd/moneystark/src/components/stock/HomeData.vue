@@ -1,9 +1,14 @@
 <template>
+  <div class="image-container">
+    <div class="image-overlay">
+      <h2>
+        <i class="mdi mdi-home-city"></i>
+        부동산 정보
+      </h2>
+      <p>찾고 싶은 지역의 부동산 정보를 한눈에! 간편한 조회로 원하는 데이터를 바로 확인하세요.</p>
+    </div>
+  </div>
   <div class="home-data">
-    <h2>
-      <i class="mdi mdi-home-city"></i>
-      부동산 가격 데이터
-    </h2>
     <div class="view-selector">
       <button :class="{ active: !showMap }" @click="showMap = false">
         <i class="mdi mdi-table"></i>
@@ -341,5 +346,38 @@ tr:hover {
   color: #1890ff;
   font-size: 1.2rem;
   margin-top: 20px;
+}
+
+.image-container {
+  position: relative;
+  width: 70%;
+  height: 400px; /* 이미지 높이 설정 */
+  margin: 0 auto; /* 가로 중앙 정렬 */
+  margin-top: 40px;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), /* 어두운 레이어 추가 */ url("@/assets/stock/realestate.jpg") no-repeat center center/cover; /* 배경 이미지 설정 */
+}
+
+/* 이미지 위 텍스트 스타일 */
+.image-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  text-align: center;
+  /* background: rgba(0, 0, 0, 0.5); 반투명 배경 */
+  padding: 20px;
+  border-radius: 10px;
+  /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); */
+}
+.image-overlay h2 {
+  font-size: 36px;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.image-overlay p {
+  font-size: 22px;
+  margin: 0;
 }
 </style>

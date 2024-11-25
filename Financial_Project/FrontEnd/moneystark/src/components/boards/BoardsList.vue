@@ -188,10 +188,16 @@ export default {
 }
 
 /* 게시글 본문 */
+/* 게시글 본문 스타일 */
 .post-content {
   margin-bottom: 15px;
   font-size: 15px;
   color: #555;
+  display: -webkit-box; /* Flexbox 기반으로 작동 */
+  -webkit-line-clamp: 3; /* 표시할 줄 수 설정 */
+  -webkit-box-orient: vertical; /* 수직 방향 지정 */
+  overflow: hidden; /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis; /* 생략 표시 */
 }
 
 /* 게시글 푸터 */
