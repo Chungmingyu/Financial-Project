@@ -213,7 +213,7 @@ export default {
   color: #999;
 }
 .search-button {
-  padding: 0 24px;
+  padding: 0 35px;
   height: 50px;
   background-color: #1890ff;
   color: white;
@@ -221,7 +221,8 @@ export default {
   border-radius: 8px;
   cursor: pointer;
   font-size: 1rem;
-  display: flex;
+  /* display: flex; */
+  width: 25%;
   align-items: center;
   gap: 8px;
   transition: all 0.3s ease;

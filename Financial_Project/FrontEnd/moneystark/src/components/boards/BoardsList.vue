@@ -1,13 +1,14 @@
 <template>
   <div class="boards-container">
-    <!-- 상단 버튼 -->
-    <div class="top-bar">
-      <button class="create-button" @click.prevent="$router.push({ name: 'BoardsCreate' })">+ 새 게시글 작성</button>
-    </div>
-
     <!-- 로딩 또는 오류 메시지 -->
-    <div v-if="loading" class="loading">Loading...</div>
-    <div v-else-if="error" class="error">{{ error }}</div>
+    <div v-if="loading" class="loading">
+      <i class="mdi mdi-loading mdi-spin"></i>
+      Loading...
+    </div>
+    <div v-else-if="error" class="error">
+      <i class="mdi mdi-alert-circle-outline"></i>
+      {{ error }}
+    </div>
 
     <!-- 게시글 리스트 -->
     <ul v-else class="post-list">
@@ -22,11 +23,15 @@
         <div class="post-footer">
           <!-- 좋아요 버튼 -->
           <button class="like-button" :class="{ liked: isLikedByUser(post.id) }" @click="toggleLike(post.id)">
-            {{ isLikedByUser(post.id) ? "♥ 좋아요 취소" : "♡ 좋아요" }} ({{ getLikeCount(post.id) }})
+            <i :class="isLikedByUser(post.id) ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"></i>
+            {{ isLikedByUser(post.id) ? "좋아요 취소" : "좋아요" }} ({{ getLikeCount(post.id) }})
           </button>
 
           <!-- 자세히 보기 버튼 -->
-          <button class="detail-button" @click="openPostDetail(post.id)">자세히 보기</button>
+          <button class="detail-button" @click="openPostDetail(post.id)">
+            <i class="mdi mdi-eye-outline"></i>
+            자세히 보기
+          </button>
         </div>
       </li>
     </ul>
@@ -114,36 +119,20 @@ export default {
 <style scoped>
 /* 컨테이너 스타일 */
 .boards-container {
-  max-width: 800px;
+  max-width: 1000px;
   position: relative;
   margin: 20px auto;
   padding: 20px;
   background: #f9f9f9;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  /* z-index: -1; */
 }
 
-/* 상단 버튼 스타일 */
-.top-bar {
-  display: flex;
-  justify-content: flex-end;
+/* 설명 스타일 */
+.description {
+  font-size: 16px;
+  color: #555;
   margin-bottom: 20px;
-}
-
-.create-button {
-  background: #17bebb;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s;
-}
-
-.create-button:hover {
-  background: #139e9c;
 }
 
 /* 로딩 및 오류 메시지 */
@@ -153,6 +142,11 @@ export default {
   font-size: 18px;
   color: #333;
   margin: 20px 0;
+}
+
+.loading i,
+.error i {
+  margin-right: 5px;
 }
 
 /* 게시글 리스트 */
@@ -209,22 +203,28 @@ export default {
 
 .like-button {
   background: white;
-  color: #17bebb;
-  border: 1px solid #17bebb;
+  color: #ff0000;
+  border: 1px solid #ff0000;
   border-radius: 5px;
   padding: 8px 15px;
   font-size: 14px;
   cursor: pointer;
   transition: background 0.3s, color 0.3s;
+  display: flex;
+  align-items: center;
+}
+
+.like-button i {
+  margin-right: 5px;
 }
 
 .like-button.liked {
-  background: #17bebb;
+  background: #ff0000;
   color: white;
 }
 
 .like-button:hover {
-  background: #139e9c;
+  background: #cc0000;
   color: white;
 }
 
@@ -237,6 +237,12 @@ export default {
   font-size: 14px;
   cursor: pointer;
   transition: background 0.3s;
+  display: flex;
+  align-items: center;
+}
+
+.detail-button i {
+  margin-right: 5px;
 }
 
 .detail-button:hover {
@@ -261,7 +267,7 @@ export default {
   background: white;
   padding: 20px;
   border-radius: 8px;
-  width: 500px;
+  width: 900px;
   max-width: 90%;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   z-index: 1001;
