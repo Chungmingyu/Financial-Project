@@ -165,7 +165,6 @@ export default {
 <style scoped>
 .page-container {
   min-height: 100vh;
-  background-color: #f5f7fa;
   padding: 40px 20px;
 }
 
