@@ -1,6 +1,6 @@
 <template>
   <div class="titles-page">
-    <button style="display: flex" @click.prevent="$router.push({ name: 'UserDetailView' })">뒤로가기</button>
+    <button style="display: flex; background-color: #007bff; border: none; border-radius: 15px" @click.prevent="$router.push({ name: 'UserDetailView' })">뒤로가기</button>
     <!-- 제목 및 설명 -->
     <header class="header">
       <div class="header-content">

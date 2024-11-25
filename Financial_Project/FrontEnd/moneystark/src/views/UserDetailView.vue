@@ -73,6 +73,7 @@
           </p>
           <hr />
         </div>
+        <!-- <BarChart :deposits="user.deposits" /> -->
         <button class="close-button" @click="closeDepositsModal">닫기</button>
       </div>
     </div>
@@ -114,8 +115,12 @@
 import { useUserStore } from "../stores/user";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import BarChart from "@/components/BarChart.vue";
 
 export default {
+  components: {
+    BarChart,
+  },
   setup() {
     const titleIcons = {
       "투자 초보": "fas fa-seedling", // 새싹 아이콘
