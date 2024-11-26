@@ -38,14 +38,11 @@ User = get_user_model()
 class UserDetailByNicknameView(View):
     def get(self, request, nickname):
         user = get_object_or_404(User, nickname=nickname)  # 닉네임으로 사용자 조회
-        return JsonResponse({
-            "id": user.id,
-            "username": user.username,
-            "nickname": user.nickname,
-            "email": user.email,
-            "gender": user.gender,
-            "age": user.age,
-        })
+        serializer = CustomUserDetailsSerializer(
+            user, context={'request': request}) 
+        return JsonResponse(
+            serializer.data  
+        )
 
 
 @api_view(['GET', 'PATCH'])

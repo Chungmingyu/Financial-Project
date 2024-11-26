@@ -10,59 +10,27 @@
     </div>
     <form @submit.prevent="handleRegister" class="signup-form">
       <div class="form-group">
-        <input 
-          v-model="formData.username" 
-          placeholder="이름" 
-          required 
-          @blur="validateField('username')"
-        />
+        <input v-model="formData.username" placeholder="이름" required @blur="validateField('username')" />
         <span v-if="fieldErrors.username" class="field-error">{{ fieldErrors.username }}</span>
       </div>
       <div class="form-group">
-        <input 
-          v-model="formData.email" 
-          type="email" 
-          placeholder="이메일" 
-          required
-          @blur="validateField('email')"
-        />
+        <input v-model="formData.email" type="email" placeholder="이메일" required @blur="validateField('email')" />
         <span v-if="fieldErrors.email" class="field-error">{{ fieldErrors.email }}</span>
       </div>
       <div class="form-group">
-        <input 
-          v-model="formData.password1" 
-          type="password" 
-          placeholder="비밀번호" 
-          required
-          @blur="validateField('password1')"
-        />
+        <input v-model="formData.password1" type="password" placeholder="비밀번호" required @blur="validateField('password1')" />
         <span v-if="fieldErrors.password1" class="field-error">{{ fieldErrors.password1 }}</span>
       </div>
       <div class="form-group">
-        <input 
-          v-model="formData.password2" 
-          type="password" 
-          placeholder="비밀번호 확인" 
-          required
-          @blur="validateField('password2')"
-        />
+        <input v-model="formData.password2" type="password" placeholder="비밀번호 확인" required @blur="validateField('password2')" />
         <span v-if="fieldErrors.password2" class="field-error">{{ fieldErrors.password2 }}</span>
       </div>
       <div class="form-group">
-        <input 
-          v-model="formData.nickname" 
-          placeholder="닉네임" 
-          required
-          @blur="validateField('nickname')"
-        />
+        <input v-model="formData.nickname" placeholder="닉네임" required @blur="validateField('nickname')" />
         <span v-if="fieldErrors.nickname" class="field-error">{{ fieldErrors.nickname }}</span>
       </div>
       <div class="form-group select-group">
-        <select 
-          v-model="formData.gender" 
-          required
-          @blur="validateField('gender')"
-        >
+        <select v-model="formData.gender" required @blur="validateField('gender')">
           <option value="" disabled selected>성별을 선택하세요</option>
           <option value="M">남성</option>
           <option value="W">여성</option>
@@ -70,22 +38,14 @@
         <span v-if="fieldErrors.gender" class="field-error">{{ fieldErrors.gender }}</span>
       </div>
       <div class="form-group">
-        <input 
-          v-model="formData.age" 
-          type="number" 
-          placeholder="나이" 
-          required
-          @blur="validateField('age')"
-        />
+        <input v-model="formData.age" type="number" placeholder="나이" required @blur="validateField('age')" />
         <span v-if="fieldErrors.age" class="field-error">{{ fieldErrors.age }}</span>
       </div>
       <div class="form-group">
         <button type="submit" class="btn primary">회원가입</button>
       </div>
       <div class="form-group">
-        <button type="button" class="btn secondary" @click="$router.push({ name: 'LogInView' })">
-          로그인 페이지로 이동
-        </button>
+        <button type="button" class="btn secondary" @click="$router.push({ name: 'LogInView' })">로그인 페이지로 이동</button>
       </div>
     </form>
   </div>
@@ -129,38 +89,38 @@ export default {
       fieldErrors[field] = ""; // 초기화
 
       switch (field) {
-        case 'username':
+        case "username":
           if (formData.username.length < 2) {
             fieldErrors.username = "이름은 2자 이상이어야 합니다.";
           }
           break;
-        case 'email':
+        case "email":
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           if (!emailRegex.test(formData.email)) {
             fieldErrors.email = "올바른 이메일 형식이 아닙니다.";
           }
           break;
-        case 'password1':
+        case "password1":
           if (formData.password1.length < 8) {
             fieldErrors.password1 = "비밀번호는 8자 이상이어야 합니다.";
           }
           break;
-        case 'password2':
+        case "password2":
           if (formData.password1 !== formData.password2) {
             fieldErrors.password2 = "비밀번호가 일치하지 않습니다.";
           }
           break;
-        case 'nickname':
+        case "nickname":
           if (formData.nickname.length < 2) {
             fieldErrors.nickname = "닉네임은 2자 이상이어야 합니다.";
           }
           break;
-        case 'gender':
+        case "gender":
           if (!formData.gender) {
             fieldErrors.gender = "성별을 선택해주세요.";
           }
           break;
-        case 'age':
+        case "age":
           if (!formData.age || formData.age < 1) {
             fieldErrors.age = "올바른 나이를 입력해주세요.";
           }
@@ -170,16 +130,16 @@ export default {
 
     const validateForm = () => {
       // 모든 필드 검증
-      Object.keys(formData).forEach(field => validateField(field));
-      
+      Object.keys(formData).forEach((field) => validateField(field));
+
       // 에러가 있는지 확인
-      return !Object.values(fieldErrors).some(error => error !== "");
+      return !Object.values(fieldErrors).some((error) => error !== "");
     };
 
     const handleRegister = async () => {
       try {
         errorMessage.value = ""; // 에러 메시지 초기화
-        
+
         // 폼 전체 검증
         if (!validateForm()) {
           errorMessage.value = "입력 정보를 다시 확인해주세요.";
@@ -198,6 +158,19 @@ export default {
           errorMessage.value = "회원가입 중 오류가 발생했습니다. 다시 시도해주세요.";
         }
         console.error("회원가입 중 오류 발생:", error.response ? error.response.data : error);
+        if (error.response && error.response.data) {
+          const errorData = error.response.data;
+          for (const key in errorData) {
+            if (errorData.hasOwnProperty(key)) {
+              const messages = errorData[key];
+              if (Array.isArray(messages)) {
+                messages.forEach((message) => {
+                  alert(`${key}: ${message}`);
+                });
+              }
+            }
+          }
+        }
       }
     };
 

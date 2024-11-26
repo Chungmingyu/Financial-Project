@@ -49,7 +49,7 @@ onMounted(() => {
       loading.value = false;
       router.push({ name: "home" });
       localStorage.setItem("hasLoaded", "true");
-    }, 10000);
+    }, 4100);
   } else {
     loading.value = false;
   }

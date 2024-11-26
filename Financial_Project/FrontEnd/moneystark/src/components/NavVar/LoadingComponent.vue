@@ -23,7 +23,7 @@ const showLoader = ref(true);
 onMounted(() => {
   setTimeout(() => {
     showLoader.value = false;
-  }, 10000); // 로딩 지속 시간 (ms)
+  }, 4000); // 로딩 지속 시간 (ms)
 });
 </script>
 
@@ -35,7 +35,7 @@ onMounted(() => {
   left: 0;
   width: 100%;
   height: 100vh;
-  background: url("@/assets/home/home3.jpg") no-repeat center center/cover;
+  /* background: url("@/assets/home/home3.jpg") no-repeat center center/cover; */
   display: flex;
   justify-content: center;
   align-items: center;
