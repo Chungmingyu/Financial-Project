@@ -9,7 +9,7 @@
     </div>
 
     <!-- 스크롤로 보여줄 다양한 정보 섹션 -->
-    <div class="section scroll-section" :style="{ backgroundImage: `url(${home2})` }" data-scroll-section>
+    <div class="section scroll-section" :style="{ backgroundImage: `url(${test2})` }" data-scroll-section>
       <div class="content">
         <h2 data-scroll data-scroll-speed="3">최고의 예금 상품</h2>
         <p data-scroll data-scroll-speed="2">당신의 자산을 불려줄 예금 상품을 추천드립니다.</p>
@@ -19,43 +19,51 @@
       <div class="circle-container" data-scroll data-scroll-speed="1">
         <div class="circle-item" @click="navigateTo('traditional-asset')">
           <p>
-            전통자산
+            신뢰와 투명성
             <br />
-            운용
+            고객의 신뢰를 최우선으로 하며, 모든 금융 정보와 서비스는 투명하고 정직하게 제공한다.
           </p>
         </div>
         <div class="circle-item" @click="navigateTo('corporate-finance')">
           <p>
-            기업금융
+            고객 중심의 혁신
             <br />
-            (IB)
+            고객의 니즈를 중심으로 끊임없는 혁신을 통해 최적의 재테크 솔루션을 제안한다.
           </p>
         </div>
         <div class="circle-item" @click="navigateTo('private-equity')">
           <p>
-            경영참여
+            전문성 강화와 책임감
             <br />
-            (PE)
+            금융 및 투자 분야의 전문성을 기반으로 책임감 있는 서비스를 제공하고, 고객의 자산을 안전하게 관리한다.
           </p>
         </div>
         <div class="circle-item" @click="navigateTo('alternative-investment')">
           <p>
-            대체투자
+            지속 가능한 성장
             <br />
-            운용
+            재무적 이익뿐 아니라 사회적, 환경적 가치를 고려한 지속 가능한 성장을 추구한다.
           </p>
         </div>
-        <div class="circle-item" @click="navigateTo('new-business')">
+        <!-- <div class="circle-item" @click="navigateTo('new-business')">
           <p>
-            New
+            지식 공유와 교육
             <br />
             Business
           </p>
-        </div>
+        </div> -->
       </div>
     </div>
 
-    <div class="section scroll-section" :style="{ backgroundImage: `url(${home3})` }" data-scroll-section>
+    <div
+      class="section scroll-section"
+      :style="{
+        backgroundImage: `url(${home5})`,
+        backgroundColor: 'rgba(0, 0, 0, 0.45)', // 어두운 색 추가
+        backgroundBlendMode: 'multiply', // 배경 이미지와 색상 혼합
+      }"
+      data-scroll-section
+    >
       <div class="content">
         <h2>여러 이미지를 한 번에 확인하세요</h2>
         <p>한 화면에 여러 이미지를 스와이프하며 확인할 수 있습니다.</p>
@@ -108,6 +116,8 @@ import home1 from "@/assets/home/home1.jpg";
 import home2 from "@/assets/home/home2.jpg";
 import home3 from "@/assets/home/home3.jpg";
 import home4 from "@/assets/home/home4.jpg";
+import home5 from "@/assets/home/home5.jpg";
+import test2 from "@/assets/home/test2.jpg";
 
 export default {
   name: "HomeView",
@@ -117,10 +127,12 @@ export default {
   },
   data() {
     return {
+      test2,
       home1,
       home2,
       home3,
       home4,
+      home5,
       sections: [], // Section positions
       currentSectionIndex: 0, // Current section index
       isScrolling: false, // Check if scrolling
@@ -442,8 +454,8 @@ export default {
 }
 
 .circle-item {
-  width: 120px;
-  height: 120px;
+  width: 400px;
+  height: 300px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.8);
   display: flex;
@@ -471,6 +483,7 @@ export default {
   width: 80%;
   margin: 0 auto;
   padding: 40px 0;
+  margin-top: 100px;
 }
 
 .custom-swiper .swiper-slide {
@@ -481,8 +494,8 @@ export default {
 
 .custom-swiper .slide-link {
   display: block;
-  width: 100%;
-  height: 100%;
+  width: 60%;
+  height: 60%;
   overflow: hidden;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -491,7 +504,7 @@ export default {
 
 .custom-swiper .slide-link img {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
   transition: transform 0.3s ease;
 }
