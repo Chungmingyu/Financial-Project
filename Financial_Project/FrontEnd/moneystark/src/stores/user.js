@@ -64,17 +64,17 @@ export const useUserStore = defineStore("user", {
 
     async deleteUser() {
       try {
-        const response = await axiosInstance.delete('accounts/delete/');
+        const response = await axiosInstance.delete("accounts/delete/");
         alert(response.data.message);
-        console.log(response.data.message)
-        useUserStore.logout
+        console.log(response.data.message);
+        useUserStore.logout;
         this.user = null; // 회원 탈퇴 후 유저 정보를 초기화
-        this.token = null
+        this.token = null;
         localStorage.removeItem("authToken");
         // router.push({name: 'home'})
       } catch (error) {
-        console.error('회원탈퇴 중 오류 발생:', error);
-        alert('회원탈퇴에 실패했습니다.');
+        console.error("회원탈퇴 중 오류 발생:", error);
+        alert("회원탈퇴에 실패했습니다.");
       }
     },
     async updateUser(updatedData, router) {
