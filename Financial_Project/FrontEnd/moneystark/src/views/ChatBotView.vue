@@ -24,6 +24,7 @@ import { marked } from "marked";
 const API_KEY = import.meta.env.VITE_CHATGPT_API;
 const openai = new OpenAI({
   apiKey: API_KEY,
+  base_url:"https://ssafy.today/v1",
   dangerouslyAllowBrowser: true,
 });
 
