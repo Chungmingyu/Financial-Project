@@ -42,7 +42,7 @@
 
 ### **개발 환경**
 - **백엔드**: Django, RESTful API
-- **프론트엔드**: Vue.js
+- **프론트엔드**: Vue.js, javascript
 - **데이터베이스**: SQLite
 - **AI**: 머신러닝을 활용한 사용자 맞춤형 추천 및 투자 성향 분석, 생성형 AI 챗봇 활용
 - **협업 툴**: Git, Notion, Asana
