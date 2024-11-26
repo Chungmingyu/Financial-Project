@@ -1,13 +1,20 @@
 <template>
   <div class="detail-page">
     <div v-if="user" class="user-info">
-      <button class="back-button" @click.prevent="$router.push({name:'BoardView'})">
+      <button class="back-button" @click.prevent="$router.push({ name: 'BoardView' })">
         <i class="mdi mdi-arrow-left"></i>
         뒤로가기
       </button>
       <h1>회원 정보</h1>
-      <p><strong>닉네임:</strong> {{ user.nickname }}</p>
-      <p><strong>칭호:</strong> {{ user.style }}</p>
+      <p>
+        <strong>닉네임:</strong>
+        {{ user.nickname }}
+      </p>
+      <p>
+        <strong>칭호:</strong>
+        <i :class="getTitleIcon(user.style)"></i>
+        {{ user.style }}
+      </p>
 
       <div v-if="user.deposits" class="deposits-section">
         <hr />
@@ -35,11 +42,26 @@
       <div class="modal-content">
         <h2>{{ user.nickname }} 이/가 가입한 예금 목록</h2>
         <div v-for="deposit in user.deposits" :key="deposit.id" class="modal-item">
-          <p><strong>은행 이름:</strong> {{ deposit.deposit_product_kor_co_nm }}</p>
-          <p><strong>예금 이름:</strong> {{ deposit.deposit_product_fin_prdt_nm }}</p>
-          <p><strong>넣은 금액:</strong> {{ deposit.amount }}</p>
-          <p><strong>시작일:</strong> {{ deposit.deposit_product_dcls_strt_day }}</p>
-          <p><strong>금리:</strong> {{ deposit.deposit_product_mtrt_int }}</p>
+          <p>
+            <strong>은행 이름:</strong>
+            {{ deposit.deposit_product_kor_co_nm }}
+          </p>
+          <p>
+            <strong>예금 이름:</strong>
+            {{ deposit.deposit_product_fin_prdt_nm }}
+          </p>
+          <p>
+            <strong>넣은 금액:</strong>
+            {{ deposit.amount }}
+          </p>
+          <p>
+            <strong>시작일:</strong>
+            {{ deposit.deposit_product_dcls_strt_day }}
+          </p>
+          <p>
+            <strong>금리:</strong>
+            {{ deposit.deposit_product_mtrt_int }}
+          </p>
         </div>
         <button class="close-button" @click="closeDepositsModal">닫기</button>
       </div>
@@ -50,11 +72,26 @@
       <div class="modal-content">
         <h2>{{ user.nickname }} 이/가 작성한 게시글</h2>
         <div v-for="post in user.post" :key="post.id" class="modal-item">
-          <p><strong>게시글 번호:</strong> {{ post.id }}</p>
-          <p><strong>게시글 제목:</strong> {{ post.title }}</p>
-          <p><strong>게시글 내용:</strong> {{ post.content }}</p>
-          <p><strong>작성일:</strong> {{ post.created_at }}</p>
-          <p><strong>좋아요:</strong> {{ post.like_count }}</p>
+          <p>
+            <strong>게시글 번호:</strong>
+            {{ post.id }}
+          </p>
+          <p>
+            <strong>게시글 제목:</strong>
+            {{ post.title }}
+          </p>
+          <p>
+            <strong>게시글 내용:</strong>
+            {{ post.content }}
+          </p>
+          <p>
+            <strong>작성일:</strong>
+            {{ post.created_at }}
+          </p>
+          <p>
+            <strong>좋아요:</strong>
+            {{ post.like_count }}
+          </p>
         </div>
         <button class="close-button" @click="closePostsModal">닫기</button>
       </div>
@@ -65,14 +102,35 @@
 <script>
 import { useUserStore } from "../stores/user";
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
+import axios from "axios";
 
 export default {
   setup() {
-    const userStore = useUserStore(); // Pinia store 인스턴스 가져오기
+    const titleIcons = {
+      "투자 초보": "fas fa-seedling", // 새싹 아이콘
+      "무지의 용사": "fas fa-user-shield", // 방패를 든 사용자 아이콘
+      "금융 신입": "fas fa-baby", // 아기 아이콘
+
+      "중급 투자자": "fas fa-user-tie", // 넥타이 맨 사용자 아이콘
+      "투자 도전자": "fas fa-fist-raised", // 주먹 쥔 손 아이콘
+      "금융 중수": "fas fa-graduation-cap", // 졸업 모자 아이콘
+
+      "고급 투자자": "fas fa-chess-knight", // 체스 말 아이콘
+      "숙련된 전략가": "fas fa-brain", // 뇌 아이콘
+      "금융 마에스트로": "fas fa-magic", // 마법 지팡이 아이콘
+
+      "전설의 투자자": "fas fa-crown", // 왕관 아이콘
+      "투자의 마스터": "fas fa-user-secret", // 시크릿 사용자 아이콘
+      "엘리트 금융 전문가": "fas fa-gem", // 보석 아이콘
+    };
+    const getTitleIcon = (title) => {
+      return titleIcons[title] || "mdi-account"; // 기본 아이콘 설정
+    };
     const user = ref(null); // 사용자 정보
     const error = ref(null); // 에러 상태 관리
     const router = useRouter(); // 라우터 사용
+    const route = useRoute(); // 현재 라우트 정보 사용
 
     // 모달 상태
     const showDepositsModal = ref(false);
@@ -81,8 +139,9 @@ export default {
     // 사용자 정보를 가져오는 함수
     const fetchUserData = async () => {
       try {
-        await userStore.fetchUser(); // 사용자 정보 가져오기
-        user.value = userStore.user; // 사용자 정보 저장
+        const nickname = route.params.nickname; // URL에서 닉네임 추출
+        const response = await axios.get(`http://127.0.0.1:8000/accounts/user/${nickname}/`); // 백엔드 API 요청
+        user.value = response.data; // 응답 데이터를 user에 저장
       } catch (err) {
         error.value = "사용자 정보를 불러오는 데 실패했습니다.";
         console.error(err);
@@ -112,6 +171,7 @@ export default {
     onMounted(fetchUserData);
 
     return {
+      getTitleIcon,
       user,
       error,
       goToEditProfile,
@@ -129,7 +189,7 @@ export default {
 <style scoped>
 /* 전체 페이지 스타일 */
 .detail-page {
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   background-color: #f9f9f9;
   padding: 20px;
   max-width: 900px;
@@ -185,12 +245,13 @@ export default {
 }
 
 /* 예금 및 게시글 섹션 버튼 */
-.deposits-section, .posts-section {
+.deposits-section,
+.posts-section {
   margin: 15px 0;
 }
 .modal-button {
   padding: 10px 15px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 5px;

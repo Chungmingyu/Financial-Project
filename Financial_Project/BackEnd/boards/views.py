@@ -2,7 +2,7 @@
 from rest_framework import viewsets
 # from yaml import serialize
 from .models import Post
-from .serializers import PostSerializer
+from .serializers import PostSerializer, CommentSerializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -106,13 +106,20 @@ def comment_view(request, post_id):
         return JsonResponse({"comments": comments_data}, status=200)
 
     elif request.method == "POST":
-        # 현재 로그인된 사용자 확인
-        user = User.objects.get(pk=request.POST.get('user_pk'))
+        # 사용자 확인
+        user_pk = request.POST.get('user_pk')
+        if not user_pk:
+            return JsonResponse({"error": "유효하지 않은 사용자입니다."}, status=400)
+        try:
+            user = User.objects.get(pk=user_pk)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "사용자를 찾을 수 없습니다."}, status=404)
+
         if user.is_anonymous:
             return JsonResponse({"error": "로그인이 필요합니다."}, status=401)
 
         # POST 데이터에서 content 읽기
-        content = request.POST.get('content') or request.body.decode('utf-8')
+        content = request.POST.get('content')
 
         if not content:
             return JsonResponse({"error": "댓글 내용을 입력해주세요."}, status=400)
@@ -121,16 +128,17 @@ def comment_view(request, post_id):
         comment = Comment.objects.create(
             post=post, author=user, content=content
         )
-        return JsonResponse({
-            "message": "댓글 생성이 완료되었습니다.",
-            "comment": {
-                "id": comment.id,
-                "post_id": post.id,
-                "content": comment.content,
-                "author": comment.author.username,
-                "created_at": comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-            }
-        }, status=201)
+        return JsonResponse(
+            {
+                "comment": {
+                    "id": comment.id,
+                    "author": comment.author.nickname,  # 닉네임 사용
+                    "content": comment.content,
+                    "created_at": comment.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+                }
+            },
+            status=201,
+        )
 
     return JsonResponse({"error": "Invalid method."}, status=405)
 

@@ -196,7 +196,7 @@ export default {
     });
 
     return {
-      currentRoute, 
+      currentRoute,
       isHomePage,
       homeLogo,
       otherLogo,
@@ -222,7 +222,6 @@ export default {
 </script>
 
 <style scoped>
-
 .switch-btn {
   background: none;
   border: 2px solid #ffffff;
@@ -236,7 +235,7 @@ export default {
 }
 
 .switch-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
@@ -271,7 +270,7 @@ export default {
 }
 
 .menu-item::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 50%;
@@ -305,7 +304,6 @@ export default {
 
 .menu-item:active {
   transform: scale(0.95);
-  
 }
 .navbar {
   position: relative;
@@ -319,12 +317,13 @@ export default {
 
 .navbar.navbar-main {
   position: fixed;
-  background-color: transparent;
+  background-color: rgba(0, 0, 0, 0.081);
   height: 120px;
 }
 
 .container-fluid {
   margin: 0 auto;
+  margin-top: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
