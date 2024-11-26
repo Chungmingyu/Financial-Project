@@ -85,9 +85,9 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
+  padding: 15px;
+  background-color: #f08d0dc9;
+  color: rgb(0, 0, 0);
   font-weight: bold;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
@@ -117,15 +117,11 @@ input {
 
 button {
   padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
+  background-color: #f08d0dc9;
+  color: black;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
 }
 
 .message {
@@ -154,7 +150,7 @@ button:hover {
 }
 
 .message.user .message-content {
-  background-color: #007bff;
+  background-color: #f08d0dc9;
   color: white;
 }
 
@@ -171,7 +167,7 @@ button:hover {
   transform: translateY(-50%);
   border-width: 10px;
   border-style: solid;
-  border-color: transparent transparent transparent #007bff;
+  border-color: transparent transparent transparent #f08e0d00;
 }
 
 .message.bot .message-content::after {

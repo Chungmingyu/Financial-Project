@@ -1,12 +1,10 @@
 <template>
   <div data-scroll-container>
-    <!-- 상단 이미지 섹션 -->
+    <!-- 히어로 섹션 -->
     <div class="section hero-section" data-scroll-section>
       <div class="overlay"></div>
       <div class="content">
-        <h2 class="fade-in">Make your money work for you.</h2>
-        <p class="fade-in" style="animation-delay: 0.5s">다양한 금융 서비스를 통해 최적의 재테크와 투자 솔루션을 제공합니다.</p>
-        <h4 class="fade-in" style="animation-delay: 1s">추가 설명 텍스트입니다.</h4>
+        <img class="fade-in" width="1500" src="@/assets/navbar/home6.png" alt="Money Industry Logo" />
       </div>
     </div>
 
@@ -215,6 +213,88 @@ export default {
   position: relative;
 }
 
+/* 히어로 섹션 스타일 업데이트 */
+.hero-section {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 가운데 정렬 추가 */
+  background: url("@/assets/home/home1.jpg") no-repeat center center/cover;
+}
+
+.overlay {
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3));
+}
+
+.hero-section .content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  color: white;
+}
+
+.hero-section h1 {
+  font-size: 4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  opacity: 0;
+  animation: fadeInUp 1s ease-out forwards;
+}
+
+.hero-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeInUp 1s ease-out 0.3s forwards;
+}
+
+.hero-section p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeInUp 1s ease-out 0.6s forwards;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  opacity: 0;
+  animation: fadeInUp 1s ease-out 0.9s forwards;
+}
+
+.primary-btn,
+.secondary-btn {
+  padding: 1rem 2rem;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.primary-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+}
+
+.secondary-btn {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.primary-btn:hover {
+  background: #0056b3;
+  transform: translateY(-2px);
+}
+
+.secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
 .hero-section {
   color: white;
   background: url("@/assets/home/home1.jpg") no-repeat center center/cover;
@@ -234,6 +314,25 @@ export default {
 .content {
   position: relative;
   z-index: 2;
+  display: flex;
+  /* flex-direction: column; */
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  max-width: 1500px;
+  margin: 0 auto;
+  top: auto;
+  left: auto;
+  transform: none;
+  padding: 20px;
+  width: 100%;
+}
+
+.content img {
+  margin: 0 auto; /* 상하 마진 제거, 좌우 auto */
+  width: 130%;
+  max-width: 1500px;
+  height: auto;
 }
 
 .hero-content {
@@ -260,21 +359,6 @@ export default {
 .scroll-section {
   color: white;
   background-color: rgba(0, 0, 0, 0.5);
-}
-
-/* content p, h4 */
-.content {
-  position: absolute;
-  top: 25%;
-  left: 10%;
-  transform: translate(-10%, -50%);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  text-align: left;
-  height: auto;
-  padding: 20px;
 }
 
 /* 반응형 스타일 */

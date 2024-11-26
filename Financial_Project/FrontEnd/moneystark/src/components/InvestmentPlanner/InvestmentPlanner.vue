@@ -1,7 +1,8 @@
 <template>
   <div class="image-container">
     <div class="image-overlay">
-      <h2>"머신러닝 기반으로 설계된 재테크 솔루션! 데이터를 분석해 당신에게 가장 적합한 금융 상품과 투자 전략을 제안합니다."</h2>
+      <h2>머신러닝 기반으로 설계된 재테크 솔루션! </h2>
+      <h3>"데이터를 분석해 당신에게 가장 적합한 금융 상품과 투자 전략을 제안합니다."</h3>
       <p>AI 분석으로 더 나은 선택을 돕는 스마트 금융 도우미를 만나보세요!</p>
     </div>
   </div>
@@ -717,10 +718,10 @@ export default {
 }
 .image-container {
   position: relative;
-  width: 70%;
+  width: 80%;
   height: 400px; /* 이미지 높이 설정 */
   margin: 0 auto; /* 가로 중앙 정렬 */
-  margin-top: 40px;
+  /* margin-top: 40px; */
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), /* 어두운 레이어 추가 */ url("@/assets/ai/ai.jpg") no-repeat center center/cover; /* 배경 이미지 설정 */
 }
 
@@ -739,12 +740,12 @@ export default {
 }
 
 .image-overlay h2 {
-  font-size: 24px;
+  font-size: 36px;
   margin-bottom: 10px;
 }
 
 .image-overlay p {
-  font-size: 16px;
+  font-size: 22px;
   margin: 0;
 }
 </style>

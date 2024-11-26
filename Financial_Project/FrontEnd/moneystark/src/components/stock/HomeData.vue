@@ -350,10 +350,10 @@ tr:hover {
 
 .image-container {
   position: relative;
-  width: 70%;
+  width: 80%;
   height: 400px; /* 이미지 높이 설정 */
   margin: 0 auto; /* 가로 중앙 정렬 */
-  margin-top: 40px;
+  /* margin-top: 40px; */
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), /* 어두운 레이어 추가 */ url("@/assets/stock/realestate.jpg") no-repeat center center/cover; /* 배경 이미지 설정 */
 }
 

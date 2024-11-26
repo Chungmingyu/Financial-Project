@@ -49,7 +49,7 @@ onMounted(() => {
       loading.value = false;
       router.push({ name: "home" });
       localStorage.setItem("hasLoaded", "true");
-    }, 3000);
+    }, 10000);
   } else {
     loading.value = false;
   }
@@ -81,10 +81,10 @@ onMounted(() => {
 /* 챗봇 버튼 스타일 */
 .chatbot-button {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: #007bff;
-  color: white;
+  bottom: 50px;
+  right: 50px;
+  background-color: #f08d0dc9;
+  color: rgb(0, 0, 0);
   border-radius: 50%;
   width: 60px;
   height: 60px;
@@ -105,8 +105,8 @@ onMounted(() => {
 
 .chatbot-popup {
   position: fixed;
-  bottom: 80px;
-  right: 20px;
+  bottom: 30px;
+  right: 30px;
   width: 450px;
   height: 650px;
   background-color: white;
