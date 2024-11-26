@@ -5,7 +5,7 @@
         <i class="mdi mdi-currency-btc"></i>
         가상화폐 정보
       </h2>
-      <p>다양한 사람들의 재테크 이야기를 듣고, 당신의 이야기를 더해보세요.</p>
+      <p>실시간으로 업데이트되는 가상화폐 트렌드를 확인 해보세요.</p>
     </div>
   </div>
   <div class="page-container">
