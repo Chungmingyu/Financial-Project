@@ -744,6 +744,11 @@ export default {
   margin-bottom: 10px;
 }
 
+.image-overlay h3 {
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+
 .image-overlay p {
   font-size: 22px;
   margin: 0;
